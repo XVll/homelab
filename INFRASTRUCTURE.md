@@ -45,22 +45,18 @@
 
 ### 🔴 Critical Issues (Must Fix)
 
-**Gitea & Dokploy - Mixed Content Warnings:**
-- ⚠️ Browser shows "active content certificate errors" when DevTools open
-- ⚠️ Page loads fine when DevTools closed, fails when open
-- ROOT_URL is correctly set to https://git.onurx.com
-- Certificate is valid (Let's Encrypt)
-- Likely cause: Applications loading some resources over HTTP instead of HTTPS
-- **Impact:** Affects debugging and development workflow
-- **Priority:** HIGH
+**~~Gitea & Dokploy - Mixed Content Warnings:~~** ✅ FIXED
+- ~~Browser shows "active content certificate errors" when DevTools open~~
+- **Solution:** Added `forwarded-headers` middleware in Traefik
+- **Fix:** Traefik now sends `X-Forwarded-Proto: https` to backends
+- Applications now correctly generate HTTPS URLs for all resources
+- **Result:** Both git.onurx.com and deploy.onurx.com show secure in browser
 
-**Dokploy - Invalid Origin Error:**
-- ⚠️ Login shows "invalid origin" error
-- Dokploy doesn't know it's behind reverse proxy at https://deploy.onurx.com
-- Needs environment variables or proxy headers configuration
-- **Impact:** Cannot log in via HTTPS domain
-- **Workaround:** Use direct IP http://10.10.10.115:3000
-- **Priority:** HIGH
+**~~Dokploy - Invalid Origin Error:~~** ✅ FIXED
+- ~~Login shows "invalid origin" error~~
+- **Solution:** Same `forwarded-headers` middleware fixed this
+- Dokploy now knows it's accessed via https://deploy.onurx.com
+- **Result:** Login works perfectly via HTTPS domain
 
 ### 🟡 Missing Configurations (Should Complete)
 
@@ -1177,17 +1173,19 @@ docker push git.onurx.com/fxx/image:tag
 - Separate from infrastructure services
 - Easy deployments via UI (Git → Docker → Deploy)
 
-**Known Issues:**
-- ⚠️ Mixed content warnings when DevTools open (investigating)
-- ⚠️ "Invalid origin" error on login (proxy headers needed)
+**Configuration:**
+- ✅ Traefik `forwarded-headers` middleware enabled
+- ✅ Properly detects HTTPS access via reverse proxy
+- ✅ No mixed content warnings
+- ✅ Login works via https://deploy.onurx.com
 
 **1Password:**
 - Store Dokploy admin credentials in `op://Server/dokploy`
 
 **Next Steps:**
-1. Resolve mixed content warnings and proxy configuration
-2. Connect Gitea as Git provider
-3. Deploy first test application
+1. Connect Gitea as Git provider
+2. Deploy first test application
+3. Test auto-deploy from Git push
 4. Configure notifications
 
 **Installation Command Used:**
