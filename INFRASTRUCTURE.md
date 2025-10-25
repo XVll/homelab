@@ -35,9 +35,134 @@
 ### Phase 4: Applications ⏳ IN PROGRESS
 - [ ] Jellyfin, Arr Stack, qBittorrent (media host - 10.10.10.113)
 - [ ] n8n, Paperless (media host - 10.10.10.113)
-- [x] **Gitea** (dev host - 10.10.10.114) - Git hosting + Container Registry + Gitea Actions
+- [x] **Gitea** (dev host - 10.10.10.114:3001) - Git hosting + Container Registry + Gitea Actions
 - [x] **act_runner** (dev host - 10.10.10.114) - CI/CD runner registered and idle
-- [ ] Dokploy (dev host - 10.10.10.114) - Deployment platform (ready to install)
+- [x] **Dokploy** (deploy host - 10.10.10.115:3000) - Deployment platform, accessible via https://deploy.onurx.com
+
+---
+
+## TODO - Issues, Missing Pieces & Ideas
+
+### 🔴 Critical Issues (Must Fix)
+
+**Gitea & Dokploy - Mixed Content Warnings:**
+- ⚠️ Browser shows "active content certificate errors" when DevTools open
+- ⚠️ Page loads fine when DevTools closed, fails when open
+- ROOT_URL is correctly set to https://git.onurx.com
+- Certificate is valid (Let's Encrypt)
+- Likely cause: Applications loading some resources over HTTP instead of HTTPS
+- **Impact:** Affects debugging and development workflow
+- **Priority:** HIGH
+
+**Dokploy - Invalid Origin Error:**
+- ⚠️ Login shows "invalid origin" error
+- Dokploy doesn't know it's behind reverse proxy at https://deploy.onurx.com
+- Needs environment variables or proxy headers configuration
+- **Impact:** Cannot log in via HTTPS domain
+- **Workaround:** Use direct IP http://10.10.10.115:3000
+- **Priority:** HIGH
+
+### 🟡 Missing Configurations (Should Complete)
+
+**Authentik SSO Integration:**
+- [ ] No Authentik applications configured yet
+- [ ] Services using Authentik middleware (Portainer, Sonarr, etc.) will redirect to Authentik but no apps exist
+- [ ] Need to create Authentik applications for each protected service
+- [ ] Configure OAuth2/OIDC providers in each application
+- **Priority:** MEDIUM
+
+**Grafana Authentik Integration:**
+- [ ] Grafana currently has no authentication (security-headers only)
+- [ ] Should integrate with Authentik for SSO
+- [ ] Configure OAuth2 in Grafana settings
+- **Priority:** MEDIUM
+
+**Prometheus Authentik Integration:**
+- [ ] Prometheus currently has no authentication
+- [ ] Should integrate with Authentik or basic auth
+- [ ] Consider if needed (may keep internal-only)
+- **Priority:** LOW
+
+**Alloy on dev/deploy VMs:**
+- [ ] dev VM (10.10.10.114) has no Alloy agent - logs not collected
+- [ ] deploy VM (10.10.10.115) has no Alloy agent - logs not collected
+- [ ] Need to deploy log shippers to new VMs
+- **Priority:** MEDIUM
+
+**Beszel Agents on dev/deploy VMs:**
+- [ ] dev VM has no Beszel agent - no monitoring in dashboard
+- [ ] deploy VM has no Beszel agent - no monitoring in dashboard
+- [ ] Should add agents for consistent monitoring
+- **Priority:** LOW
+
+### 🟢 Testing Needed (Validation)
+
+**Gitea Testing:**
+- [ ] Test Gitea Actions with sample CI/CD workflow
+- [ ] Test container registry (docker push/pull)
+- [ ] Test SSH git clone
+- [ ] Test package registry (npm, PyPI)
+- [ ] Test repository mirroring with GitHub
+- **Priority:** HIGH
+
+**Dokploy Testing:**
+- [ ] Deploy first test application
+- [ ] Connect Gitea as Git provider
+- [ ] Test auto-deploy from Git push
+- [ ] Test database creation feature
+- [ ] Test built-in monitoring
+- **Priority:** HIGH
+
+**Backup Strategy:**
+- [ ] No backup solution configured yet
+- [ ] Critical data: PostgreSQL, MongoDB, MinIO, Gitea repos
+- [ ] Need to design and implement backup workflow
+- [ ] Consider: Velero, Restic, or simple scripts
+- **Priority:** MEDIUM
+
+**SSL Certificate Monitoring:**
+- [ ] No alerts if certificates fail to renew
+- [ ] Should add Prometheus alert for cert expiry
+- [ ] Monitor acme.json for renewal issues
+- **Priority:** LOW
+
+### 💡 Ideas & Improvements (Nice to Have)
+
+**Centralized Secrets Management:**
+- [ ] Currently using 1Password CLI (works well)
+- [ ] Consider: Vault for runtime secrets (not just deploy-time)
+- [ ] Would allow secret rotation without redeploying
+- **Priority:** LOW
+
+**Infrastructure as Code:**
+- [ ] Most config is in git (good!)
+- [ ] VM creation is still manual
+- [ ] Consider: Terraform for Proxmox VM provisioning
+- **Priority:** LOW
+
+**Grafana Dashboards:**
+- [ ] Only basic dashboards exist
+- [ ] Should create service-specific dashboards
+- [ ] Docker container metrics, Traefik stats, etc.
+- **Priority:** LOW
+
+**Alerting:**
+- [ ] Prometheus alerts defined but not tested
+- [ ] No notification channel configured (email, Slack, etc.)
+- [ ] Should test alert delivery
+- **Priority:** MEDIUM
+
+**Documentation:**
+- [ ] Service-specific READMEs could be more detailed
+- [ ] Add architecture diagrams
+- [ ] Document disaster recovery procedures
+- **Priority:** LOW
+
+**Performance Tuning:**
+- [ ] No resource limits set on containers
+- [ ] Database tuning could be optimized
+- [ ] Consider adding resource constraints
+- **Priority:** LOW
 
 ---
 
@@ -123,6 +248,116 @@ edge/traefik/config/dynamic/
 **Dashboard:** `http://10.10.10.110:8080`
 
 **SSL Certs:** Cloudflare DNS-01 challenge, stored in `/data/acme.json`
+
+---
+
+### Creating a New VM
+
+**Complete checklist for adding a new VM to the infrastructure:**
+
+#### On Proxmox Host:
+
+1. **Create directory in git repository:**
+   ```bash
+   cd /flash/docker/homelab
+   mkdir -p <vm-name>
+   ls -la  # Verify directory exists
+   ```
+
+2. **Clone template VM:**
+   ```bash
+   # Find your template VM ID
+   qm list | grep template
+
+   # Clone (replace <template-id> and <new-vm-id>)
+   qm clone <template-id> <new-vm-id> --name <vm-name> --full
+   ```
+
+3. **Configure VM:**
+   ```bash
+   # Set static IP
+   qm set <new-vm-id> --ipconfig0 ip=10.10.10.<ip>/24,gw=10.10.10.1
+
+   # Add VirtioFS mount (maps directory to docker-vm tag)
+   qm set <new-vm-id> --virtfs0 /flash/docker/homelab/<vm-name>,mp=docker-vm
+
+   # Start VM
+   qm start <new-vm-id>
+   ```
+
+4. **Wait ~30 seconds for boot, then SSH:**
+   ```bash
+   ssh fx@10.10.10.<ip>
+   ```
+
+#### On New VM (after SSH):
+
+5. **Set hostname:**
+   ```bash
+   sudo hostnamectl set-hostname <vm-name>
+   hostnamectl  # Verify
+   ```
+
+6. **Create mount point:**
+   ```bash
+   sudo mkdir -p /opt/homelab
+   ```
+
+7. **Mount VirtioFS:**
+   ```bash
+   sudo mount -t virtiofs docker-vm /opt/homelab
+   ls -la /opt/homelab  # Verify mount
+   mount | grep virtiofs  # Verify filesystem
+   ```
+
+8. **Make mount permanent:**
+   ```bash
+   echo "docker-vm /opt/homelab virtiofs defaults 0 0" | sudo tee -a /etc/fstab
+   cat /etc/fstab  # Verify entry added
+   ```
+
+9. **Set 1Password service account token:**
+   ```bash
+   echo 'export OP_SERVICE_ACCOUNT_TOKEN="<your-token>"' >> ~/.bashrc
+   source ~/.bashrc
+
+   # Test 1Password connection
+   op vault list
+   ```
+
+10. **Navigate to homelab directory:**
+    ```bash
+    cd /opt/homelab
+    ls -la  # Should show files from git repository
+    ```
+
+#### Post-Setup Tasks:
+
+11. **Update network documentation** - Add VM to Network Layout table in this file
+
+12. **Add Traefik routes** (if services need external access):
+    - Add service to `edge/traefik/config/dynamic/services.yml`
+    - Add router to `edge/traefik/config/dynamic/routers.yml`
+    - Traefik auto-reloads (no restart needed)
+
+13. **Deploy services:**
+    ```bash
+    # On the new VM
+    cd /opt/homelab
+
+    # Create docker-compose.yml and .env files
+    # Deploy services
+    op run --env-file=.env -- docker compose up -d
+    ```
+
+14. **Update this file** - Document deployed services and their configuration
+
+**Troubleshooting:**
+
+- **Mount not working?** Check VirtioFS tag matches: `qm config <vm-id> | grep virtfs`
+- **Directory empty after mount?** Verify directory exists on Proxmox host
+- **1Password not working?** Check token is set: `echo $OP_SERVICE_ACCOUNT_TOKEN`
+- **Services can't connect to db host?** Check network connectivity: `nc -zv 10.10.10.111 5432`
 
 ---
 
@@ -840,18 +1075,18 @@ op read "op://Server/postgres/password"
 
 ## Service-Specific Notes
 
-### Development Stack (Gitea + Dokploy)
+### Gitea - Git Hosting & CI/CD
 
-**VM:** dev (10.10.10.114)
+**VM:** dev (10.10.10.114:3001)
 
-**Status:** ✅ Gitea deployed and working, Dokploy ready to install
+**Status:** ✅ Deployed and working
 
 **Access:**
-- **Gitea:** https://git.onurx.com (via Traefik with SSL)
-- **Gitea SSH:** git@git.onurx.com:222
-- **Dokploy:** https://deploy.onurx.com (after installation)
+- **Web UI:** https://git.onurx.com (via Traefik with SSL)
+- **SSH:** git@git.onurx.com:222
+- **Container Registry:** git.onurx.com (Docker login)
 
-**Services Deployed:**
+**Services:**
 
 **Gitea v1.24.7** - Self-hosted Git with Actions & Container Registry
 - ✅ PostgreSQL database on db host (10.10.10.111)
@@ -860,6 +1095,7 @@ op read "op://Server/postgres/password"
 - ✅ Package Registry enabled (npm, PyPI, etc.)
 - ✅ Traefik routes configured with Let's Encrypt SSL
 - ✅ Admin user: `fxx`
+- ✅ Running on port 3001 (internal)
 
 **act_runner v0.2.13** - Executes Gitea Actions workflows
 - ✅ Registered with Gitea as "homelab-runner"
@@ -908,12 +1144,58 @@ docker push git.onurx.com/fxx/image:tag
 ```
 
 **Next Steps:**
-1. Install Dokploy: `curl -sSL https://dokploy.com/install.sh | sh`
-2. Test Gitea Actions with a sample workflow
-3. Test container registry push/pull
-4. Set up repository mirroring with GitHub
+1. Test Gitea Actions with a sample workflow
+2. Test container registry push/pull
+3. Set up repository mirroring with GitHub
 
-**See:** `dev/README.md` and `dev/DEPLOYMENT_GUIDE.txt` for detailed setup
+---
+
+### Dokploy - Application Deployment Platform
+
+**VM:** deploy (10.10.10.115:3000)
+
+**Status:** ✅ Deployed and accessible
+
+**Access:**
+- **Web UI:** https://deploy.onurx.com (via Traefik with SSL)
+- **Direct:** http://10.10.10.115:3000
+
+**Services:**
+- ✅ Dokploy (latest) - Main application
+- ✅ PostgreSQL 16 - Dokploy database (bundled)
+- ✅ Redis 7 - Session store (bundled)
+- ✅ Traefik v3.5 - Internal reverse proxy (bundled, on ports 80/443)
+
+**Architecture:**
+- Deployed via Docker Swarm (required by installer)
+- Self-contained with bundled database and Redis
+- Own Traefik instance for internal routing
+- Main Traefik on edge VM proxies to Dokploy
+
+**Purpose:**
+- Deploy personal applications and side projects
+- Separate from infrastructure services
+- Easy deployments via UI (Git → Docker → Deploy)
+
+**Known Issues:**
+- ⚠️ Mixed content warnings when DevTools open (investigating)
+- ⚠️ "Invalid origin" error on login (proxy headers needed)
+
+**1Password:**
+- Store Dokploy admin credentials in `op://Server/dokploy`
+
+**Next Steps:**
+1. Resolve mixed content warnings and proxy configuration
+2. Connect Gitea as Git provider
+3. Deploy first test application
+4. Configure notifications
+
+**Installation Command Used:**
+```bash
+curl -sSL https://dokploy.com/install.sh | sudo sh
+```
+
+**Note:** Dokploy requires Docker Swarm mode, but you can deploy apps using regular docker-compose files through its UI.
 
 ---
 
@@ -925,7 +1207,8 @@ docker push git.onurx.com/fxx/image:tag
 | observability | 10.10.10.112 | Portainer, Prometheus, Grafana, Loki, Alloy |
 | edge | 10.10.10.110 | Traefik, AdGuard, Authentik, NetBird |
 | media | 10.10.10.113 | Jellyfin, Arr Stack, n8n, Paperless, qBittorrent |
-| dev | 10.10.10.114 | Gitea, Dokploy |
+| dev | 10.10.10.114 | Gitea (Git + CI/CD) |
+| deploy | 10.10.10.115 | Dokploy (Application Deployment Platform) |
 
 **Network:** VLAN 10 (10.10.10.0/24)
 **Gateway:** 10.10.10.1

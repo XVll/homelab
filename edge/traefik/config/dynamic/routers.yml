@@ -161,6 +161,7 @@ http:
         - websecure
       service: gitea
       middlewares:
+        - forwarded-headers
         - security-headers
       tls:
         certResolver: cloudflare
@@ -172,6 +173,7 @@ http:
         - websecure
       service: dokploy
       middlewares:
+        - forwarded-headers
         - security-headers
       tls:
         certResolver: cloudflare

@@ -49,3 +49,13 @@ http:
     # Compresses responses to reduce bandwidth
     compression:
       compress: {}
+
+    # Forwarded Headers
+    # Tells backend applications they're behind HTTPS proxy
+    forwarded-headers:
+      headers:
+        customRequestHeaders:
+          X-Forwarded-Proto: "https"
+        sslRedirect: true
+        sslProxyHeaders:
+          X-Forwarded-Proto: "https"
