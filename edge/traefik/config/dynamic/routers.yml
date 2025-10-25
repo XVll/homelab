@@ -172,7 +172,6 @@ http:
         - websecure
       service: dokploy
       middlewares:
-        - authentik
         - security-headers
       tls:
         certResolver: cloudflare
