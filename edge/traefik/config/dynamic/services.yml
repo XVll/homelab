@@ -81,7 +81,7 @@ http:
     dokploy:
       loadBalancer:
         servers:
-          - url: "http://10.10.10.114:3200"
+          - url: "http://10.10.10.115:3000"
 
     # VM 2: Database Host (10.10.10.111)
     minio-console:
