@@ -200,3 +200,14 @@ http:
         - security-headers
       tls:
         certResolver: cloudflare
+
+    # Home Assistant
+    homeassistant:
+      rule: "Host(`ha.onurx.com`)"
+      entryPoints:
+        - websecure
+      service: homeassistant
+      middlewares:
+        - security-headers
+      tls:
+        certResolver: cloudflare
