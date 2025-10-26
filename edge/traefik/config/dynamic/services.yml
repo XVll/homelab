@@ -83,6 +83,17 @@ http:
         servers:
           - url: "http://10.10.10.115:3000"
 
+    # King Card Game (deployed on Dokploy VM 10.10.10.115)
+    king-backend:
+      loadBalancer:
+        servers:
+          - url: "http://10.10.10.115:3015"
+
+    king-frontend:
+      loadBalancer:
+        servers:
+          - url: "http://10.10.10.115:3010"
+
     # VM 6: Home Assistant (10.10.10.116)
     homeassistant:
       loadBalancer:
