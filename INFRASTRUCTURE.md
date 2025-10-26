@@ -38,6 +38,7 @@
 - [x] **Gitea** (dev host - 10.10.10.114:3001) - Git hosting + Container Registry + Gitea Actions
 - [x] **act_runner** (dev host - 10.10.10.114) - CI/CD runner registered and idle
 - [x] **Dokploy** (deploy host - 10.10.10.115:3000) - Deployment platform, accessible via https://deploy.onurx.com
+- [x] **Home Assistant** (ha host - 10.10.10.116:8123) - Home automation platform, accessible via https://ha.onurx.com
 
 ---
 
@@ -1197,6 +1198,64 @@ curl -sSL https://dokploy.com/install.sh | sudo sh
 
 ---
 
+### Home Assistant - Home Automation Platform
+
+**VM:** ha (10.10.10.116:8123)
+
+**Status:** ✅ Deployed and working
+
+**Access:**
+- **Web UI:** https://ha.onurx.com (via Traefik with SSL)
+- **Direct:** http://10.10.10.116:8123
+
+**Deployment Method:**
+- Home Assistant OS (deployed via Proxmox helper script)
+- Standalone VM with dedicated OS (not Docker-based)
+- Supports full add-on ecosystem
+
+**Database Configuration:**
+- ✅ PostgreSQL recorder on db host (10.10.10.111)
+- Database: `homeassistant`
+- User: `homeassistant`
+- Password: Stored in 1Password (op://Server/homeassistant-db/password)
+- Retention: 30 days (configurable in configuration.yaml)
+
+**PostgreSQL Recorder Config:**
+```yaml
+recorder:
+  db_url: postgresql://homeassistant:PASSWORD@10.10.10.111:5432/homeassistant
+  purge_keep_days: 30
+  commit_interval: 1
+```
+
+**1Password Items:**
+- `homeassistant-db` - PostgreSQL database credentials
+
+**Migration:**
+- Restored from old Home Assistant instance (partial backup)
+- Configuration, dashboards, devices, and automations preserved
+- Old SQLite history not migrated (fresh start with PostgreSQL)
+
+**Features:**
+- ✅ Full add-on support (Zigbee2MQTT, Node-RED, File Editor, etc.)
+- ✅ Device discovery and integrations
+- ✅ Centralized history storage in PostgreSQL
+- ✅ Accessible via HTTPS with valid SSL certificate
+- ✅ DNS resolution via AdGuard wildcard
+
+**Backups:**
+- Create backups via Settings → System → Backups
+- Download `.tar` files for safekeeping
+- Can restore on new instance if needed
+
+**Important Notes:**
+- Unlike other services, Home Assistant OS is not managed via Docker Compose
+- No VirtioFS mount (self-contained OS)
+- Configuration can be edited via File Editor add-on
+- For database migrations, always use partial backups (exclude old database)
+
+---
+
 ## Network Layout
 
 | VM | IP | Services |
@@ -1207,6 +1266,7 @@ curl -sSL https://dokploy.com/install.sh | sudo sh
 | media | 10.10.10.113 | Jellyfin, Arr Stack, n8n, Paperless, qBittorrent |
 | dev | 10.10.10.114 | Gitea (Git + CI/CD) |
 | deploy | 10.10.10.115 | Dokploy (Application Deployment Platform) |
+| ha | 10.10.10.116 | Home Assistant (Home Automation) |
 
 **Network:** VLAN 10 (10.10.10.0/24)
 **Gateway:** 10.10.10.1
