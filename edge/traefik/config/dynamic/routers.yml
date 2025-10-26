@@ -211,25 +211,3 @@ http:
         - security-headers
       tls:
         certResolver: cloudflare
-
-    # King Card Game - Frontend
-    king-frontend:
-      rule: "Host(`king.onurx.com`)"
-      entryPoints:
-        - websecure
-      service: king-frontend
-      middlewares:
-        - security-headers
-      tls:
-        certResolver: cloudflare
-
-    # King Card Game - Backend (WebSocket)
-    king-backend:
-      rule: "Host(`wsking.onurx.com`)"
-      entryPoints:
-        - websecure
-      service: king-backend
-      middlewares:
-        - security-headers
-      tls:
-        certResolver: cloudflare
