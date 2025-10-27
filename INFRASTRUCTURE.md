@@ -31,6 +31,13 @@
 - [x] Beszel Hub (observability host - 10.10.10.112:8090) - Lightweight monitoring dashboard
 - [x] Beszel Agent (all 4 VMs) - System + Docker metrics, auto-registered with universal token
 - [x] **Quick Monitoring** - Real-time CPU, memory, disk, network, Docker stats for all VMs
+- [x] **✅ VirtioFS Migration Complete** - All VMs migrated to standard git workflow (2025-10-27)
+  - Removed VirtioFS mounts from all VMs
+  - Configured git remotes to Gitea (https://git.onurx.com/fx/homelab)
+  - Repository made public (no auth needed for pulls)
+  - All services restarted with proper 1Password secrets
+  - Fixed data directory permissions (Grafana, Loki, Prometheus)
+  - DNS resolves git.onurx.com via AdGuard wildcard
 
 ### Phase 4: Applications ⏳ IN PROGRESS
 - [ ] Jellyfin, Arr Stack, qBittorrent (media host - 10.10.10.113)
@@ -337,14 +344,7 @@ myapp:
 
 #### On Proxmox Host:
 
-1. **Create directory in git repository:**
-   ```bash
-   cd /flash/docker/homelab
-   mkdir -p <vm-name>
-   ls -la  # Verify directory exists
-   ```
-
-2. **Clone template VM:**
+1. **Clone template VM:**
    ```bash
    # Find your template VM ID
    qm list | grep template
@@ -353,50 +353,29 @@ myapp:
    qm clone <template-id> <new-vm-id> --name <vm-name> --full
    ```
 
-3. **Configure VM:**
+2. **Configure VM:**
    ```bash
    # Set static IP
    qm set <new-vm-id> --ipconfig0 ip=10.10.10.<ip>/24,gw=10.10.10.1
-
-   # Add VirtioFS mount (maps directory to docker-vm tag)
-   qm set <new-vm-id> --virtfs0 /flash/docker/homelab/<vm-name>,mp=docker-vm
 
    # Start VM
    qm start <new-vm-id>
    ```
 
-4. **Wait ~30 seconds for boot, then SSH:**
+3. **Wait ~30 seconds for boot, then SSH:**
    ```bash
    ssh fx@10.10.10.<ip>
    ```
 
 #### On New VM (after SSH):
 
-5. **Set hostname:**
+4. **Set hostname:**
    ```bash
    sudo hostnamectl set-hostname <vm-name>
    hostnamectl  # Verify
    ```
 
-6. **Create mount point:**
-   ```bash
-   sudo mkdir -p /opt/homelab
-   ```
-
-7. **Mount VirtioFS:**
-   ```bash
-   sudo mount -t virtiofs docker-vm /opt/homelab
-   ls -la /opt/homelab  # Verify mount
-   mount | grep virtiofs  # Verify filesystem
-   ```
-
-8. **Make mount permanent:**
-   ```bash
-   echo "docker-vm /opt/homelab virtiofs defaults 0 0" | sudo tee -a /etc/fstab
-   cat /etc/fstab  # Verify entry added
-   ```
-
-9. **Set 1Password service account token:**
+5. **Set 1Password service account token:**
    ```bash
    echo 'export OP_SERVICE_ACCOUNT_TOKEN="<your-token>"' >> ~/.bashrc
    source ~/.bashrc
@@ -405,37 +384,49 @@ myapp:
    op vault list
    ```
 
-10. **Navigate to homelab directory:**
-    ```bash
-    cd /opt/homelab
-    ls -la  # Should show files from git repository
-    ```
+6. **Clone homelab repository:**
+   ```bash
+   cd /opt
+   sudo git clone https://git.onurx.com/fx/homelab.git
+   sudo chown -R fx:fx homelab/
+   cd homelab
+   git branch --set-upstream-to=origin/main main
+   ls -la  # Should show files from git repository
+   ```
+
+7. **Create subdirectory for VM (if needed):**
+   ```bash
+   # Only if this VM needs new directory in the repo
+   mkdir -p <vm-name>
+   cd <vm-name>
+   # Create docker-compose.yml and .env files
+   ```
 
 #### Post-Setup Tasks:
 
-11. **Update network documentation** - Add VM to Network Layout table in this file
+8. **Update network documentation** - Add VM to Network Layout table in this file
 
-12. **Add Traefik routes** (if services need external access):
+9. **Add Traefik routes** (if services need external access):
     - Add service to `edge/traefik/config/dynamic/services.yml`
     - Add router to `edge/traefik/config/dynamic/routers.yml`
     - Traefik auto-reloads (no restart needed)
 
-13. **Deploy services:**
+10. **Deploy services:**
     ```bash
     # On the new VM
-    cd /opt/homelab
+    cd /opt/homelab/<vm-name>
 
     # Create docker-compose.yml and .env files
     # Deploy services
     op run --env-file=.env -- docker compose up -d
     ```
 
-14. **Update this file** - Document deployed services and their configuration
+11. **Update this file** - Document deployed services and their configuration
 
 **Troubleshooting:**
 
-- **Mount not working?** Check VirtioFS tag matches: `qm config <vm-id> | grep virtfs`
-- **Directory empty after mount?** Verify directory exists on Proxmox host
+- **Git clone failed?** Check DNS resolves `git.onurx.com`: `ping git.onurx.com`
+- **Permission denied on git clone?** Repository must be public in Gitea
 - **1Password not working?** Check token is set: `echo $OP_SERVICE_ACCOUNT_TOKEN`
 - **Services can't connect to db host?** Check network connectivity: `nc -zv 10.10.10.111 5432`
 
@@ -970,18 +961,40 @@ S3_ENDPOINT: http://10.10.10.111:9000
 
 ---
 
-### VirtioFS Workflow
+### Git Workflow ✅ NEW (VirtioFS Removed)
 
-**All VMs mount subdirectories from Proxmox host:**
+**Migration Complete:** All VMs now use standard git workflow (VirtioFS removed on 2025-10-27)
 
-Proxmox: `/flash/docker/homelab/<vm-name>/`
-VM: `/opt/homelab/` (mounted via VirtioFS)
+**Architecture:**
+- Each VM has full git repository at `/opt/homelab/`
+- Central Gitea repository: `https://git.onurx.com/fx/homelab`
+- Repository is **public** (read-only access, no authentication needed for git pull)
+- DNS resolves `git.onurx.com` via AdGuard wildcard (`*.onurx.com` → `10.10.10.110`)
 
-**To update configs:**
-1. Edit files on Proxmox: `cd /flash/docker/homelab`
-2. Commit changes: `git add . && git commit && git push`
-3. Changes immediately visible on VMs (no git pull needed)
+**To update configs from your Mac:**
+1. Edit files locally: `cd ~/Repositories/infrastructure-1`
+2. Commit and push: `git add . && git commit -m "message" && git push`
+3. Pull changes on VMs: `ssh fx@10.10.10.xxx 'cd /opt/homelab && git pull'`
 4. Restart affected services: `op run --env-file=.env -- docker compose up -d <service>`
+
+**Git configuration on VMs:**
+```bash
+# Remote URL (all VMs)
+origin: https://git.onurx.com/fx/homelab.git
+
+# Branch tracking
+main → origin/main
+
+# No authentication needed (public repository)
+git pull  # Just works
+```
+
+**Benefits of Git vs VirtioFS:**
+- ✅ Proper file change notifications (file watching works)
+- ✅ Standard git workflow (commit history, diffs, rollbacks)
+- ✅ No permission issues between host/guest
+- ✅ VMs are truly independent (can work offline)
+- ✅ Better for Traefik config reloading
 
 ---
 
@@ -1060,17 +1073,19 @@ psql -h 10.10.10.111 -U <user> -d <database>
 # On Proxmox host
 qm clone <template-id> <new-id> --name <vm-name> --full
 qm set <new-id> --memory 4096 --cores 2 --ipconfig0 ip=10.10.10.xxx/24,gw=10.10.10.1
-qm set <new-id> --virtfs0 /flash/docker/homelab/<vm-name>,mp=docker-vm
 qm start <new-id>
 
 # Inside VM
-hostnamectl set-hostname <vm-name>
-mkdir -p /opt/homelab
-mount -t virtiofs docker-vm /opt/homelab
-echo 'docker-vm /opt/homelab virtiofs defaults 0 0' >> /etc/fstab
+sudo hostnamectl set-hostname <vm-name>
 echo 'export OP_SERVICE_ACCOUNT_TOKEN="ops_xxx"' >> ~/.bashrc
 source ~/.bashrc
-cd /opt/homelab
+
+# Clone repository
+cd /opt
+sudo git clone https://git.onurx.com/fx/homelab.git
+sudo chown -R fx:fx homelab/
+cd homelab
+git branch --set-upstream-to=origin/main main
 ```
 
 ---
@@ -1210,12 +1225,14 @@ GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO gitea;
 
 **Features Available:**
 - ✅ Git repository hosting (unlimited private repos)
+- ✅ **Infrastructure repo is PUBLIC** (allows VMs to git pull without auth)
 - ✅ GitHub Actions-compatible CI/CD (Gitea Actions)
 - ✅ OCI container registry (Docker images)
 - ✅ Package registry (npm, PyPI, Maven, etc.)
 - ✅ Repository mirroring (GitHub ↔ Gitea bidirectional sync)
 - ✅ SSH clone support on port 222
 - ✅ Git LFS enabled
+- ✅ **DNS:** `git.onurx.com` resolves via AdGuard wildcard (`*.onurx.com` → 10.10.10.110)
 
 **Testing:**
 ```bash
@@ -1452,4 +1469,4 @@ Deploy in order:
 
 ---
 
-**Last Updated:** 2025-10-23 - Phase 3 (Observability Stack) verified complete and working
+**Last Updated:** 2025-10-27 - VirtioFS Migration Complete, Git Workflow Implemented
