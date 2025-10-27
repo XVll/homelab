@@ -2,7 +2,6 @@
 
 **Single source of truth for homelab build progress and quick reference notes.**
 
----
 
 ## Current Progress
 
