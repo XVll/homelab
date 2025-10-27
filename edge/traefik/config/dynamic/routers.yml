@@ -241,6 +241,6 @@ http:
         - websecure
       service: king
       middlewares:
-        - security-headers
+        - websocket-headers
       tls:
         certResolver: cloudflare

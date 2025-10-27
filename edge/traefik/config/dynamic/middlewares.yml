@@ -59,3 +59,12 @@ http:
         sslRedirect: true
         sslProxyHeaders:
           X-Forwarded-Proto: "https"
+
+    # WebSocket Headers
+    # Ensures WebSocket connections work properly through the proxy
+    websocket-headers:
+      headers:
+        customRequestHeaders:
+          X-Forwarded-Proto: "https"
+          Connection: "upgrade"
+          Upgrade: "websocket"
