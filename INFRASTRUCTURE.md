@@ -46,6 +46,25 @@
 
 ### 🔴 Critical Issues (Must Fix)
 
+**Migrate to Cloudflare Tunnels (Planned):**
+- [ ] Current setup works but exposes IP via onurx.com A record
+- [ ] Plan: Move to Cloudflare Tunnels for better security (no open ports, hidden IP)
+- **Blocker:** Email service uses @onurx.com - must migrate email first
+- **Migration steps (when ready):**
+  1. Migrate email away from onurx.com domain
+  2. Create Cloudflare Tunnel in Zero Trust dashboard
+  3. Deploy cloudflared on edge VM
+  4. Configure tunnel to route *.onurx.com → Traefik (https://10.10.10.110)
+  5. Remove port forwarding rules (80/443) from router
+  6. Remove private-default/public-access middlewares (no longer needed with CF Access)
+  7. Configure Cloudflare Access policies for private services
+  8. Test all services work through tunnel
+- **Priority:** MEDIUM (current setup is secure with IP whitelist, tunnel is enhancement)
+
+---
+
+### 🔴 Critical Issues (Must Fix)
+
 **~~Gitea & Dokploy - Mixed Content Warnings:~~** ✅ FIXED
 - ~~Browser shows "active content certificate errors" when DevTools open~~
 - **Solution:** Added `forwarded-headers` middleware in Traefik
@@ -165,6 +184,27 @@
 
 ## Quick Reference Notes
 
+### 🔴 CRITICAL: Traefik Security - Always Choose Private or Public
+
+**NEVER add a Traefik route without explicit middleware!**
+
+Every service in `edge/traefik/config/dynamic/routers.yml` MUST have either:
+- **`private-default`** - Internal only (home + NetBird VPN) ← Use this by default
+- **`public-access`** - Internet accessible ← Only for public services
+
+**IP Whitelist:**
+- Home network: `10.10.10.0/24`
+- NetBird VPN: `100.92.0.0/16`
+
+**Testing:**
+- Private services from internet → **403 Forbidden** ✅
+- Private services from home/VPN → Works ✅
+- Public services from anywhere → Works ✅
+
+**Current Public Services:** ha, dmo, king, wsking (old services only)
+
+---
+
 ### 🔴 CRITICAL: Always Use Existing Infrastructure Services
 
 **NEVER deploy separate databases or services when we already have them!**
@@ -213,10 +253,44 @@ AWS_SECRET_ACCESS_KEY: (from 1Password)
 **Config Structure:**
 ```
 edge/traefik/config/dynamic/
-├── middlewares.yml  - Auth, headers, rate limiting, compression
+├── middlewares.yml  - Auth, headers, rate limiting, compression, IP whitelist
 ├── services.yml     - Backend targets (IP:port)
 └── routers.yml      - Domain routing rules
 ```
+
+**🔒 SECURITY MODEL: Explicit Private/Public**
+
+**CRITICAL:** Every service MUST explicitly choose `private-default` or `public-access` middleware!
+
+**Private Services** (internal only - home network + NetBird VPN):
+```yaml
+myapp:
+  rule: "Host(`myapp.onurx.com`)"
+  entryPoints: [websecure]
+  service: myapp
+  middlewares:
+    - private-default  # ← REQUIRED for internal services
+  tls:
+    certResolver: cloudflare
+```
+
+**Public Services** (accessible from internet):
+```yaml
+myapp:
+  rule: "Host(`myapp.onurx.com`)"
+  entryPoints: [websecure]
+  service: myapp
+  middlewares:
+    - public-access  # ← ONLY for public services
+  tls:
+    certResolver: cloudflare
+```
+
+**Middleware Details:**
+- **`private-default`**: IP whitelist (10.10.10.0/24 + 100.92.0.0/16) + security headers
+- **`public-access`**: Only security headers (no IP restriction)
+
+**⚠️ WARNING:** Forgetting middleware = NO IP PROTECTION! Always add one of these two.
 
 **To add a new service:**
 1. Add service in `services.yml`:
@@ -233,18 +307,27 @@ edge/traefik/config/dynamic/
      rule: "Host(`myapp.onurx.com`)"
      entryPoints: [websecure]
      service: myapp
-     middlewares: [authentik, security-headers]  # Optional
+     middlewares:
+       - private-default  # ← Choose private-default OR public-access
      tls:
        certResolver: cloudflare
    ```
 
-3. (Optional) Add middleware in `middlewares.yml` if custom processing needed
+3. (Optional) Add custom middleware in `middlewares.yml` if needed
 
 **Auto-reload:** Traefik reloads dynamic configs automatically (no restart)
 
-**Dashboard:** `http://10.10.10.110:8080`
+**Dashboard:** `http://10.10.10.110:8080` or `https://traefik.onurx.com` (private)
 
 **SSL Certs:** Cloudflare DNS-01 challenge, stored in `/data/acme.json`
+
+**Current Public Services:**
+- ha.onurx.com (Home Assistant - old)
+- dmo.onurx.com (DMO app - old)
+- king.onurx.com (King game - old)
+- wsking.onurx.com (King WebSocket - old)
+
+**All other services are private** (blocked from internet, accessible via home network or NetBird VPN only)
 
 ---
 
