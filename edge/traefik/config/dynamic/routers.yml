@@ -173,15 +173,13 @@ http:
       tls:
         certResolver: cloudflare
 
-    # King Game WebSocket (OLD)
+    # King Game WebSocket (OLD) - Points to backend on port 3015
+    # No middlewares - Traefik v3 handles WebSocket upgrades automatically
     wsking:
       rule: "Host(`wsking.onurx.com`)"
       entryPoints:
         - websecure
-      service: king
-      middlewares:
-        - public-access
-        - websocket-headers
+      service: king-backend
       tls:
         certResolver: cloudflare
 

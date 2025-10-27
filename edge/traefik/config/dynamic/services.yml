@@ -60,11 +60,17 @@ http:
         servers:
           - url: "http://10.10.10.51:3000"
 
-    # Old King game (HTTP + WebSocket)
+    # Old King game - Frontend (Next.js)
     king:
       loadBalancer:
         servers:
           - url: "http://10.10.10.51:3010"
+
+    # Old King game - Backend (WebSocket server)
+    king-backend:
+      loadBalancer:
+        servers:
+          - url: "http://10.10.10.51:3015"
 
     # Old Home Assistant (pointing to old server temporarily)
     homeassistant:
