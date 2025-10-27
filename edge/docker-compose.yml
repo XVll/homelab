@@ -94,6 +94,7 @@ services:
       - "80:80"       # HTTP
       - "443:443"     # HTTPS
       - "8080:8080"   # Dashboard
+      - "8082:8082"   # Metrics (Prometheus)
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
