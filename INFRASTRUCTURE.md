@@ -5,6 +5,7 @@
 
 ## Current Progress
 
+
 ### Phase 1: Foundation ✅ DONE
 - [x] MongoDB (db host - 10.10.10.111)
 - [x] PostgreSQL (db host - 10.10.10.111)
