@@ -163,13 +163,13 @@ http:
         certResolver: cloudflare
 
     # King Game (OLD - HTTP + WebSocket)
+    # No middlewares - Traefik v3 handles WebSocket upgrades automatically
+    # Security headers interfere with WebSocket connections
     king:
       rule: "Host(`king.onurx.com`)"
       entryPoints:
         - websecure
       service: king
-      middlewares:
-        - public-access
       tls:
         certResolver: cloudflare
 
