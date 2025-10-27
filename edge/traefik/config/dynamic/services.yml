@@ -76,7 +76,7 @@ http:
     minio-console:
       loadBalancer:
         servers:
-          - url: "http://10.10.10.111:9001"
+          - url: "http://10.10.10.111:9002"
 
     minio-api:
       loadBalancer:
