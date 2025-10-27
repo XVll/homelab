@@ -2,6 +2,15 @@
 
 http:
   middlewares:
+    # IP Whitelist for Internal Services
+    # Allows access only from home network and NetBird VPN
+    # This is the foundation of our "secure by default" approach
+    ip-whitelist-internal:
+      ipWhiteList:
+        sourceRange:
+          - "10.10.10.0/24"    # Home network
+          - "100.92.0.0/16"    # NetBird VPN
+
     # Authentik Forward Auth Middleware
     # Sends requests to Authentik SSO to check if user is authenticated
     # Uses embedded outpost in authentik-server container
@@ -68,3 +77,26 @@ http:
           X-Forwarded-Proto: "https"
           Connection: "upgrade"
           Upgrade: "websocket"
+
+    # ============================================================================
+    # MIDDLEWARE CHAINS - Secure by Default Pattern
+    # ============================================================================
+    # All services use catch-all rule below which applies private-default
+    # Only explicitly public services (ha, dmo, king) bypass this
+
+    # PRIVATE (Default) - Secure by default with IP restriction
+    # Applied automatically via catch-all rule
+    # Allows access only from home network and NetBird VPN
+    private-default:
+      chain:
+        middlewares:
+          - ip-whitelist-internal
+          - security-headers
+
+    # PUBLIC - No IP restriction, only security headers
+    # Use ONLY for services that should be accessible from internet
+    # Must be explicitly added to router
+    public-access:
+      chain:
+        middlewares:
+          - security-headers

@@ -1,4 +1,10 @@
 # Traefik Routers - Traffic Routing Rules
+#
+# SECURITY MODEL: Secure by Default
+# - Catch-all rule (priority 1) applies private-default to all *.onurx.com
+# - Explicit routers (priority 10+) override catch-all
+# - Public services use public-access middleware
+# - All other services automatically private (IP restricted)
 
 http:
   # Routers match incoming requests and decide where to send them
@@ -126,44 +132,76 @@ http:
       tls:
         certResolver: cloudflare
 
+    # ============================================================================
+    # PUBLIC SERVICES - Explicitly accessible from internet
+    # ============================================================================
+    # These services use public-access middleware (no IP restriction)
+    # Priority 10 ensures they override catch-all rule (priority 1)
+
     # Home Assistant (OLD - pointing to 10.10.10.13)
     homeassistant:
       rule: "Host(`ha.onurx.com`)"
+      priority: 10
       entryPoints:
         - websecure
       service: homeassistant
       middlewares:
-        - security-headers
+        - public-access
       tls:
         certResolver: cloudflare
 
     # DMO (OLD Coolify app)
     dmo:
       rule: "Host(`dmo.onurx.com`)"
+      priority: 10
       entryPoints:
         - websecure
       service: dmo
       middlewares:
-        - security-headers
+        - public-access
       tls:
         certResolver: cloudflare
 
     # King Game (OLD - HTTP + WebSocket)
     king:
       rule: "Host(`king.onurx.com`)"
+      priority: 10
       entryPoints:
         - websecure
       service: king
+      middlewares:
+        - public-access
       tls:
         certResolver: cloudflare
 
     # King Game WebSocket (OLD)
     wsking:
       rule: "Host(`wsking.onurx.com`)"
+      priority: 10
       entryPoints:
         - websecure
       service: king
       middlewares:
+        - public-access
         - websocket-headers
+      tls:
+        certResolver: cloudflare
+
+    # ============================================================================
+    # CATCH-ALL RULE - Secure by Default
+    # ============================================================================
+    # This rule has LOWEST priority (1) and matches ANY *.onurx.com domain
+    # It applies private-default middleware (IP whitelist + security headers)
+    # Specific routers above have higher priority and override this
+    # Result: Any new domain is automatically private unless explicitly made public
+
+    catch-all-private:
+      rule: "HostRegexp(`{host:.+\\.onurx\\.com}`)"
+      priority: 1
+      entryPoints:
+        - websecure
+      middlewares:
+        - private-default
+      service: noop@internal
       tls:
         certResolver: cloudflare
