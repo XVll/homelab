@@ -60,17 +60,18 @@ http:
         servers:
           - url: "http://10.10.10.51:3000"
 
-    # Old King game - Frontend (Next.js)
+    # King game - Deployed on Dokploy (10.10.10.115)
+    # Frontend (Next.js) - Port assigned by Dokploy
     king:
       loadBalancer:
         servers:
-          - url: "http://10.10.10.51:3010"
+          - url: "http://10.10.10.115:3010"
 
-    # Old King game - Backend (WebSocket server)
+    # King game - Backend (WebSocket server) - Port assigned by Dokploy
     king-backend:
       loadBalancer:
         servers:
-          - url: "http://10.10.10.51:3015"
+          - url: "http://10.10.10.115:3015"
 
     # Old Home Assistant (pointing to old server temporarily)
     homeassistant:
