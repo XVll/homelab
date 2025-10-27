@@ -63,12 +63,10 @@ providers:
 # Logging
 log:
   level: INFO
-  filePath: /data/logs/traefik.log
   format: json
 
 # Access Logs
 accessLog:
-  filePath: /data/logs/access.log
   format: json
   bufferingSize: 100
   filters:
