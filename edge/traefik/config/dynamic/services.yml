@@ -9,6 +9,12 @@ http:
         servers:
           - url: "http://authentik-server:9000"
 
+    # Traefik Dashboard (local on edge VM)
+    traefik-dashboard:
+      loadBalancer:
+        servers:
+          - url: "http://10.10.10.110:8080"
+
     # Observability VM (10.10.10.112)
     portainer:
       loadBalancer:

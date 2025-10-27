@@ -710,6 +710,15 @@ Routes to backend:
 
 **Note:** Authentik SSO middleware temporarily removed from observability services until applications are configured in Authentik. Services currently accessible without authentication.
 
+**IMPORTANT - Alloy UI Architecture:**
+- **alloy.onurx.com shows ONLY the observability VM's Alloy instance**
+- Each VM runs its own independent Alloy instance with its own UI
+- There is NO unified Alloy UI showing all instances together
+- Other Alloy UIs are available at: `http://10.10.10.110:12345` (edge), `http://10.10.10.113:12345` (media)
+- **For unified view of all data:** Use Grafana dashboards or Prometheus/Loki queries (data from all VMs is centralized)
+- The Alloy UI is only for troubleshooting that specific instance's configuration and components
+- Features like "clustering" and "remote configuration" are for HA setups, NOT for viewing multiple instances
+
 **What Alloy Collects:**
 - **System metrics**: CPU, RAM, disk, network (via `prometheus.exporter.unix`)
 - **Docker metrics**: Container CPU, memory, network, disk I/O (via `prometheus.exporter.cadvisor`)

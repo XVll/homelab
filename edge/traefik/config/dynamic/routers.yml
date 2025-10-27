@@ -14,6 +14,17 @@ http:
       tls:
         certResolver: cloudflare
 
+    # Traefik Dashboard (internal use only - home network)
+    traefik-dashboard:
+      rule: "Host(`traefik.onurx.com`)"
+      entryPoints:
+        - websecure
+      service: traefik-dashboard
+      middlewares:
+        - security-headers
+      tls:
+        certResolver: cloudflare
+
     # Portainer
     portainer:
       rule: "Host(`portainer.onurx.com`)"
