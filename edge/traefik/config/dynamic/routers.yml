@@ -56,6 +56,17 @@ http:
       tls:
         certResolver: cloudflare
 
+    # Synology NAS (Storage management)
+    synology:
+      rule: "Host(`synology.onurx.com`)"
+      entryPoints:
+        - websecure
+      service: synology
+      middlewares:
+        - private-default
+      tls:
+        certResolver: cloudflare
+
     # Portainer
     portainer:
       rule: "Host(`portainer.onurx.com`)"

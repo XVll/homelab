@@ -19,13 +19,20 @@ http:
     adguard:
       loadBalancer:
         servers:
-          - url: "http://adguard:80"
+          - url: "http://adguard:3000"
 
     # Proxmox (Hypervisor - 10.10.10.20)
     proxmox:
       loadBalancer:
         servers:
           - url: "https://10.10.10.20:8006"
+        serversTransport: insecureTransport
+
+    # Synology NAS (10.10.10.116)
+    synology:
+      loadBalancer:
+        servers:
+          - url: "https://10.10.10.116:5001"
         serversTransport: insecureTransport
 
     # Observability VM (10.10.10.112)
