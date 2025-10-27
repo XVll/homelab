@@ -78,6 +78,7 @@ scrape_configs:
 
   # Traefik - exposes metrics directly
   - job_name: 'traefik'
+    metrics_path: '/metrics'
     static_configs:
       - targets: ['10.10.10.110:8080']
         labels:
@@ -89,64 +90,50 @@ scrape_configs:
   # Database Services (VM: 10.10.10.111)
   # --------------------------------------------------------------------------
 
-  # MinIO - exposes metrics directly
-  - job_name: 'minio'
-    metrics_path: /minio/v2/metrics/cluster
-    scheme: http
-    static_configs:
-      - targets: ['10.10.10.111:9000']
-        labels:
-          instance: 'minio'
-          vm: 'db'
-          service: 'storage'
+  # MinIO - exposes metrics directly (requires bearer token auth - disabled for now)
+  # To enable: need to configure bearer_token or bearer_token_file
+  # - job_name: 'minio'
+  #   metrics_path: /minio/v2/metrics/cluster
+  #   scheme: http
+  #   static_configs:
+  #     - targets: ['10.10.10.111:9000']
+  #       labels:
+  #         instance: 'minio'
+  #         vm: 'db'
+  #         service: 'storage'
 
   # Note: PostgreSQL, MongoDB, Redis metrics would need separate exporters
   # For now, rely on Alloy to collect Docker container metrics
   # Can add dedicated exporters later if needed
 
   # --------------------------------------------------------------------------
-  # Media Services (VM: 10.10.10.113) - Once deployed
+  # Media Services (VM: 10.10.10.113) - NOT DEPLOYED YET
   # --------------------------------------------------------------------------
-
-  # Sonarr
-  - job_name: 'sonarr'
-    static_configs:
-      - targets: ['10.10.10.113:8989']
-        labels:
-          instance: 'sonarr'
-          vm: 'media'
-          service: 'media'
-
-  # Radarr
-  - job_name: 'radarr'
-    static_configs:
-      - targets: ['10.10.10.113:7878']
-        labels:
-          instance: 'radarr'
-          vm: 'media'
-          service: 'media'
-
-  # Prowlarr
-  - job_name: 'prowlarr'
-    static_configs:
-      - targets: ['10.10.10.113:9696']
-        labels:
-          instance: 'prowlarr'
-          vm: 'media'
-          service: 'media'
-
-  # --------------------------------------------------------------------------
-  # Coolify (VM: 10.10.10.114) - Once deployed
-  # --------------------------------------------------------------------------
-
-  # Coolify
-  - job_name: 'coolify'
-    static_configs:
-      - targets: ['10.10.10.114:8000']
-        labels:
-          instance: 'coolify'
-          vm: 'coolify'
-          service: 'paas'
+  # Uncomment when media services are deployed:
+  #
+  # - job_name: 'sonarr'
+  #   static_configs:
+  #     - targets: ['10.10.10.113:8989']
+  #       labels:
+  #         instance: 'sonarr'
+  #         vm: 'media'
+  #         service: 'media'
+  #
+  # - job_name: 'radarr'
+  #   static_configs:
+  #     - targets: ['10.10.10.113:7878']
+  #       labels:
+  #         instance: 'radarr'
+  #         vm: 'media'
+  #         service: 'media'
+  #
+  # - job_name: 'prowlarr'
+  #   static_configs:
+  #     - targets: ['10.10.10.113:9696']
+  #       labels:
+  #         instance: 'prowlarr'
+  #         vm: 'media'
+  #         service: 'media'
 
 # ============================================================================
 # NOTES FOR FUTURE EXPANSION
