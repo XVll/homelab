@@ -83,11 +83,24 @@ http:
         servers:
           - url: "http://10.10.10.115:3000"
 
-    # VM 6: Home Assistant (10.10.10.116)
+    # OLD Proxmox Services (Temporary - to be migrated)
+    # Old Coolify DMO app
+    dmo:
+      loadBalancer:
+        servers:
+          - url: "http://10.10.10.51:3000"
+
+    # Old King game (HTTP + WebSocket)
+    king:
+      loadBalancer:
+        servers:
+          - url: "http://10.10.10.51:3010"
+
+    # Old Home Assistant (pointing to old server temporarily)
     homeassistant:
       loadBalancer:
         servers:
-          - url: "http://10.10.10.116:8123"
+          - url: "http://10.10.10.13:8123"
 
     # VM 2: Database Host (10.10.10.111)
     minio-console:

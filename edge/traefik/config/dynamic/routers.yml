@@ -201,12 +201,45 @@ http:
       tls:
         certResolver: cloudflare
 
-    # Home Assistant
+    # Home Assistant (OLD - pointing to 10.10.10.13)
     homeassistant:
       rule: "Host(`ha.onurx.com`)"
       entryPoints:
         - websecure
       service: homeassistant
+      middlewares:
+        - security-headers
+      tls:
+        certResolver: cloudflare
+
+    # DMO (OLD Coolify app)
+    dmo:
+      rule: "Host(`dmo.onurx.com`)"
+      entryPoints:
+        - websecure
+      service: dmo
+      middlewares:
+        - security-headers
+      tls:
+        certResolver: cloudflare
+
+    # King Game (OLD - HTTP)
+    king:
+      rule: "Host(`king.onurx.com`)"
+      entryPoints:
+        - websecure
+      service: king
+      middlewares:
+        - security-headers
+      tls:
+        certResolver: cloudflare
+
+    # King Game WebSocket (OLD)
+    wsking:
+      rule: "Host(`wsking.onurx.com`)"
+      entryPoints:
+        - websecure
+      service: king
       middlewares:
         - security-headers
       tls:
