@@ -32,6 +32,9 @@ entryPoints:
             sans:
               - "*.onurx.com"
 
+  metrics:
+    address: ":8082"
+
 # Certificate Resolvers
 certificatesResolvers:
   cloudflare:
