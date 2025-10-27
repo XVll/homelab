@@ -79,23 +79,23 @@ http:
           Upgrade: "websocket"
 
     # ============================================================================
-    # MIDDLEWARE CHAINS - Secure by Default Pattern
+    # MIDDLEWARE CHAINS - Explicit Private/Public Pattern
     # ============================================================================
-    # All services use catch-all rule below which applies private-default
-    # Only explicitly public services (ha, dmo, king) bypass this
+    # All services must explicitly choose private-default or public-access
+    # This ensures conscious decisions about exposure
 
-    # PRIVATE (Default) - Secure by default with IP restriction
-    # Applied automatically via catch-all rule
-    # Allows access only from home network and NetBird VPN
+    # PRIVATE (Default) - Use for internal services
+    # Allows access only from home network (10.10.10.0/24) and NetBird VPN (100.92.0.0/16)
+    # Apply to: auth, traefik, portainer, grafana, prometheus, loki, alloy, git, deploy, minio
     private-default:
       chain:
         middlewares:
           - ip-whitelist-internal
           - security-headers
 
-    # PUBLIC - No IP restriction, only security headers
-    # Use ONLY for services that should be accessible from internet
-    # Must be explicitly added to router
+    # PUBLIC - Use ONLY for internet-accessible services
+    # No IP restriction, only security headers
+    # Apply to: ha, dmo, king, wsking (old public services)
     public-access:
       chain:
         middlewares:
