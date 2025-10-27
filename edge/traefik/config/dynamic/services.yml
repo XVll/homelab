@@ -36,42 +36,6 @@ http:
         servers:
           - url: "http://10.10.10.112:12345"
 
-    # VM 4: Media Apps (10.10.10.113)
-    sonarr:
-      loadBalancer:
-        servers:
-          - url: "http://10.10.10.113:8989"
-
-    radarr:
-      loadBalancer:
-        servers:
-          - url: "http://10.10.10.113:7878"
-
-    prowlarr:
-      loadBalancer:
-        servers:
-          - url: "http://10.10.10.113:9696"
-
-    jellyfin:
-      loadBalancer:
-        servers:
-          - url: "http://10.10.10.113:8096"
-
-    qbittorrent:
-      loadBalancer:
-        servers:
-          - url: "http://10.10.10.113:8080"
-
-    n8n:
-      loadBalancer:
-        servers:
-          - url: "http://10.10.10.113:5678"
-
-    paperless:
-      loadBalancer:
-        servers:
-          - url: "http://10.10.10.113:8000"
-
     # VM 5: Dev (10.10.10.114)
     gitea:
       loadBalancer:
