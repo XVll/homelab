@@ -34,6 +34,28 @@ http:
       tls:
         certResolver: cloudflare
 
+    # AdGuard Home (DNS management)
+    adguard:
+      rule: "Host(`adguard.onurx.com`)"
+      entryPoints:
+        - websecure
+      service: adguard
+      middlewares:
+        - private-default
+      tls:
+        certResolver: cloudflare
+
+    # Proxmox (Hypervisor management)
+    proxmox:
+      rule: "Host(`proxmox.onurx.com`)"
+      entryPoints:
+        - websecure
+      service: proxmox
+      middlewares:
+        - private-default
+      tls:
+        certResolver: cloudflare
+
     # Portainer
     portainer:
       rule: "Host(`portainer.onurx.com`)"
@@ -84,6 +106,17 @@ http:
       entryPoints:
         - websecure
       service: alloy
+      middlewares:
+        - private-default
+      tls:
+        certResolver: cloudflare
+
+    # Beszel (System monitoring)
+    beszel:
+      rule: "Host(`beszel.onurx.com`)"
+      entryPoints:
+        - websecure
+      service: beszel
       middlewares:
         - private-default
       tls:

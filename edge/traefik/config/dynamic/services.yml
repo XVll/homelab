@@ -15,6 +15,19 @@ http:
         servers:
           - url: "http://10.10.10.110:8080"
 
+    # AdGuard Home (local on edge VM)
+    adguard:
+      loadBalancer:
+        servers:
+          - url: "http://adguard:80"
+
+    # Proxmox (Hypervisor - 10.10.10.20)
+    proxmox:
+      loadBalancer:
+        servers:
+          - url: "https://10.10.10.20:8006"
+        serversTransport: insecureTransport
+
     # Observability VM (10.10.10.112)
     portainer:
       loadBalancer:
@@ -41,6 +54,11 @@ http:
       loadBalancer:
         servers:
           - url: "http://10.10.10.112:12345"
+
+    beszel:
+      loadBalancer:
+        servers:
+          - url: "http://10.10.10.112:8090"
 
     # VM 5: Dev (10.10.10.114)
     gitea:
