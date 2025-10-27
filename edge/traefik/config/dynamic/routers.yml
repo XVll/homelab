@@ -223,14 +223,12 @@ http:
       tls:
         certResolver: cloudflare
 
-    # King Game (OLD - HTTP)
+    # King Game (OLD - HTTP + WebSocket)
     king:
       rule: "Host(`king.onurx.com`)"
       entryPoints:
         - websecure
       service: king
-      middlewares:
-        - security-headers
       tls:
         certResolver: cloudflare
 
