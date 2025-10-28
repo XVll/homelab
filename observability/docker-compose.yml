@@ -26,6 +26,12 @@ services:
       - ./portainer/data:/data
     networks:
       - obs_net
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider https://localhost:9443/api/status || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     logging:
       driver: "json-file"
       options:
@@ -177,8 +183,12 @@ services:
       - loki
     environment:
       - HOSTNAME=observability-vm
-    # No health check - Alloy doesn't have wget/curl installed
-    # Service is working if container is running and port 12345 is open
+    healthcheck:
+      test: ["CMD-SHELL", "alloy tools pprof health http://localhost:12345 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
     logging:
       driver: "json-file"
       options:
