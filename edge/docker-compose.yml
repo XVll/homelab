@@ -23,12 +23,8 @@ services:
       - /:/host
     networks:
       - edge_net
-    healthcheck:
-      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:9001 || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
+    # No health check - minimal container without shell/utilities
+    # Portainer server monitors agent connectivity
     logging:
       driver: "json-file"
       options:
@@ -148,7 +144,7 @@ services:
     networks:
       - edge_net
     healthcheck:
-      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost/control/status || exit 1"]
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3000/control/status || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -197,7 +193,7 @@ services:
     depends_on:
       - authentik-worker
     healthcheck:
-      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:9000/-/health/ready/ || exit 1"]
+      test: ["CMD-SHELL", "python3 -c 'import urllib.request; urllib.request.urlopen(\"http://localhost:9000/-/health/ready/\")' || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
