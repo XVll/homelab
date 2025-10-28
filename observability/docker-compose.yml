@@ -26,12 +26,7 @@ services:
       - ./portainer/data:/data
     networks:
       - obs_net
-    healthcheck:
-      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider https://localhost:9443/api/status || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
+    # No health check - minimal distroless container without shell/utilities
     logging:
       driver: "json-file"
       options:
