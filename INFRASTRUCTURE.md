@@ -37,7 +37,13 @@
   - Repository made public (no auth needed for pulls)
   - All services restarted with proper 1Password secrets
   - Fixed data directory permissions (Grafana, Loki, Prometheus)
-  - DNS resolves git.onurx.com via AdGuard wildcard
+  - **Media VM (10.10.10.113) recreated** - Old VM had issues, cloned fresh from template
+  - **DNS fixed** - Restarted systemd-resolved on all VMs, AdGuard DNS rewrites working
+  - **Logging standardized** - All services now log to stdout for Docker log collection
+    - Traefik: Removed file logging, now logs to stdout
+    - PostgreSQL: Disabled logging_collector, logs to stderr
+    - MongoDB: Removed file destination, defaults to stdout
+  - **Result**: All 17 containers across 4 VMs sending logs to Loki/Grafana
 
 ### Phase 4: Applications ⏳ IN PROGRESS
 - [ ] Jellyfin, Arr Stack, qBittorrent (media host - 10.10.10.113)
