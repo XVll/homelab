@@ -7,6 +7,87 @@
 # ============================================================================
 
 services:
+  # ============================================================================
+  # PORTAINER AGENT - Container Management
+  # ============================================================================
+  # Connects to Portainer on observability VM (10.10.10.112:9443)
+
+  portainer-agent:
+    image: portainer/agent:latest
+    container_name: portainer-agent
+    restart: always
+    ports:
+      - "9001:9001"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/volumes:/var/lib/docker/volumes
+      - /:/host
+    networks:
+      - dev_net
+    # No health check - minimal container without shell/utilities
+    # Portainer server monitors agent connectivity
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ============================================================================
+  # ALLOY - Log Shipper (sends Docker logs to Loki on observability VM)
+  # ============================================================================
+
+  alloy:
+    image: grafana/alloy:latest
+    container_name: alloy
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./alloy/config:/etc/alloy
+    command: run --server.http.listen-addr=0.0.0.0:12345 --storage.path=/var/lib/alloy/data /etc/alloy/config.alloy
+    ports:
+      - "10.10.10.114:12345:12345"  # Alloy UI
+    networks:
+      - dev_net
+    healthcheck:
+      test: ["CMD-SHELL", "alloy tools pprof health http://localhost:12345 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ============================================================================
+  # BESZEL AGENT - System Monitor (sends data to Hub on observability VM)
+  # ============================================================================
+  # Configure after deploying Hub (copy connection details from Hub web UI)
+
+  beszel-agent:
+    image: henrygd/beszel-agent:latest
+    container_name: beszel-agent
+    restart: unless-stopped
+    network_mode: host  # Required for network interface stats
+    volumes:
+      - ./beszel/agent_data:/var/lib/beszel-agent  # Agent persistent data
+      - /var/run/docker.sock:/var/run/docker.sock:ro  # Docker container stats
+    environment:
+      LISTEN: 45876
+      HUB_URL: http://10.10.10.112:8090
+      KEY: ${BESZEL_KEY}
+      TOKEN: ${BESZEL_TOKEN}
+    healthcheck:
+      test: ['CMD', '/agent', 'health']
+      start_period: 5s
+      interval: 120s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
   # ==========================================================================
   # GITEA - Self-hosted Git with Actions & Container Registry
   # ==========================================================================
