@@ -55,143 +55,134 @@
 
 ---
 
-## TODO - Issues, Missing Pieces & Ideas
+## TODO - Infrastructure Audit & Action Items
 
-### 🔴 Critical Issues (Must Fix)
+**Last Audit:** 2025-10-28
 
-**Migrate to Cloudflare Tunnels (Planned):**
-- [ ] Current setup works but exposes IP via onurx.com A record
-- [ ] Plan: Move to Cloudflare Tunnels for better security (no open ports, hidden IP)
-- **Blocker:** Email service uses @onurx.com - must migrate email first
-- **Migration steps (when ready):**
-  1. Migrate email away from onurx.com domain
-  2. Create Cloudflare Tunnel in Zero Trust dashboard
-  3. Deploy cloudflared on edge VM
-  4. Configure tunnel to route *.onurx.com → Traefik (https://10.10.10.110)
-  5. Remove port forwarding rules (80/443) from router
-  6. Remove private-default/public-access middlewares (no longer needed with CF Access)
-  7. Configure Cloudflare Access policies for private services
-  8. Test all services work through tunnel
-- **Priority:** MEDIUM (current setup is secure with IP whitelist, tunnel is enhancement)
+### 🔴 CRITICAL - Must Fix Immediately
 
----
+**1. Database Backups Missing:**
+- [ ] MongoDB - No backup strategy (critical data!)
+- [ ] PostgreSQL - No backup strategy (critical data!)
+- [ ] MinIO - No backup strategy (critical data!)
+- [ ] Gitea repos - No backup configured
+- **Action:** Implement automated backup solution (Restic, borgmatic, or custom scripts)
+- **Priority:** CRITICAL
 
-### 🔴 Critical Issues (Must Fix)
+**2. Missing Monitoring Agents:**
+- [ ] dev VM (10.10.10.114) - No Alloy (logs missing), No Beszel (metrics missing), No Portainer agent
+- [ ] deploy VM (10.10.10.115) - No Alloy, No Beszel, No Portainer agent
+- [ ] ha VM (10.10.10.116) - No Alloy, No Beszel (Home Assistant OS - special handling needed)
+- **Action:** Deploy monitoring agents to all VMs
+- **Priority:** CRITICAL
 
-**~~Gitea & Dokploy - Mixed Content Warnings:~~** ✅ FIXED
-- ~~Browser shows "active content certificate errors" when DevTools open~~
-- **Solution:** Added `forwarded-headers` middleware in Traefik
-- **Fix:** Traefik now sends `X-Forwarded-Proto: https` to backends
-- Applications now correctly generate HTTPS URLs for all resources
-- **Result:** Both git.onurx.com and deploy.onurx.com show secure in browser
+**3. Authentication & Security Gaps:**
+- [ ] Prometheus - No authentication (anyone can query metrics)
+- [ ] Loki - No authentication (anyone can query logs)
+- [ ] Alloy UI - No authentication (config/metrics exposed)
+- [ ] Traefik dashboard (port 8080) - Exposed without protection
+- [ ] Authentik - No applications configured yet (SSO not working!)
+- **Action:** Configure Authentik applications + add auth to all services
+- **Priority:** CRITICAL
 
-**~~Dokploy - Invalid Origin Error:~~** ✅ FIXED
-- ~~Login shows "invalid origin" error~~
-- **Solution:** Same `forwarded-headers` middleware fixed this
-- Dokploy now knows it's accessed via https://deploy.onurx.com
-- **Result:** Login works perfectly via HTTPS domain
-
-### 🟡 Missing Configurations (Should Complete)
-
-**Authentik SSO Integration:**
-- [ ] No Authentik applications configured yet
-- [ ] Services using Authentik middleware (Portainer, Sonarr, etc.) will redirect to Authentik but no apps exist
-- [ ] Need to create Authentik applications for each protected service
-- [ ] Configure OAuth2/OIDC providers in each application
-- **Priority:** MEDIUM
-
-**Grafana Authentik Integration:**
-- [ ] Grafana currently has no authentication (security-headers only)
-- [ ] Should integrate with Authentik for SSO
-- [ ] Configure OAuth2 in Grafana settings
-- **Priority:** MEDIUM
-
-**Prometheus Authentik Integration:**
-- [ ] Prometheus currently has no authentication
-- [ ] Should integrate with Authentik or basic auth
-- [ ] Consider if needed (may keep internal-only)
-- **Priority:** LOW
-
-**Alloy on dev/deploy VMs:**
-- [ ] dev VM (10.10.10.114) has no Alloy agent - logs not collected
-- [ ] deploy VM (10.10.10.115) has no Alloy agent - logs not collected
-- [ ] Need to deploy log shippers to new VMs
-- **Priority:** MEDIUM
-
-**Beszel Agents on dev/deploy VMs:**
-- [ ] dev VM has no Beszel agent - no monitoring in dashboard
-- [ ] deploy VM has no Beszel agent - no monitoring in dashboard
-- [ ] Should add agents for consistent monitoring
-- **Priority:** LOW
-
-### 🟢 Testing Needed (Validation)
-
-**Gitea Testing:**
-- [ ] Test Gitea Actions with sample CI/CD workflow
-- [ ] Test container registry (docker push/pull)
-- [ ] Test SSH git clone
-- [ ] Test package registry (npm, PyPI)
-- [ ] Test repository mirroring with GitHub
+**4. Resource Limits Missing:**
+- [ ] All database containers (MongoDB, PostgreSQL, Redis, MinIO) - No CPU/memory limits
+- [ ] All application containers - No resource constraints
+- **Action:** Add resource limits to prevent resource exhaustion
 - **Priority:** HIGH
 
-**Dokploy Testing:**
-- [ ] Deploy first test application
-- [ ] Connect Gitea as Git provider
-- [ ] Test auto-deploy from Git push
-- [ ] Test database creation feature
-- [ ] Test built-in monitoring
-- **Priority:** HIGH
+### 🟡 MEDIUM - Should Complete Soon
 
-**Backup Strategy:**
-- [ ] No backup solution configured yet
-- [ ] Critical data: PostgreSQL, MongoDB, MinIO, Gitea repos
-- [ ] Need to design and implement backup workflow
-- [ ] Consider: Velero, Restic, or simple scripts
+**5. Monitoring Configuration Gaps:**
+- [ ] Beszel Hub - Not using HTTPS/Traefik (port 8090 exposed)
+- [ ] AdGuard - Not using HTTPS (port 8888, HTTP only)
+- [ ] Portainer - Not via Traefik (direct HTTPS on 9443)
+- [ ] Grafana - Should use Authentik SSO instead of own login
+- **Action:** Route services via Traefik with proper SSL
 - **Priority:** MEDIUM
 
-**SSL Certificate Monitoring:**
+**6. Health Checks Missing:**
+
+**db VM (10.10.10.111):**
+- ✅ MongoDB - Has health check
+- ✅ PostgreSQL - Has health check
+- ✅ Redis - Has health check
+- ✅ MinIO - Has health check
+- ❌ Alloy - No health check
+- ✅ Beszel Agent - Has health check
+
+**edge VM (10.10.10.110):**
+- ✅ Traefik - Has health check
+- ❌ AdGuard - No health check
+- ❌ Authentik Server - No health check
+- ❌ Authentik Worker - No health check
+- ❌ NetBird - No health check (N/A - stateless VPN client)
+- ❌ Alloy - No health check
+- ✅ Beszel Agent - Has health check
+
+**observability VM (10.10.10.112):**
+- ❌ Portainer - No health check
+- ✅ Prometheus - Has health check
+- ✅ Grafana - Has health check
+- ✅ Loki - Has health check
+- ❌ Alloy - No health check (no wget/curl in image)
+- ✅ Beszel Hub - Has health check
+- ✅ Beszel Agent - Has health check
+
+**media VM (10.10.10.113):**
+- ❌ Alloy - No health check
+- ✅ Beszel Agent - Has health check
+
+**dev VM (10.10.10.114):**
+- ✅ Gitea - Has health check
+- ❌ act_runner - No health check
+- N/A postgres-check - Init container only
+
+**Action:** Add health checks to all services where possible (Alloy doesn't have wget/curl, NetBird is stateless)
+- **Priority:** MEDIUM
+
+**7. Synology NAS Audit:**
+- [ ] Document what services run on Synology
+- [ ] Check if Synology is monitored (Beszel agent possible?)
+- [ ] Verify Synology backup configuration
+- [ ] Check if Synology logs go to Loki
+- **Action:** Audit Synology and integrate with monitoring stack
+- **Priority:** MEDIUM
+
+### 🟢 LOW - Nice to Have
+
+**8. Service Testing:**
+- [ ] Gitea Actions - Test CI/CD workflow
+- [ ] Gitea Container Registry - Test docker push/pull
+- [ ] Dokploy - Deploy test application
+- [ ] Repository mirroring - Test GitHub sync
+- **Priority:** LOW
+
+**9. SSL Certificate Monitoring:**
 - [ ] No alerts if certificates fail to renew
 - [ ] Should add Prometheus alert for cert expiry
-- [ ] Monitor acme.json for renewal issues
 - **Priority:** LOW
 
-### 💡 Ideas & Improvements (Nice to Have)
+**10. Cloudflare Tunnels Migration (Planned):**
+- [ ] Current setup works but exposes IP via onurx.com A record
+- [ ] Plan: Move to Cloudflare Tunnels for better security
+- **Blocker:** Email service uses @onurx.com - must migrate email first
+- **Priority:** LOW (current setup is secure with IP whitelist)
 
-**Centralized Secrets Management:**
-- [ ] Currently using 1Password CLI (works well)
-- [ ] Consider: Vault for runtime secrets (not just deploy-time)
-- [ ] Would allow secret rotation without redeploying
-- **Priority:** LOW
+### 📊 VM-by-VM Audit Status
 
-**Infrastructure as Code:**
-- [ ] Most config is in git (good!)
-- [ ] VM creation is still manual
-- [ ] Consider: Terraform for Proxmox VM provisioning
-- **Priority:** LOW
+| VM | Alloy | Beszel | Portainer | Auth Issues | Backup Status |
+|----|-------|--------|-----------|-------------|---------------|
+| db (111) | ✅ | ✅ | ✅ | ✅ Internal only | ❌ **NO BACKUPS** |
+| edge (110) | ✅ | ✅ | ✅ | ⚠️ Traefik exposed | ✅ Config in git |
+| observability (112) | ✅ | ✅ | ✅ | ❌ No auth on metrics | ✅ Config in git |
+| media (113) | ✅ | ✅ | ✅ | N/A (no services yet) | N/A |
+| dev (114) | ❌ | ❌ | ❌ | ⚠️ Gitea own auth | ❌ **NO BACKUPS** |
+| deploy (115) | ❌ | ❌ | ❌ | ⚠️ Dokploy own auth | ❌ **NO BACKUPS** |
+| ha (116) | ❌ | ❌ | N/A | ✅ HA own auth | ⚠️ Via HA backups |
+| Synology | ❓ | ❓ | N/A | ❓ | ❓ **AUDIT NEEDED** |
 
-**Grafana Dashboards:**
-- [ ] Only basic dashboards exist
-- [ ] Should create service-specific dashboards
-- [ ] Docker container metrics, Traefik stats, etc.
-- **Priority:** LOW
-
-**Alerting:**
-- [ ] Prometheus alerts defined but not tested
-- [ ] No notification channel configured (email, Slack, etc.)
-- [ ] Should test alert delivery
-- **Priority:** MEDIUM
-
-**Documentation:**
-- [ ] Service-specific READMEs could be more detailed
-- [ ] Add architecture diagrams
-- [ ] Document disaster recovery procedures
-- **Priority:** LOW
-
-**Performance Tuning:**
-- [ ] No resource limits set on containers
-- [ ] Database tuning could be optimized
-- [ ] Consider adding resource constraints
-- **Priority:** LOW
+**Legend:** ✅ Configured | ❌ Missing | ⚠️ Partial/Issues | ❓ Unknown | N/A Not applicable
 
 ---
 
@@ -440,509 +431,144 @@ myapp:
 
 ### Centralized Logging (Loki + Alloy)
 
-**Status:** ✅ Deployed and Working
+**Status:** ✅ Deployed | **Access:** Grafana Explore `http://10.10.10.112:3000/explore`
 
-**Architecture:**
-```
-All VMs (Docker containers)
-    ↓ (stdout/stderr logs)
-Alloy (on each VM)
-    ↓ (ships logs over network)
-Loki (observability VM - 10.10.10.112:3100)
-    ↓ (query interface)
-Grafana Explore
-```
+**Flow:** Docker containers → Alloy (each VM) → Loki (10.10.10.112:3100) → Grafana
 
-**What's Collected:**
-- ✅ All Docker container logs from all 4 VMs
-- ✅ Logs labeled by: host, container, image, compose_service, compose_project
-- ✅ Auto-extracts log level (error, warn, info, debug) when present
+**Config:**
+- Retention: 90 days | Storage: `/opt/homelab/loki/data/`
+- Labels: host, container, image, compose_service, level (auto-extracted)
+- Alloy: Full config on observability VM, logs-only on db/edge/media VMs
 
-**Storage:**
-- Location: `/opt/homelab/loki/data/` on observability VM
-- Retention: 90 days (auto-deleted after)
-- Type: Filesystem (TSDB v13 format)
-
-**Alloy Deployment:**
-- **observability VM**: Full config (metrics + logs for local containers)
-- **db/edge/media VMs**: Logs-only shipper (lightweight config)
-
-**Viewing Logs:**
-
-Access Grafana Explore: `http://10.10.10.112:3000/explore`
-
-**Common queries:**
+**Common Queries:**
 ```logql
-# All logs from all VMs
-{cluster="homelab"}
-
-# Specific VM
-{host="db-vm"}
-
-# Specific container
-{container="mongodb"}
-
-# Errors only
-{level="error"}
-
-# Search pattern
-{cluster="homelab"} |~ "(?i)error|fail"
-
-# Live stream (click "Live" button)
-{host="edge-vm", container="traefik"}
+{cluster="homelab"}                          # All logs
+{host="db-vm"}                               # Specific VM
+{container="mongodb"}                        # Specific container
+{level="error"}                              # Errors only
+{cluster="homelab"} |~ "(?i)error|fail"     # Search pattern
+{host="edge-vm", container="traefik"}       # Live stream (click "Live" button)
 ```
-
-**Pro Tips:**
-- Use **Live mode** for real-time log streaming (like `docker logs -f`)
-- **Split view** to watch multiple log sources side-by-side
-- **Exclude noise**: `{cluster="homelab"} != "health" != "ping"`
-- Logs persist for 90 days (unlike `docker logs` which rotates at 30MB)
-
-**Adding Metrics Later:**
-To add system/Docker metrics from remote VMs, just update Alloy config (add ~30 lines) and restart. No architecture changes needed.
 
 ---
 
 ### Beszel (Quick Monitoring Dashboard)
 
-**Status:** ✅ Deployed and Working
+**Status:** ✅ Deployed | **Access:** `http://10.10.10.112:8090`
 
-**Purpose:** Lightweight, easy-to-use monitoring dashboard for quick infrastructure health checks
+**Purpose:** Lightweight monitoring for quick health checks (CPU, RAM, disk, network, Docker stats)
 
-**Access:** `http://10.10.10.112:8090`
+**Agents:** Hub on observability VM + Agents on db/edge/media VMs (Unix socket/port 45876)
 
-**Architecture:**
-```
-Beszel Hub (observability VM - port 8090)
-    ↑ (public key auth + universal token)
-    ├─ Agent (observability VM - Unix socket)
-    ├─ Agent (db VM - 10.10.10.111:45876)
-    ├─ Agent (edge VM - 10.10.10.110:45876)
-    └─ Agent (media VM - 10.10.10.113:45876)
-```
+**Deployment:**
+- Secrets: `op://Server/beszel/key` and `op://Server/beszel/token`
+- Deploy: `op run --env-file=.env -- docker compose up -d beszel-agent`
+- Universal token auto-registers agents (regenerates hourly or on Hub restart)
 
-**What It Shows:**
-- Real-time CPU, memory, disk, network usage per VM
-- Docker container stats (CPU, memory per container)
-- Historical graphs (stored in SQLite)
-- Alert thresholds (configurable)
-- All 4 VMs in one dashboard
-
-**Agent Deployment:**
-Agents use **universal token** for auto-registration (no manual system creation needed).
-
-**Secrets Management:**
-- KEY and TOKEN stored in 1Password: `op://Server/beszel/key` and `op://Server/beszel/token`
-- Deploy agents: `op run --env-file=.env -- docker compose up -d beszel-agent`
-
-**Why Use Beszel vs Grafana:**
-- **Beszel**: Quick daily checks, simple UI, zero config, instant overview
-- **Grafana**: Deep analysis, custom dashboards, log correlation, advanced queries
-
-Both run side-by-side - use Beszel for "Is everything okay?" and Grafana for "Why did this happen?"
-
-**Configuration:**
-- Universal token regenerates every 1 hour or on Hub restart
-- After first connection, agents use fingerprints for persistent identity
-- To rotate token: Generate new one in Hub admin panel → update 1Password → redeploy agents
+**Use Case:** Beszel for "Is everything okay?" | Grafana for "Why did this happen?"
 
 ---
 
 ### AdGuard Home (DNS)
 
-**Status:** ✅ Deployed and Configured
+**Status:** ✅ Deployed | **Access:** `http://10.10.10.110:8888`
 
-**Purpose:** Internal DNS resolution for `*.onurx.com` domains
-
-**Access:** `http://10.10.10.110:8888` (admin login required)
-
-**Configuration Summary:**
-- **Upstream DNS**: `tls://one.one.one.one`, `tls://unfiltered.adguard-dns.com`, `tls://dns.google`
-- **Bootstrap DNS**: Cloudflare (1.1.1.1, 1.0.0.1) + AdGuard IPs
-- **Query mode**: Parallel requests (fastest resolution)
-- **DNSSEC**: Enabled
-- **Statistics retention**: 30 days
-- **Plain DNS**: Enabled on port 53 (required)
-- **Encryption**: Disabled (internal use only, accessed via HTTP)
-
-**DNS Rewrites:**
-Wildcard rewrite configured: `*.onurx.com` → `10.10.10.110`
-
-Covers all services:
-- auth, portainer, grafana, prometheus
-- sonarr, radarr, prowlarr, jellyfin, qbittorrent
-- n8n, paperless, gitea, dokploy
-- minio (console), s3 (API)
-
-**Persistent Clients (Optional):**
-Add VM IPs for better visibility:
-- `10.10.10.110` → edge-vm
-- `10.10.10.111` → db-vm
-- `10.10.10.112` → observability-vm
-- `10.10.10.113` → media-vm
-- `10.10.10.114` → dev-vm
+**Config:** Wildcard `*.onurx.com` → `10.10.10.110` | Upstream: Cloudflare/AdGuard/Google (TLS) | DNSSEC enabled
 
 **Testing:**
 ```bash
-# Test DNS resolution
-nslookup auth.onurx.com 10.10.10.110
-# Should return: 10.10.10.110
-
-# Test HTTPS access
-curl -I https://auth.onurx.com
-# Should return: HTTP/2 200 (if service running)
+nslookup auth.onurx.com 10.10.10.110  # Should return 10.10.10.110
+curl -I https://auth.onurx.com        # Should return HTTP/2 200
 ```
-
-**WireGuard Integration:**
-Update WireGuard config to use AdGuard:
-```ini
-[Interface]
-DNS = 10.10.10.110
-```
-
-**Next Step:** Update router DNS to `10.10.10.110` for all devices
 
 ---
 
 ### Authentik (SSO)
 
-**Status:** Ready to deploy
+**Status:** ✅ Deployed | **Access:** `https://auth.onurx.com` | **Dependencies:** PostgreSQL + Redis (10.10.10.111)
 
-**Dependencies:** PostgreSQL + Redis on db host (10.10.10.111)
+**Setup:**
+1. 1Password secrets: `authentik-db/password`, `authentik/secret_key` (generate: `openssl rand -base64 50`)
+2. Create PostgreSQL database on db host:
+   ```sql
+   CREATE USER authentik WITH PASSWORD 'xxx';
+   CREATE DATABASE authentik OWNER authentik;
+   GRANT ALL PRIVILEGES ON DATABASE authentik TO authentik;
+   ```
+3. Deploy: `op run --env-file=.env -- docker compose up -d authentik-server authentik-worker`
 
-**Access:** `https://auth.onurx.com` (via Traefik)
+**Configuration Required:**
+- ❌ No applications configured yet (forward auth middleware exists in Traefik but SSO not working)
+- Need to create apps in Authentik UI for: grafana, prometheus, loki, alloy, gitea, dokploy, media services
 
-## Pre-Deployment: Setup 1Password Secrets
-
-**Create these items in 1Password "Server" vault:**
-
-1. **authentik-db** (PostgreSQL user password)
-   - Field: `password` (generate strong password)
-
-2. **authentik** (Authentik secret key)
-   - Field: `secret_key` (generate with: `openssl rand -base64 50`)
-
-**Verify secrets:**
+**Troubleshooting:**
 ```bash
-op read "op://Server/redis/password"
-op read "op://Server/authentik-db/password"
-op read "op://Server/authentik/secret_key"
-```
-
-## Pre-Deployment: Create PostgreSQL Database
-
-**On db host (10.10.10.111):**
-```bash
-# SSH to db host
-ssh root@10.10.10.111
-cd /opt/homelab
-
-# Create database and user
-docker exec -it postgres psql -U postgres
-```
-
-**In PostgreSQL shell:**
-```sql
--- Create user
-CREATE USER authentik WITH PASSWORD 'paste_password_from_1password_here';
-
--- Create database
-CREATE DATABASE authentik OWNER authentik;
-
--- Grant privileges
-GRANT ALL PRIVILEGES ON DATABASE authentik TO authentik;
-
--- Exit
-\q
-```
-
-**Test connection from edge VM:**
-```bash
-# On edge VM (10.10.10.110)
+# Test DB connection
 psql -h 10.10.10.111 -U authentik -d authentik
-# Enter password from 1Password
-# Should connect successfully
-```
 
-## Deployment
-
-**On edge VM (10.10.10.110):**
-```bash
-cd /opt/homelab
-
-# Deploy Authentik (server + worker)
-op run --env-file=.env -- docker compose up -d authentik-server authentik-worker
-
-# Check logs
-docker compose logs -f authentik-server
-docker compose logs -f authentik-worker
-
-# Should see:
-# - Database migrations running
-# - Worker starting
-# - Server ready
-```
-
-## Initial Setup
-
-**Access:** `https://auth.onurx.com`
-
-**First-time setup wizard:**
-1. Create admin account (email + password)
-2. Complete setup
-
-**After setup:**
-- Configure outpost for Traefik forward auth
-- Create applications for each service
-- Configure authentication flows
-
-## Protected Services
-
-Services using `authentik` middleware (configured in `routers.yml`):
-- grafana, sonarr, radarr, prowlarr, jellyfin
-- qbittorrent, n8n, paperless, gitea, dokploy
-- minio console
-
-**Not protected:**
-- Authentik itself (auth.onurx.com) - no self-auth
-- Portainer - has own auth
-- MinIO S3 API (s3.onurx.com) - programmatic access
-
-## Troubleshooting
-
-**Database connection errors:**
-```bash
-# Verify database exists on db host
-docker exec -it postgres psql -U postgres -c "\l" | grep authentik
-
-# Test connection from edge VM
-psql -h 10.10.10.111 -U authentik -d authentik
-```
-
-**Redis connection errors:**
-```bash
-# Test Redis from edge VM
+# Test Redis
 docker run --rm redis:alpine redis-cli -h 10.10.10.111 -a $(op read "op://Server/redis/password") ping
-# Should return: PONG
 ```
 
 ---
 
-### Docker Networking (Bridge vs LXC)
+### Docker Networking
 
-**Key Difference from LXC:**
-- **LXC**: Each service has its own IP (10.10.10.115, 10.10.10.116, etc.)
-- **Docker Bridge**: Multiple containers share one VM IP (10.10.10.110)
+**Traefik Routing:**
+- Same VM containers: Use container name (e.g., `http://authentik-server:9000`)
+- Different VM: Use VM IP:port (e.g., `http://10.10.10.112:3000`)
 
-**How Traefik Routes to Containers:**
-
-**Same VM (containers):**
-```yaml
-# services.yml - Use container name
-authentik-svc:
-  loadBalancer:
-    servers:
-      - url: "http://authentik-server:9000"  # Docker DNS resolves name
-```
-
-**Different VM (external services):**
-```yaml
-# services.yml - Use VM IP:port
-grafana:
-  loadBalancer:
-    servers:
-      - url: "http://10.10.10.112:3000"  # Direct IP connection
-```
-
-**Traffic Flow:**
-```
-User → DNS (AdGuard) → *.onurx.com = 10.10.10.110
-    ↓
-Traefik (10.10.10.110:443) inspects Host header
-    ↓
-Routes to backend:
-  - Container name (same VM): http://authentik-server:9000
-  - External IP (other VM): http://10.10.10.112:3000
-```
-
-**Visibility Trade-off:**
-- AdGuard sees only VM IPs (10.10.10.110), not individual containers
-- Solution: Add VMs as persistent clients for VM-level visibility
-- Alternative: Use macvlan networking for container-level IPs (advanced)
+**Flow:** User → DNS (*.onurx.com = 10.10.10.110) → Traefik → Backend (container name or VM IP)
 
 ---
 
-### Observability Stack (Monitoring & Logging)
+### Observability Stack
 
-**Status:** ✅ Deployed and Working
+**Status:** ✅ Deployed (10.10.10.112) | **Retention:** 90 days (Prometheus + Loki)
 
-**Stack Components (10.10.10.112):**
-- Prometheus v3.1.0: Metrics storage and querying
-- Grafana 11.4.0: Visualization and dashboards
-- Loki 3.3.2: Log aggregation and querying
-- Alloy v1.11.2: Unified metrics and logs collector
+**Components:**
+- Prometheus v3.1.0 - `https://prometheus.onurx.com` ⚠️ No auth
+- Grafana 11.4.0 - `https://grafana.onurx.com` ✅ Own login
+- Loki 3.3.2 - `https://loki.onurx.com` (API only, no UI) ⚠️ No auth
+- Alloy v1.11.2 - `https://alloy.onurx.com` (observability VM only) ⚠️ No auth
 
-**Access:**
-- Grafana: `https://grafana.onurx.com` (Web UI - via Traefik with SSL)
-- Prometheus: `https://prometheus.onurx.com` (Web UI - via Traefik with SSL)
-- Loki: `https://loki.onurx.com` (API only - no web UI, access logs via Grafana Explore)
-- Alloy: `https://alloy.onurx.com` (Web UI - via Traefik with SSL)
+**Alloy:**
+- Each VM has independent Alloy instance (no unified UI)
+- Collects: System metrics, Docker metrics, Docker logs
+- Sends to: Prometheus (metrics) + Loki (logs)
+- Other UIs: `http://10.10.10.110:12345` (edge), `http://10.10.10.113:12345` (media)
 
-**Note:** Authentik SSO middleware temporarily removed from observability services until applications are configured in Authentik. Services currently accessible without authentication.
-
-**IMPORTANT - Alloy UI Architecture:**
-- **alloy.onurx.com shows ONLY the observability VM's Alloy instance**
-- Each VM runs its own independent Alloy instance with its own UI
-- There is NO unified Alloy UI showing all instances together
-- Other Alloy UIs are available at: `http://10.10.10.110:12345` (edge), `http://10.10.10.113:12345` (media)
-- **For unified view of all data:** Use Grafana dashboards or Prometheus/Loki queries (data from all VMs is centralized)
-- The Alloy UI is only for troubleshooting that specific instance's configuration and components
-- Features like "clustering" and "remote configuration" are for HA setups, NOT for viewing multiple instances
-
-**What Alloy Collects:**
-- **System metrics**: CPU, RAM, disk, network (via `prometheus.exporter.unix`)
-- **Docker metrics**: Container CPU, memory, network, disk I/O (via `prometheus.exporter.cadvisor`)
-- **Docker logs**: All container logs with automatic labeling (via `loki.source.docker`)
-- Sends metrics to Prometheus via remote_write API
-- Sends logs to Loki via push API
-
-**Using Grafana Explore:**
-**IMPORTANT:** Loki has no web UI! Access logs only through Grafana Explore.
-
-1. Login to `https://grafana.onurx.com`
-2. Click **Explore** (compass icon in sidebar)
-3. Select datasource (Prometheus for metrics, Loki for logs)
-
-**Example Queries:**
-
-*Prometheus (Metrics):*
+**Grafana Explore Queries:**
 ```promql
-up                               # All scraped targets
-node_cpu_seconds_total           # CPU metrics
-container_memory_usage_bytes     # Docker memory usage
-rate(node_network_receive_bytes_total[5m])  # Network traffic
+# Prometheus
+up                                          # All targets
+node_cpu_seconds_total                      # CPU metrics
+container_memory_usage_bytes                # Docker memory
+
+# Loki (access via Grafana Explore only)
+{container="grafana"}                       # Grafana logs
+{container="traefik"} |= "error"           # Traefik errors
+{compose_project="observability"}           # All stack logs
 ```
 
-*Loki (Logs):*
-```logql
-{container="grafana"}                      # Grafana logs
-{container="prometheus"}                   # Prometheus logs
-{job="docker"}                             # All Docker logs
-{container="traefik"} |= "error"          # Traefik errors only
-{compose_project="observability"}          # All observability stack logs
-```
-
-**Data Retention:**
-- Prometheus: 90 days
-- Loki: 90 days
-
-**Configuration Files:**
-- Prometheus: `observability/prometheus/config/prometheus.yml`
-- Loki: `observability/loki/config/config.yml`
-- Alloy: `observability/alloy/config/config.alloy`
-- Grafana Datasources: `observability/grafana/provisioning/datasources/datasources.yml`
-- Grafana Dashboards: `observability/grafana/dashboards/` (auto-provisioned to Homelab folder)
-
-**Deployment:**
-```bash
-cd /opt/homelab
-op run --env-file=.env -- docker compose up -d prometheus grafana loki alloy
-```
-
-**Grafana Dashboards:**
-- 3 dashboards added to `observability/grafana/dashboards/`:
-  - `node-exporter-full.json` - System metrics (CPU, RAM, disk, network)
-  - `docker-containers-metrics.json` - Container resource usage
-  - `docker-cadvisor.json` - Docker logs dashboard
-- **Note:** Pre-built dashboards need customization - Alloy uses job names `integrations/unix` and `integrations/cadvisor` instead of standard `node_exporter` and `cadvisor`
-- **Verified Working:** Metrics ARE being collected successfully by Alloy and stored in Prometheus
-- **Next Step:** Customize dashboards to use correct job names or create custom dashboards matching our label structure
-
-**Metrics Collection Status (Verified):**
-```promql
-# Check all scrape targets
-up
-
-# System metrics (CPU, RAM, disk, network)
-job="integrations/unix" - UP ✅
-
-# Docker container metrics (CPU, memory, network, I/O)
-job="integrations/cadvisor" - UP ✅
-```
-
-**Future Enhancements:**
-- Customize dashboards to match Alloy's job names and labels
-- Deploy Alloy on each VM for distributed metrics/logs collection
-- Enable OpenTelemetry receiver in Alloy for app instrumentation
-- Add alerting rules in Prometheus for critical infrastructure events
+**Deploy:** `op run --env-file=.env -- docker compose up -d prometheus grafana loki alloy`
 
 ---
 
 ### NetBird VPN (Remote Access)
 
-**Status:** ✅ Deployed (NetBird Cloud managed service)
+**Status:** ✅ Deployed (NetBird Cloud) | **Location:** Edge VM (10.10.10.110) | **Dashboard:** https://app.netbird.io
 
-**Purpose:** Secure remote access to homelab infrastructure from anywhere
+**Config:**
+- Setup key: `op://Server/netbird/token` | Network mode: host | Route: `10.10.10.0/24` → netbird-edge
+- DNS: *.onurx.com resolved via AdGuard (10.10.10.110)
 
-**Client Location:** Edge VM (10.10.10.110) - container name: `netbird`
-
-**Access:** https://app.netbird.io (cloud dashboard)
-
-**Configuration:**
-- **Type:** Client-only (using NetBird cloud infrastructure, not self-hosted)
-- **Setup Key:** Stored in 1Password (op://Server/netbird/token)
-- **Network Mode:** Host (required for WireGuard)
-- **Capabilities:** NET_ADMIN, SYS_ADMIN, SYS_RESOURCE
-- **Data:** `./netbird/data/netbird-client:/var/lib/netbird`
-
-**DNS Resolution:**
-- **Internal domains** (`*.onurx.com`): Resolved via AdGuard Home (10.10.10.110)
-- **Critical:** Ensure no DNS blocking rules for home network IP range in NetBird console
-- **Test:** `nslookup proxmox.onurx.com` should resolve correctly when connected via NetBird
-
-**Deployment:**
-```bash
-# On edge VM
-cd /opt/homelab
-op run --env-file=.env -- docker compose up -d netbird
-
-# Check status
-docker compose logs -f netbird
-
-# Should see: "Connected to NetBird network"
-```
-
-**Network Routes in NetBird Console:**
-- Add route: `10.10.10.0/24` → routing peer: netbird-edge (for internal network access)
-
-**Access Control:**
-- Ensure peer-to-peer communication allowed
-- No DNS restrictions for your home network IP range
-
-**Adding More Peers:**
-To add other VMs or devices to NetBird:
-1. Generate setup key in NetBird console (Settings → Setup Keys)
-2. Install NetBird client on device
-3. Connect using setup key
-4. Device will appear in NetBird console
-
-**Benefits:**
-- ✅ Secure remote access from anywhere
-- ✅ No port forwarding needed on router
-- ✅ All homelab services accessible via `*.onurx.com` domains
-- ✅ Encrypted WireGuard tunnels
-- ✅ Works through NAT/firewalls
+**Deploy:** `op run --env-file=.env -- docker compose up -d netbird`
 
 **Troubleshooting:**
 ```bash
-# Check connection status
-docker exec netbird netbird status
-
-# View routes
-docker exec netbird netbird routes list
-
-# Restart if needed
-docker compose restart netbird
+docker exec netbird netbird status        # Check status
+docker exec netbird netbird routes list   # View routes
 ```
 
 ---
@@ -1187,187 +813,64 @@ op read "op://Server/postgres/password"
 
 ### Gitea - Git Hosting & CI/CD
 
-**VM:** dev (10.10.10.114:3001)
+**VM:** dev (10.10.10.114) | **Status:** ✅ Deployed | **Access:** https://git.onurx.com (SSH: port 222)
 
-**Status:** ✅ Deployed and working
+**Components:**
+- Gitea v1.24.7 - Git + Container Registry + Package Registry + Actions (admin: `fxx`)
+- act_runner v0.2.13 - CI/CD executor (labels: ubuntu-latest, ubuntu-22.04)
+- PostgreSQL on db host (10.10.10.111) - Database: `gitea`, User: `gitea`
 
-**Access:**
-- **Web UI:** https://git.onurx.com (via Traefik with SSL)
-- **SSH:** git@git.onurx.com:222
-- **Container Registry:** git.onurx.com (Docker login)
+**Features:** Git hosting, Gitea Actions (CI/CD), OCI container registry, Package registry (npm/PyPI), Repository mirroring, Git LFS
 
-**Services:**
+**1Password:** `gitea-db/password`, `gitea/secret_key`, `gitea/internal_token`, `gitea/runner_token`
 
-**Gitea v1.24.7** - Self-hosted Git with Actions & Container Registry
-- ✅ PostgreSQL database on db host (10.10.10.111)
-- ✅ Gitea Actions enabled
-- ✅ Container Registry enabled (OCI-compliant)
-- ✅ Package Registry enabled (npm, PyPI, etc.)
-- ✅ Traefik routes configured with Let's Encrypt SSL
-- ✅ Admin user: `fxx`
-- ✅ Running on port 3001 (internal)
-
-**act_runner v0.2.13** - Executes Gitea Actions workflows
-- ✅ Registered with Gitea as "homelab-runner"
-- ✅ Status: Idle (ready to run workflows)
-- ✅ Labels: ubuntu-latest, ubuntu-22.04
-
-**Database Configuration:**
+**Usage:**
 ```bash
-# PostgreSQL on db host (10.10.10.111)
-Database: gitea
-User: gitea
-Password: Stored in 1Password (op://Server/gitea-db/password)
-
-# Permissions granted:
-GRANT ALL ON SCHEMA public TO gitea;
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO gitea;
-GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO gitea;
+git clone https://git.onurx.com/fxx/repo.git                # HTTPS
+git clone ssh://git@git.onurx.com:222/fxx/repo.git          # SSH
+docker login git.onurx.com && docker push git.onurx.com/fxx/image:tag  # Container registry
 ```
 
-**1Password Items:**
-- `gitea-db` - PostgreSQL password
-- `gitea` - secret_key, internal_token, runner_token
-
-**Features Available:**
-- ✅ Git repository hosting (unlimited private repos)
-- ✅ **Infrastructure repo is PUBLIC** (allows VMs to git pull without auth)
-- ✅ GitHub Actions-compatible CI/CD (Gitea Actions)
-- ✅ OCI container registry (Docker images)
-- ✅ Package registry (npm, PyPI, Maven, etc.)
-- ✅ Repository mirroring (GitHub ↔ Gitea bidirectional sync)
-- ✅ SSH clone support on port 222
-- ✅ Git LFS enabled
-- ✅ **DNS:** `git.onurx.com` resolves via AdGuard wildcard (`*.onurx.com` → 10.10.10.110)
-
-**Testing:**
-```bash
-# Clone via HTTPS
-git clone https://git.onurx.com/fxx/repo.git
-
-# Clone via SSH
-git clone ssh://git@git.onurx.com:222/fxx/repo.git
-
-# Container registry login
-docker login git.onurx.com
-
-# Push image to registry
-docker push git.onurx.com/fxx/image:tag
-```
-
-**Next Steps:**
-1. Test Gitea Actions with a sample workflow
-2. Test container registry push/pull
-3. Set up repository mirroring with GitHub
+**Note:** Infrastructure repo is PUBLIC (allows VMs to git pull without auth)
 
 ---
 
 ### Dokploy - Application Deployment Platform
 
-**VM:** deploy (10.10.10.115:3000)
+**VM:** deploy (10.10.10.115) | **Status:** ✅ Deployed | **Access:** https://deploy.onurx.com
 
-**Status:** ✅ Deployed and accessible
+**Components:** Dokploy (latest), PostgreSQL 16 (bundled), Redis 7 (bundled), Traefik v3.5 (bundled, internal)
 
-**Access:**
-- **Web UI:** https://deploy.onurx.com (via Traefik with SSL)
-- **Direct:** http://10.10.10.115:3000
+**Architecture:** Docker Swarm mode | Self-contained PaaS | Main Traefik on edge VM proxies to Dokploy
 
-**Services:**
-- ✅ Dokploy (latest) - Main application
-- ✅ PostgreSQL 16 - Dokploy database (bundled)
-- ✅ Redis 7 - Session store (bundled)
-- ✅ Traefik v3.5 - Internal reverse proxy (bundled, on ports 80/443)
+**Purpose:** Deploy personal apps and side projects via UI (Git → Docker → Deploy)
 
-**Architecture:**
-- Deployed via Docker Swarm (required by installer)
-- Self-contained with bundled database and Redis
-- Own Traefik instance for internal routing
-- Main Traefik on edge VM proxies to Dokploy
+**1Password:** `dokploy` (admin credentials)
 
-**Purpose:**
-- Deploy personal applications and side projects
-- Separate from infrastructure services
-- Easy deployments via UI (Git → Docker → Deploy)
-
-**Configuration:**
-- ✅ Traefik `forwarded-headers` middleware enabled
-- ✅ Properly detects HTTPS access via reverse proxy
-- ✅ No mixed content warnings
-- ✅ Login works via https://deploy.onurx.com
-
-**1Password:**
-- Store Dokploy admin credentials in `op://Server/dokploy`
-
-**Next Steps:**
-1. Connect Gitea as Git provider
-2. Deploy first test application
-3. Test auto-deploy from Git push
-4. Configure notifications
-
-**Installation Command Used:**
-```bash
-curl -sSL https://dokploy.com/install.sh | sudo sh
-```
-
-**Note:** Dokploy requires Docker Swarm mode, but you can deploy apps using regular docker-compose files through its UI.
+**Install:** `curl -sSL https://dokploy.com/install.sh | sudo sh`
 
 ---
 
 ### Home Assistant - Home Automation Platform
 
-**VM:** ha (10.10.10.116:8123)
+**VM:** ha (10.10.10.116) | **Status:** ✅ Deployed | **Access:** https://ha.onurx.com
 
-**Status:** ✅ Deployed and working
+**Deployment:** Home Assistant OS (Proxmox helper script) | Standalone VM with dedicated OS (not Docker)
 
-**Access:**
-- **Web UI:** https://ha.onurx.com (via Traefik with SSL)
-- **Direct:** http://10.10.10.116:8123
+**Database:** PostgreSQL recorder on db host (10.10.10.111) | Database: `homeassistant` | Retention: 30 days
 
-**Deployment Method:**
-- Home Assistant OS (deployed via Proxmox helper script)
-- Standalone VM with dedicated OS (not Docker-based)
-- Supports full add-on ecosystem
-
-**Database Configuration:**
-- ✅ PostgreSQL recorder on db host (10.10.10.111)
-- Database: `homeassistant`
-- User: `homeassistant`
-- Password: Stored in 1Password (op://Server/homeassistant-db/password)
-- Retention: 30 days (configurable in configuration.yaml)
-
-**PostgreSQL Recorder Config:**
+**Config:**
 ```yaml
 recorder:
   db_url: postgresql://homeassistant:PASSWORD@10.10.10.111:5432/homeassistant
   purge_keep_days: 30
-  commit_interval: 1
 ```
 
-**1Password Items:**
-- `homeassistant-db` - PostgreSQL database credentials
+**1Password:** `homeassistant-db/password`
 
-**Migration:**
-- Restored from old Home Assistant instance (partial backup)
-- Configuration, dashboards, devices, and automations preserved
-- Old SQLite history not migrated (fresh start with PostgreSQL)
+**Backups:** Settings → System → Backups (download `.tar` files)
 
-**Features:**
-- ✅ Full add-on support (Zigbee2MQTT, Node-RED, File Editor, etc.)
-- ✅ Device discovery and integrations
-- ✅ Centralized history storage in PostgreSQL
-- ✅ Accessible via HTTPS with valid SSL certificate
-- ✅ DNS resolution via AdGuard wildcard
-
-**Backups:**
-- Create backups via Settings → System → Backups
-- Download `.tar` files for safekeeping
-- Can restore on new instance if needed
-
-**Important Notes:**
-- Unlike other services, Home Assistant OS is not managed via Docker Compose
-- No VirtioFS mount (self-contained OS)
-- Configuration can be edited via File Editor add-on
-- For database migrations, always use partial backups (exclude old database)
+**Note:** Not managed via Docker Compose | Configuration via File Editor add-on | Use partial backups for migrations
 
 ---
 
@@ -1475,4 +978,4 @@ Deploy in order:
 
 ---
 
-**Last Updated:** 2025-10-27 - VirtioFS Migration Complete, Git Workflow Implemented
+**Last Updated:** 2025-10-28 - Infrastructure audit complete, documentation refined and compacted
