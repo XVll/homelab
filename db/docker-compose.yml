@@ -1,9 +1,10 @@
-# DATA HOST: Databases Only
+# DATA HOST: Databases + Message Broker
 # Build services one at a time in this order:
 # 1. MongoDB (document database)
 # 2. PostgreSQL (relational database)
 # 3. Redis (cache & sessions)
 # 4. MinIO (object storage)
+# 5. Mosquitto MQTT (message broker)
 
 services:
   # ============================================================================
@@ -211,6 +212,37 @@ services:
       interval: 30s
       timeout: 20s
       retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ============================================================================
+  # 5. MOSQUITTO - MQTT Message Broker
+  # ============================================================================
+  # Used by: Home Assistant bridge application, IoT devices
+  # Access: mqtt://10.10.10.111:1883
+
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: mosquitto
+    restart: unless-stopped
+    ports:
+      - "10.10.10.111:1883:1883"  # MQTT
+      - "10.10.10.111:9001:9001"  # WebSockets (optional)
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/log:/mosquitto/log
+    networks:
+      - data_net
+    healthcheck:
+      test: ["CMD-SHELL", "mosquitto_sub -t '$$SYS/#' -C 1 -i healthcheck -W 3 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
     logging:
       driver: "json-file"
       options:
