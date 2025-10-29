@@ -102,7 +102,7 @@ http:
     homeassistant:
       loadBalancer:
         servers:
-          - url: "http://10.10.10.13:8123"
+          - url: "http://10.10.10.116:8123"
 
     # VM 2: Database Host (10.10.10.111)
     minio-console:
