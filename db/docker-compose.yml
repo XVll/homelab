@@ -230,7 +230,7 @@ services:
     restart: unless-stopped
     ports:
       - "10.10.10.111:1883:1883"  # MQTT
-      - "10.10.10.111:9001:9001"  # WebSockets (optional)
+      - "10.10.10.111:9003:9001"  # WebSockets (optional)
     volumes:
       - ./mosquitto/config:/mosquitto/config
       - ./mosquitto/data:/mosquitto/data
