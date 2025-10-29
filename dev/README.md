@@ -7,8 +7,10 @@
 
 | Service | Port | Purpose |
 |---------|------|---------|
-| Gitea | 3000 (HTTP), 222 (SSH) | Git hosting + Container Registry + Gitea Actions |
-| act_runner | - | Executes Gitea Actions workflows |
+| Gitea | 3001 (HTTP), 222 (SSH) | Git hosting + Container Registry + Gitea Actions (NOT ACTIVELY USED) |
+| act_runner | - | Executes Gitea Actions workflows (NOT ACTIVELY USED) |
+| Docker Registry | 5000 | Private container registry for custom images |
+| GitHub Runner | - | Self-hosted runner for GitHub Actions workflows |
 | Dokploy | 3200 | Deployment platform (installed separately) |
 
 ## Quick Start
@@ -194,8 +196,164 @@ docker login git.yourdomain.com -u username -p <token>
 - **Grafana:** View Gitea logs in centralized Loki
 - **Beszel:** Monitor dev VM resources at http://10.10.10.112:8090
 
+## Docker Registry Setup
+
+The Docker Registry is a lightweight, private container registry for storing custom images.
+
+### Deployment
+
+```bash
+# SSH to dev VM (10.10.10.114)
+cd /opt/homelab
+
+# Deploy Docker Registry
+op run --env-file=.env -- docker compose up -d registry
+
+# Check status
+docker compose ps registry
+docker compose logs -f registry
+```
+
+### Usage
+
+```bash
+# Tag an image for your registry
+docker tag myapp:latest 10.10.10.114:5000/myapp:latest
+
+# Push to registry
+docker push 10.10.10.114:5000/myapp:latest
+
+# Pull from registry
+docker pull 10.10.10.114:5000/myapp:latest
+
+# List images in registry
+curl http://10.10.10.114:5000/v2/_catalog
+
+# List tags for an image
+curl http://10.10.10.114:5000/v2/myapp/tags/list
+```
+
+### Configure Docker to Use Registry
+
+On any machine that needs to push/pull from the registry:
+
+```bash
+# Add insecure registry (since we're using HTTP on internal network)
+sudo nano /etc/docker/daemon.json
+```
+
+Add:
+```json
+{
+  "insecure-registries": ["10.10.10.114:5000"]
+}
+```
+
+```bash
+# Restart Docker
+sudo systemctl restart docker
+```
+
+## GitHub Actions Runner Setup
+
+Self-hosted runner for GitHub Actions workflows. Provides access to homelab resources and avoids GitHub runner minute limits.
+
+### Prerequisites
+
+1. **Generate GitHub Token:**
+   - **For repository-level runner:**
+     - Go to: https://github.com/<owner>/<repo>/settings/actions/runners/new
+     - Copy the token shown
+   - **For organization-level runner (recommended if you have multiple repos):**
+     - Go to: https://github.com/organizations/<org>/settings/actions/runners/new
+     - Copy the token shown
+   - **OR use Personal Access Token (PAT):**
+     - Generate at: https://github.com/settings/tokens
+     - Scopes needed: `repo` (for repo-level) or `admin:org` (for org-level)
+
+2. **Add to 1Password:**
+   Create item `github-runner` in vault "Server":
+   - Field: `repo_url` - Your repo URL (e.g., https://github.com/username/repo)
+   - Field: `token` - The token from step 1
+
+### Deployment
+
+```bash
+# SSH to dev VM (10.10.10.114)
+cd /opt/homelab
+
+# Deploy GitHub Runner
+op run --env-file=.env -- docker compose up -d github-runner
+
+# Check status and logs
+docker compose ps github-runner
+docker compose logs -f github-runner
+```
+
+### Verification
+
+1. **Check runner registration:**
+   - For repo: https://github.com/<owner>/<repo>/settings/actions/runners
+   - For org: https://github.com/organizations/<org>/settings/actions/runners
+   - Should see "homelab-runner" with "Idle" status
+
+2. **Test with a workflow:**
+
+Create `.github/workflows/test-runner.yml` in your repo:
+
+```yaml
+name: Test Self-Hosted Runner
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: self-hosted
+    steps:
+      - name: Check runner environment
+        run: |
+          echo "Running on self-hosted runner!"
+          docker --version
+          uname -a
+```
+
+### Runner Configuration
+
+The runner has these labels by default:
+- `self-hosted`
+- `homelab`
+- `docker`
+
+Use in workflows:
+```yaml
+jobs:
+  build:
+    runs-on: [self-hosted, homelab]
+```
+
+### Organization-Level Runner
+
+To use the runner across all repos in your organization:
+
+1. Change `.env` configuration:
+   ```bash
+   # In docker-compose.yml, update environment:
+   RUNNER_SCOPE=org  # instead of 'repo'
+   ```
+
+2. Update `GITHUB_REPO_URL` to organization URL:
+   ```bash
+   # e.g., https://github.com/your-org
+   ```
+
+3. Redeploy:
+   ```bash
+   docker compose up -d github-runner
+   ```
+
 ## Access URLs (via Traefik on edge VM)
 
-- **Gitea:** https://git.yourdomain.com
+- **Gitea:** https://git.yourdomain.com (not actively used)
 - **Dokploy:** https://deploy.yourdomain.com
-- **Container Registry:** git.yourdomain.com (Docker registry endpoint)
+- **Docker Registry:** http://10.10.10.114:5000 (internal network only)

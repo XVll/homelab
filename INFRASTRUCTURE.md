@@ -64,7 +64,8 @@
 - [ ] Jellyfin, Arr Stack, qBittorrent (media host - 10.10.10.113)
 - [ ] n8n, Paperless (media host - 10.10.10.113)
 - [x] **Gitea** (dev host - 10.10.10.114:3001) - Git hosting + Container Registry + Gitea Actions
-- [x] **act_runner** (dev host - 10.10.10.114) - CI/CD runner registered and idle
+- [x] **act_runner** (dev host - 10.10.10.114) - Self-hosted CI/CD runner for Gitea Actions (works for ALL repos)
+- [x] **GitHub → Gitea Mirror Workflow** - Push to GitHub, auto-mirror to Gitea, CI/CD runs on act_runner
 - [x] **Dokploy** (deploy host - 10.10.10.115:3000) - Deployment platform, accessible via https://deploy.onurx.com
 - [x] **Home Assistant** (ha host - 10.10.10.116:8123) - Home automation platform, accessible via https://ha.onurx.com
 
@@ -272,6 +273,46 @@ MQTT_WS_PORT: 9003  # WebSockets (optional)
 - ✅ Lower resource usage
 - ✅ Consistent connection patterns
 - ✅ Single source of truth for data
+
+---
+
+### GitHub → Gitea CI/CD Workflow
+
+**Strategy:** Use GitHub as primary (industry standard), auto-mirror to Gitea for self-hosted CI/CD.
+
+**Workflow:**
+```
+You → Push to GitHub → GitHub mirrors to Gitea → Gitea Actions (act_runner) → Build/Test/Deploy
+```
+
+**Setup:**
+1. Create repo in Gitea (or use pull mirror)
+2. Add GitHub Action to mirror pushes to Gitea (see `dev/GITHUB-GITEA-WORKFLOW.md`)
+3. Create `.gitea/workflows/*.yml` files (same syntax as GitHub Actions)
+4. Push to GitHub → CI/CD runs automatically on your homelab runner
+
+**Gitea Container Registry:**
+```bash
+# Login
+docker login git.onurx.com -u <username> -p <token>
+
+# Push image
+docker tag myapp:latest git.onurx.com/username/myapp:latest
+docker push git.onurx.com/username/myapp:latest
+
+# Use in Dokploy or compose files
+image: git.onurx.com/username/myapp:latest
+```
+
+**Benefits:**
+- ✅ Keep using GitHub (industry standard, familiar)
+- ✅ One runner for ALL repos (no organization needed)
+- ✅ No runner minute limits
+- ✅ Access to homelab services in CI/CD
+- ✅ Self-hosted container registry included
+- ✅ Real-time sync from GitHub
+
+**Full guide:** `dev/GITHUB-GITEA-WORKFLOW.md`
 
 ---
 
