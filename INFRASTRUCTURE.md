@@ -11,6 +11,7 @@
 - [x] PostgreSQL (db host - 10.10.10.111)
 - [x] Redis (db host - 10.10.10.111)
 - [x] MinIO (db host - 10.10.10.111)
+- [x] Mosquitto MQTT (db host - 10.10.10.111:1883) - For Home Assistant bridge application
 - [x] Portainer (observability host - 10.10.10.112)
 
 ### Phase 2: Edge Services ✅ DONE
@@ -27,10 +28,24 @@
 - [x] Alloy (db host - 10.10.10.111) - Logs-only shipper, sends to central Loki
 - [x] Alloy (edge host - 10.10.10.110) - Logs-only shipper, sends to central Loki
 - [x] Alloy (media host - 10.10.10.113) - Logs-only shipper, sends to central Loki
+- [x] Alloy (dev host - 10.10.10.114) - Logs-only shipper, sends to central Loki
+- [x] Alloy (deploy host - 10.10.10.115) - Logs-only shipper, sends to central Loki
 - [x] **Centralized Logging** - All Docker logs from all VMs flow to Loki, queryable in Grafana
 - [x] Beszel Hub (observability host - 10.10.10.112:8090) - Lightweight monitoring dashboard
-- [x] Beszel Agent (all 4 VMs) - System + Docker metrics, auto-registered with universal token
+- [x] Beszel Agent (edge VM) - System + Docker metrics
+- [x] Beszel Agent (db VM) - System + Docker metrics
+- [x] Beszel Agent (dev VM) - System + Docker metrics
+- [x] Beszel Agent (media VM) - System + Docker metrics
+- [x] Beszel Agent (observability VM) - System + Docker metrics
+- [x] Beszel Agent (deploy VM) - System + Docker metrics
+- [x] Beszel Agent (ha VM) - System metrics (Home Assistant OS addon)
 - [x] **Quick Monitoring** - Real-time CPU, memory, disk, network, Docker stats for all VMs
+- [x] **✅ Full Infrastructure Monitoring Audit Complete (2025-10-28)**
+  - All VMs now have Alloy + Beszel monitoring
+  - Health checks added to all services where applicable
+  - DNS fixed on all VMs (removed 10.10.10.1 gateway, using only AdGuard 10.10.10.110)
+  - Portainer Agents deployed on edge, db, dev, media VMs (NOT on deploy/ha - handled by Dokploy/HA OS)
+  - All services healthy and reporting to central observability stack
 - [x] **✅ VirtioFS Migration Complete** - All VMs migrated to standard git workflow (2025-10-27)
   - Removed VirtioFS mounts from all VMs
   - Configured git remotes to Gitea (https://git.onurx.com/fx/homelab)
@@ -69,12 +84,12 @@
 - **Action:** Implement automated backup solution (Restic, borgmatic, or custom scripts)
 - **Priority:** CRITICAL
 
-**2. Missing Monitoring Agents:**
-- [ ] dev VM (10.10.10.114) - No Alloy (logs missing), No Beszel (metrics missing), No Portainer agent
-- [ ] deploy VM (10.10.10.115) - No Alloy, No Beszel, No Portainer agent
-- [ ] ha VM (10.10.10.116) - No Alloy, No Beszel (Home Assistant OS - special handling needed)
-- **Action:** Deploy monitoring agents to all VMs
-- **Priority:** CRITICAL
+**2. ✅ COMPLETED - Monitoring Agents Deployed:**
+- [x] dev VM (10.10.10.114) - Alloy, Beszel, Portainer agent deployed
+- [x] deploy VM (10.10.10.115) - Alloy, Beszel deployed (no Portainer - Dokploy handles management)
+- [x] ha VM (10.10.10.116) - Beszel addon installed (Home Assistant OS)
+- [x] observability VM (10.10.10.112) - All services audited, health checks added
+- **Status:** COMPLETE (2025-10-28)
 
 **3. Authentication & Security Gaps:**
 - [ ] Prometheus - No authentication (anyone can query metrics)
@@ -218,6 +233,7 @@ Every service in `edge/traefik/config/dynamic/routers.yml` MUST have either:
 - **MongoDB** - For any app needing NoSQL/document database
 - **Redis** - For caching, sessions, queues
 - **MinIO** - For object storage (S3-compatible)
+- **Mosquitto MQTT** - For message broker / IoT communication
 
 **How to connect:**
 ```yaml
@@ -234,6 +250,13 @@ REDIS_URL: redis://:password@10.10.10.111:6379/0
 S3_ENDPOINT: http://10.10.10.111:9000
 AWS_ACCESS_KEY_ID: (from 1Password)
 AWS_SECRET_ACCESS_KEY: (from 1Password)
+
+# MQTT (Mosquitto)
+MQTT_BROKER: 10.10.10.111
+MQTT_PORT: 1883
+MQTT_WS_PORT: 9003  # WebSockets (optional)
+# Anonymous connections enabled by default
+# To add auth: docker exec mosquitto mosquitto_passwd -c /mosquitto/config/passwd username
 ```
 
 **For new apps:**
