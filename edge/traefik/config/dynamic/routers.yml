@@ -226,13 +226,3 @@ http:
       service: king-backend
       tls:
         certResolver: cloudflare
-
-    # King Game WebSocket (Coolify domain with dot) - Points to same backend
-    ws-king:
-      rule: "Host(`ws.king.onurx.com`)"
-      entryPoints:
-        - websecure
-      service: king-backend
-      tls:
-        certResolver: cloudflare
-

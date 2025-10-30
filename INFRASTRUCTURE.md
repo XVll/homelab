@@ -29,7 +29,7 @@
 - [x] Alloy (edge host - 10.10.10.110) - Logs-only shipper, sends to central Loki
 - [x] Alloy (media host - 10.10.10.113) - Logs-only shipper, sends to central Loki
 - [x] Alloy (dev host - 10.10.10.114) - Logs-only shipper, sends to central Loki
-- [x] Alloy (deploy host - 10.10.10.115) - Logs-only shipper, sends to central Loki
+- [ ] Alloy (deploy host - 10.10.10.101) - TODO: Deploy Alloy to new Coolify VM
 - [x] **Centralized Logging** - All Docker logs from all VMs flow to Loki, queryable in Grafana
 - [x] Beszel Hub (observability host - 10.10.10.112:8090) - Lightweight monitoring dashboard
 - [x] Beszel Agent (edge VM) - System + Docker metrics
@@ -37,7 +37,7 @@
 - [x] Beszel Agent (dev VM) - System + Docker metrics
 - [x] Beszel Agent (media VM) - System + Docker metrics
 - [x] Beszel Agent (observability VM) - System + Docker metrics
-- [x] Beszel Agent (deploy VM) - System + Docker metrics
+- [ ] Beszel Agent (deploy VM 101) - TODO: Deploy Beszel agent to new Coolify VM
 - [x] Beszel Agent (ha VM) - System metrics (Home Assistant OS addon)
 - [x] **Quick Monitoring** - Real-time CPU, memory, disk, network, Docker stats for all VMs
 - [x] **✅ Full Infrastructure Monitoring Audit Complete (2025-10-28)**
@@ -66,8 +66,20 @@
 - [x] **Gitea** (dev host - 10.10.10.114:3001) - Git hosting + Container Registry + Gitea Actions
 - [x] **act_runner** (dev host - 10.10.10.114) - Self-hosted CI/CD runner for Gitea Actions (works for ALL repos)
 - [x] **GitHub → Gitea Mirror Workflow** - Push to GitHub, auto-mirror to Gitea, CI/CD runs on act_runner
-- [x] **Dokploy** (deploy host - 10.10.10.115:3000) - Deployment platform, accessible via https://deploy.onurx.com
 - [x] **Home Assistant** (ha host - 10.10.10.116:8123) - Home automation platform, accessible via https://ha.onurx.com
+- [x] **Coolify** (deploy host - 10.10.10.101) - Deployment platform, accessible via https://deploy.onurx.com
+- [x] **King App** (deploy host - 10.10.10.101 via Coolify) - Turkish card game, backend + frontend deployed
+
+### ✅ Phase 5: Deployment Platform Migration (2025-10-30)
+- [x] **Coolify deployed on VM 101** - New deploy host at 10.10.10.101
+- [x] **King app migrated from Dokploy to Coolify**
+- [x] **Dokploy REMOVED** (old deploy VM 115 - 10.10.10.115)
+  - All Dokploy Docker Swarm services stopped and removed
+  - All volumes and networks cleaned up (reclaimed 7.5GB)
+  - Docker Swarm mode disabled
+  - Orphaned Dokploy volumes removed from dev VM (10.10.10.114)
+  - **Next:** VM 115 ready for deletion from Proxmox
+  - **Reason:** Coolify preferred over Dokploy for deployment management
 
 ---
 
@@ -85,12 +97,12 @@
 - **Action:** Implement automated backup solution (Restic, borgmatic, or custom scripts)
 - **Priority:** CRITICAL
 
-**2. ✅ COMPLETED - Monitoring Agents Deployed:**
+**2. ⚠️ PARTIALLY COMPLETE - Monitoring Agents:**
 - [x] dev VM (10.10.10.114) - Alloy, Beszel, Portainer agent deployed
-- [x] deploy VM (10.10.10.115) - Alloy, Beszel deployed (no Portainer - Dokploy handles management)
+- [ ] deploy VM (10.10.10.101) - TODO: Deploy Alloy + Beszel to new Coolify VM
 - [x] ha VM (10.10.10.116) - Beszel addon installed (Home Assistant OS)
 - [x] observability VM (10.10.10.112) - All services audited, health checks added
-- **Status:** COMPLETE (2025-10-28)
+- **Status:** Need to add monitoring to new deploy VM 101
 
 **3. Authentication & Security Gaps:**
 - [ ] Prometheus - No authentication (anyone can query metrics)
@@ -193,9 +205,10 @@
 | edge (110) | ✅ | ✅ | ✅ | ⚠️ Traefik exposed | ✅ Config in git |
 | observability (112) | ✅ | ✅ | ✅ | ❌ No auth on metrics | ✅ Config in git |
 | media (113) | ✅ | ✅ | ✅ | N/A (no services yet) | N/A |
-| dev (114) | ❌ | ❌ | ❌ | ⚠️ Gitea own auth | ❌ **NO BACKUPS** |
-| deploy (115) | ❌ | ❌ | ❌ | ⚠️ Dokploy own auth | ❌ **NO BACKUPS** |
+| dev (114) | ✅ | ✅ | ✅ | ⚠️ Gitea own auth | ❌ **NO BACKUPS** |
+| deploy (101) | ❌ | ❌ | ❌ | ⚠️ Coolify own auth | ❌ **NO BACKUPS** |
 | ha (116) | ❌ | ❌ | N/A | ✅ HA own auth | ⚠️ Via HA backups |
+| ~~deploy (115)~~ | ❌ DELETED | ❌ DELETED | ❌ | ~~Dokploy removed~~ | N/A |
 | Synology | ❓ | ❓ | N/A | ❓ | ❓ **AUDIT NEEDED** |
 
 **Legend:** ✅ Configured | ❌ Missing | ⚠️ Partial/Issues | ❓ Unknown | N/A Not applicable

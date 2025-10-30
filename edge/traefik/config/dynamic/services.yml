@@ -83,7 +83,7 @@ http:
     dmo:
       loadBalancer:
         servers:
-          - url: "http://10.10.10.51:3000"
+          - url: "http://10.10.10.101:3000"
 
     # King game - Deployed on Dokploy (10.10.10.115)
     # Frontend (Next.js) - Port assigned by Dokploy
