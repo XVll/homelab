@@ -90,13 +90,13 @@ http:
     king:
       loadBalancer:
         servers:
-          - url: "http://10.10.10.115:3010"
+          - url: "http://10.10.10.101:3010"
 
     # King game - Backend (WebSocket server) - Port assigned by Dokploy
     king-backend:
       loadBalancer:
         servers:
-          - url: "http://10.10.10.115:3015"
+          - url: "http://10.10.10.101:3015"
 
     # Old Home Assistant (pointing to old server temporarily)
     homeassistant:
