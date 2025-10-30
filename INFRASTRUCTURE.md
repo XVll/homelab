@@ -37,7 +37,7 @@
 - [x] Beszel Agent (dev VM) - System + Docker metrics
 - [x] Beszel Agent (media VM) - System + Docker metrics
 - [x] Beszel Agent (observability VM) - System + Docker metrics
-- [x] Beszel Agent (deploy VM 101) - ⚠️ Deployed (using .env.local workaround - see Known Issues)
+- [x] Beszel Agent (deploy VM 101) - ✅ Deployed
 - [x] Beszel Agent (ha VM) - System metrics (Home Assistant OS addon)
 - [x] **Quick Monitoring** - Real-time CPU, memory, disk, network, Docker stats for all VMs
 - [x] **✅ Full Infrastructure Monitoring Audit Complete (2025-10-28)**
@@ -212,37 +212,6 @@
 | Synology | ❓ | ❓ | N/A | ❓ | ❓ **AUDIT NEEDED** |
 
 **Legend:** ✅ Configured | ❌ Missing | ⚠️ Partial/Issues | ❓ Unknown | N/A Not applicable
-
----
-
-## Known Issues & Workarounds
-
-### 🔴 VM 101 (deploy): 1Password CLI Authentication Failure
-
-**Issue:** 1Password CLI fails on VM 101 with error: "Signin credentials are not compatible with the provided user auth from server"
-
-**Investigation:**
-- Same service account token works on all other VMs (114, 112, 110, 111)
-- Same 1Password CLI version (2.32.0)
-- Same OS (Debian 13)
-- Network connectivity to 1Password servers verified
-- Fresh CLI reinstall does not resolve
-- Clearing config cache does not resolve
-
-**Workaround:**
-- Created `/opt/homelab/deploy/.env.local` with hardcoded credentials
-- Added `*.env.local` to `.gitignore` (not committed)
-- Deploy services using: `docker compose --env-file=.env.local up -d`
-
-**Impact:**
-- ✅ Services work (Beszel agent deployed successfully)
-- ⚠️ Cannot use `op run` pattern on this VM
-- ⚠️ Credentials must be managed manually for deploy VM
-
-**TODO:**
-- [ ] Add Beszel deploy-vm credentials to 1Password vault (for documentation/backup)
-- [ ] Consider VM recreation if 1Password becomes critical
-- [ ] Alternative: Use Coolify's built-in secrets management
 
 ---
 
