@@ -1,10 +1,35 @@
-
-# DEPLOY HOST: Dokploy Deployment Platform + Monitoring
-# Dokploy is installed separately via: curl -sSL https://dokploy.com/install.sh | sh
-# This compose file only manages monitoring infrastructure (Alloy + Beszel)
-# Note: No Portainer Agent - Dokploy handles container management
+# ============================================================================
+# DEPLOY VM (10.10.10.101) - Application Deployment Platform
+# ============================================================================
+# Coolify: Self-hosted PaaS for deploying applications
+# Coolify is installed separately via: curl -fsSL https://cdn.coollabs.io/coolify/install.sh | bash
+# This compose file only manages monitoring infrastructure (Alloy + Beszel + Portainer Agent)
+# ============================================================================
 
 services:
+  # ============================================================================
+  # PORTAINER AGENT - Container Management
+  # ============================================================================
+  # Connects to Portainer on observability VM (10.10.10.112:9443)
+
+  portainer-agent:
+    image: portainer/agent:latest
+    container_name: portainer-agent
+    restart: always
+    ports:
+      - "9001:9001"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/volumes:/var/lib/docker/volumes
+      - /:/host
+    networks:
+      - deploy_net
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
   # ============================================================================
   # ALLOY - Log Shipper (sends Docker logs to Loki on observability VM)
   # ============================================================================
@@ -18,7 +43,7 @@ services:
       - ./alloy/config:/etc/alloy
     command: run --server.http.listen-addr=0.0.0.0:12345 --storage.path=/var/lib/alloy/data /etc/alloy/config.alloy
     ports:
-      - "10.10.10.115:12345:12345"  # Alloy UI
+      - "10.10.10.101:12345:12345"  # Alloy UI
     networks:
       - deploy_net
     healthcheck:

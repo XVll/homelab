@@ -73,10 +73,10 @@ http:
         servers:
           - url: "http://10.10.10.114:3001"
 
-    dokploy:
+    coolify:
       loadBalancer:
         servers:
-          - url: "http://10.10.10.115:3000"
+          - url: "http://10.10.10.101:8000"
 
     # OLD Proxmox Services (Temporary - to be migrated)
     # Old Coolify DMO app

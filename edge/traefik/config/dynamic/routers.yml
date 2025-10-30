@@ -145,12 +145,12 @@ http:
       tls:
         certResolver: cloudflare
 
-    # Dokploy (Deployment Platform)
-    dokploy:
+    # Coolify (Deployment Platform)
+    coolify:
       rule: "Host(`deploy.onurx.com`)"
       entryPoints:
         - websecure
-      service: dokploy
+      service: coolify
       middlewares:
         - private-default
         - forwarded-headers
