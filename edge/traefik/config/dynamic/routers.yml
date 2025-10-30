@@ -145,14 +145,14 @@ http:
       tls:
         certResolver: cloudflare
 
-    # Coolify (Deployment Platform)
+    # Coolify (Deployment Platform) - Public (has own auth)
     coolify:
       rule: "Host(`deploy.onurx.com`)"
       entryPoints:
         - websecure
       service: coolify
       middlewares:
-        - private-default
+        - public-access
         - forwarded-headers
       tls:
         certResolver: cloudflare
