@@ -29,7 +29,7 @@
 - [x] Alloy (edge host - 10.10.10.110) - Logs-only shipper, sends to central Loki
 - [x] Alloy (media host - 10.10.10.113) - Logs-only shipper, sends to central Loki
 - [x] Alloy (dev host - 10.10.10.114) - Logs-only shipper, sends to central Loki
-- [ ] Alloy (deploy host - 10.10.10.101) - TODO: Deploy Alloy to new Coolify VM
+- [x] Alloy (deploy host - 10.10.10.101) - ✅ Deployed, logs flowing to Loki
 - [x] **Centralized Logging** - All Docker logs from all VMs flow to Loki, queryable in Grafana
 - [x] Beszel Hub (observability host - 10.10.10.112:8090) - Lightweight monitoring dashboard
 - [x] Beszel Agent (edge VM) - System + Docker metrics
@@ -46,8 +46,6 @@
   - DNS fixed on all VMs (removed 10.10.10.1 gateway, using only AdGuard 10.10.10.110)
   - Portainer Agents deployed on edge, db, dev, media VMs (NOT on deploy/ha - handled by Dokploy/HA OS)
   - All services healthy and reporting to central observability stack
-- [x] **✅ VirtioFS Migration Complete** - All VMs migrated to standard git workflow (2025-10-27)
-  - Removed VirtioFS mounts from all VMs
   - Configured git remotes to Gitea (https://git.onurx.com/fx/homelab)
   - Repository made public (no auth needed for pulls)
   - All services restarted with proper 1Password secrets
@@ -67,7 +65,7 @@
 - [x] **act_runner** (dev host - 10.10.10.114) - Self-hosted CI/CD runner for Gitea Actions (works for ALL repos)
 - [x] **GitHub → Gitea Mirror Workflow** - Push to GitHub, auto-mirror to Gitea, CI/CD runs on act_runner
 - [x] **Home Assistant** (ha host - 10.10.10.116:8123) - Home automation platform, accessible via https://ha.onurx.com
-- [x] **Coolify** (deploy host - 10.10.10.101) - Deployment platform, accessible via https://deploy.onurx.com
+- [x] **Coolify** (deploy host - 10.10.10.101) - Deployment platform, accessible via https://deploy.onurx.com (PUBLIC - has own auth, GitHub webhooks working)
 - [x] **King App** (deploy host - 10.10.10.101 via Coolify) - Turkish card game, backend + frontend deployed
 
 ### ✅ Phase 5: Deployment Platform Migration (2025-10-30)
@@ -89,20 +87,21 @@
 
 ### 🔴 CRITICAL - Must Fix Immediately
 
-**1. Database Backups Missing:**
-- [ ] MongoDB - No backup strategy (critical data!)
-- [ ] PostgreSQL - No backup strategy (critical data!)
-- [ ] MinIO - No backup strategy (critical data!)
-- [ ] Gitea repos - No backup configured
-- **Action:** Implement automated backup solution (Restic, borgmatic, or custom scripts)
+**1. Backup Strategy Not Implemented:**
+- [ ] Proxmox Backup Server (PBS) - Not set up yet
+- [ ] OR vzdump to Synology NAS - Alternative option
+- [ ] No automated VM backups configured
+- **Current Status:** No vzdump cron jobs exist, no PBS connected
+- **Action:** Set up PBS or configure vzdump to NAS for VM-level backups
 - **Priority:** CRITICAL
+- **Note:** VM backups cover all databases, configs, and application data
 
-**2. ⚠️ PARTIALLY COMPLETE - Monitoring Agents:**
+**2. ✅ COMPLETE - Monitoring Agents:**
 - [x] dev VM (10.10.10.114) - Alloy, Beszel, Portainer agent deployed
-- [x] deploy VM (10.10.10.101) - Beszel deployed ⚠️ Alloy still TODO
+- [x] deploy VM (10.10.10.101) - Alloy, Beszel deployed ✅ ALL COMPLETE
 - [x] ha VM (10.10.10.116) - Beszel addon installed (Home Assistant OS)
 - [x] observability VM (10.10.10.112) - All services audited, health checks added
-- **Status:** Need to add Alloy to deploy VM 101
+- **Status:** ✅ All VMs have monitoring agents deployed
 
 **3. Authentication & Security Gaps:**
 - [ ] Prometheus - No authentication (anyone can query metrics)
@@ -194,8 +193,10 @@
 **10. Cloudflare Tunnels Migration (Planned):**
 - [ ] Current setup works but exposes IP via onurx.com A record
 - [ ] Plan: Move to Cloudflare Tunnels for better security
+- **Benefits beyond security:** DDoS protection, hide home IP, no port forwarding, automatic failover, CDN
 - **Blocker:** Email service uses @onurx.com - must migrate email first
 - **Priority:** LOW (current setup is secure with IP whitelist)
+- **Decision:** Will implement after email migration (not urgent)
 
 ### 📊 VM-by-VM Audit Status
 
@@ -206,7 +207,7 @@
 | observability (112) | ✅ | ✅ | ✅ | ❌ No auth on metrics | ✅ Config in git |
 | media (113) | ✅ | ✅ | ✅ | N/A (no services yet) | N/A |
 | dev (114) | ✅ | ✅ | ✅ | ⚠️ Gitea own auth | ❌ **NO BACKUPS** |
-| deploy (101) | ❌ | ✅ | ❌ | ⚠️ Coolify own auth | ❌ **NO BACKUPS** |
+| deploy (101) | ✅ | ✅ | ✅ | ✅ Coolify public+auth | ❌ **NO BACKUPS** |
 | ha (116) | ❌ | ❌ | N/A | ✅ HA own auth | ⚠️ Via HA backups |
 | ~~deploy (115)~~ | ❌ DELETED | ❌ DELETED | ❌ | ~~Dokploy removed~~ | N/A |
 | Synology | ❓ | ❓ | N/A | ❓ | ❓ **AUDIT NEEDED** |
@@ -234,7 +235,11 @@ Every service in `edge/traefik/config/dynamic/routers.yml` MUST have either:
 - Private services from home/VPN → Works ✅
 - Public services from anywhere → Works ✅
 
-**Current Public Services:** ha, dmo, king, wsking (old services only)
+**Current Public Services:**
+- ha.onurx.com (Home Assistant)
+- dmo.onurx.com (Old app)
+- king.onurx.com / wsking.onurx.com (King game)
+- deploy.onurx.com (Coolify - added 2025-10-31 for GitHub webhooks)
 
 ---
 
@@ -670,9 +675,6 @@ S3_ENDPOINT: http://10.10.10.111:9000
 
 ---
 
-### Git Workflow ✅ NEW (VirtioFS Removed)
-
-**Migration Complete:** All VMs now use standard git workflow (VirtioFS removed on 2025-10-27)
 
 **Architecture:**
 - Each VM has full git repository at `/opt/homelab/`
@@ -694,18 +696,6 @@ origin: https://git.onurx.com/fx/homelab.git
 # Branch tracking
 main → origin/main
 
-# No authentication needed (public repository)
-git pull  # Just works
-```
-
-**Benefits of Git vs VirtioFS:**
-- ✅ Proper file change notifications (file watching works)
-- ✅ Standard git workflow (commit history, diffs, rollbacks)
-- ✅ No permission issues between host/guest
-- ✅ VMs are truly independent (can work offline)
-- ✅ Better for Traefik config reloading
-
----
 
 ## Common Commands
 
