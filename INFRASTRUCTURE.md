@@ -1036,6 +1036,129 @@ Deploy in order:
    - Verify Authentik forward auth works
    - Decommission old infrastructure
 
+---
+
+## Development Stack Enhancement (Phase 5 - Planning)
+
+### ✅ Approved for Implementation
+
+**1. SonarQube** - Code Quality & Security Analysis
+- **Purpose**: Static code analysis, security vulnerability detection, code smells, test coverage
+- **Requirements**: PostgreSQL (✅ have), 4GB RAM, 2 vCPU
+- **Deploy Location**: Create new `tools` VM (10.10.10.117) or add to `dev` VM
+- **Integration**: Gitea Actions plugin for automated scans
+- **Action**: Deploy once VM decision is made
+
+**2. Trivy** - Container Security Scanner
+- **Purpose**: Scan Docker images for CVEs before deployment
+- **Requirements**: Minimal (runs in CI/CD pipeline)
+- **Deploy Location**: Gitea Actions workflows (all repositories)
+- **Integration**: Add `.gitea/workflows/security.yml` to scan on every push
+- **Action**: Create template workflow and add to all active projects
+
+---
+
+### 🤔 Under Evaluation
+
+**3. Database Visualization Tools**
+- **Options to evaluate**:
+  - **pgAdmin 4**: Official PostgreSQL GUI (512MB RAM)
+  - **RedisInsight**: Official Redis GUI (512MB RAM)
+  - **Mongo Express**: MongoDB web GUI (minimal)
+  - **DBeaver**: Desktop app alternative (not self-hosted)
+- **Questions**:
+  - Which databases do we use most often?
+  - CLI vs GUI preference for different use cases?
+  - Security considerations (expose DB tools via Traefik?)
+- **Deploy Location**: `db` VM (10.10.10.111)
+- **Action**: Evaluate use cases and decide which tools provide most value
+
+**4. API Testing Tool** - Choose One
+- **Option A: Bruno** (Git-friendly, desktop + Docker)
+  - Pros: Collections stored as files in Git, privacy-focused, offline-first
+  - Cons: Newer project, smaller community
+  - Requirements: 1GB RAM
+- **Option B: Hoppscotch** (Web-based, open-source Postman)
+  - Pros: Beautiful UI, WebSocket/GraphQL support, collaborative, established
+  - Cons: Requires PostgreSQL, web-only
+  - Requirements: 1GB RAM + PostgreSQL
+- **Questions**:
+  - Prefer desktop app or web UI?
+  - Need Git-tracked collections (Bruno) or database-backed (Hoppscotch)?
+  - Team collaboration features needed?
+- **Deploy Location**: `dev` VM or `tools` VM
+- **Action**: Test both, decide based on workflow preferences
+
+**5. code-server** - VS Code in Browser
+- **Purpose**: Remote development, access dev environment from any device
+- **Requirements**: 2GB RAM, 1 vCPU
+- **Questions to Answer**:
+  - What specific use cases would benefit from browser-based IDE?
+  - Remote access via iPad/mobile for quick fixes?
+  - Security model - how to secure properly?
+  - Performance compared to local VS Code with SSH?
+- **Deploy Location**: `dev` VM or `tools` VM
+- **Action**: Discuss use cases before deciding
+
+**6. HashiCorp Vault** - Advanced Secret Management
+- **Purpose**: Dynamic secrets, encryption-as-a-service, centralized secret management
+- **Current**: 1Password CLI works but requires manual `op://` references in `.env` files
+- **Vault Benefits**:
+  - Dynamic database credentials (auto-rotate)
+  - Secret versioning and audit logs
+  - Encryption as a service
+  - Kubernetes integration (if we add K8s later)
+  - API-first (services pull secrets directly)
+- **Vault Challenges**:
+  - More complex setup and management
+  - Requires PostgreSQL backend
+  - Unsealing process on restarts
+  - 1GB RAM + 1 vCPU
+- **Questions**:
+  - What are the main pain points with 1Password CLI?
+  - Need for dynamic secrets (e.g., temp DB credentials)?
+  - Is `.env` file approach with `op://` sustainable long-term?
+- **Deploy Location**: `db` VM or `tools` VM
+- **Action**: Document 1Password pain points, evaluate if Vault solves real problems
+
+**7. Docusaurus / MkDocs** - Documentation Platform
+- **Purpose**: Project documentation, runbooks, knowledge base
+- **Questions**:
+  - What would you document? (Infrastructure runbooks, project docs, API references?)
+  - Current documentation pain points?
+  - Value for personal projects vs only public/team projects?
+- **Use Cases to Consider**:
+  - Infrastructure runbooks (backup procedures, disaster recovery)
+  - Service-specific guides (Traefik patterns, database migrations)
+  - Project-specific API docs
+  - Onboarding docs (if you share infrastructure access)
+- **Personal Project Value**:
+  - "Future you" will thank "present you" for docs
+  - Useful if projects grow or you share with others
+  - Good for complex projects with many components
+- **Recommendation**: Start with Markdown files in Git, migrate to Docusaurus if complexity grows
+- **Deploy Location**: Static site on Coolify (per project)
+- **Action**: Evaluate if current INFRASTRUCTURE.md approach is sufficient
+
+**8. Plane vs Notion** - Project Management
+- **Plane** (Self-hosted, Jira alternative):
+  - Pros: Full ownership, integrates with Gitea, offline-capable
+  - Cons: More setup/maintenance, 2GB RAM + PostgreSQL + Redis + MinIO
+  - Best for: Development-focused task tracking, sprints, issue management
+- **Notion** (Cloud SaaS):
+  - Pros: Zero maintenance, rich features, mobile apps, established
+  - Cons: Vendor lock-in, requires internet, privacy concerns
+  - Best for: Notes, docs, databases, personal knowledge management
+- **Questions**:
+  - What's your current workflow? Already using Notion?
+  - Need for developer-specific features (Git integration, issue tracking)?
+  - Privacy concerns with cloud-hosted task data?
+- **Recommendation**:
+  - If already using Notion and happy → stick with it
+  - If you want self-hosted + Git integration → consider Plane
+  - Middle ground: Use Notion for notes/docs, Gitea Issues for project tasks
+- **Action**: Evaluate current workflow, decide if self-hosted PM is worth the complexity
+
 ### Important Notes
 - **Authentik Forward Auth**: Uses embedded outpost (no separate container needed)
 - **Forward Auth Endpoint**: `http://authentik-server:9000/outpost.goauthentik.io/auth/traefik`
