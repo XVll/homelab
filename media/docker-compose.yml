@@ -3,6 +3,17 @@
 # ============================================================================
 # Plex + Overseerr + Arr Stack + SABnzbd + qBittorrent (via VPN) + Bazarr + Notifiarr
 #
+# VOLUME MAPPING STRATEGY:
+# - ALL services mount /mnt/nas/media → /media (single source of truth)
+# - System configs stay in /opt/homelab/media/<service>/config
+# - NAS structure:
+#   /mnt/nas/media/
+#     ├── library/movies/     (final media - read by Plex)
+#     ├── library/tv/         (final media - read by Plex)
+#     └── downloads/          (temp download location)
+#         ├── sabnzbd/        (Usenet downloads)
+#         └── torrents/       (Torrent downloads)
+#
 # DEPLOYMENT ORDER:
 # 1. Plex (media server)
 # 2. SABnzbd (Usenet downloader - PRIMARY)
@@ -88,8 +99,7 @@ services:
   # PLEX - Media Server (with Plex Pass hardware transcoding)
   # ============================================================================
   # Access: http://10.10.10.113:32400/web
-  # Initial setup: Get claim token from https://www.plex.tv/claim/
-  # Note: GPU passthrough commented out - uncomment when GPU added
+  # Libraries: /media/library/movies, /media/library/tv
 
   plex:
     image: plexinc/pms-docker:latest
@@ -99,7 +109,6 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=UTC
-      # PLEX_CLAIM not needed - claim via SSH tunnel on first run
       - ADVERTISE_IP=http://10.10.10.113:32400/
     ports:
       - "10.10.10.113:32400:32400/tcp"    # Web UI
@@ -114,7 +123,7 @@ services:
     volumes:
       - ./plex/config:/config
       - ./plex/transcode:/transcode
-      - /mnt/nas/media/library:/media:ro
+      - /mnt/nas/media:/media:ro
     # Uncomment when GPU is added:
     # devices:
     #   - /dev/dri:/dev/dri
@@ -136,7 +145,8 @@ services:
   # SABNZBD - Usenet Downloader (PRIMARY - Newshosting)
   # ============================================================================
   # Access: http://10.10.10.113:8085
-  # Configure Newshosting: news.newshosting.com:563 (SSL)
+  # Configure in UI: Temp folder = /media/downloads/sabnzbd/incomplete
+  #                  Completed folder = /media/downloads/sabnzbd/complete
 
   sabnzbd:
     image: lscr.io/linuxserver/sabnzbd:latest
@@ -150,7 +160,7 @@ services:
       - "10.10.10.113:8085:8080"
     volumes:
       - ./sabnzbd/config:/config
-      - /mnt/nas/media/downloads/sabnzbd:/downloads
+      - /mnt/nas/media:/media
     networks:
       - media_net
     healthcheck:
@@ -207,6 +217,7 @@ services:
   # Access: http://10.10.10.113:8080
   # Default user: admin, password: check logs on first run
   # IMPORTANT: Uses Gluetun's network (all traffic via VPN)
+  # Configure in UI: Default Save Path = /media/downloads/torrents/complete
 
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:latest
@@ -220,7 +231,7 @@ services:
       - WEBUI_PORT=8080
     volumes:
       - ./qbittorrent/config:/config
-      - /mnt/nas/media/downloads/torrents:/downloads
+      - /mnt/nas/media:/media
     depends_on:
       - gluetun
     logging:
@@ -266,8 +277,8 @@ services:
   # SONARR - TV Show Automation
   # ============================================================================
   # Access: http://10.10.10.113:8989
-  # Root folder: /tv
-  # Download path: /downloads
+  # Root folder: /media/library/tv
+  # Download paths: /media/downloads/sabnzbd/complete, /media/downloads/torrents/complete
 
   sonarr:
     image: lscr.io/linuxserver/sonarr:latest
@@ -281,8 +292,7 @@ services:
       - "10.10.10.113:8989:8989"
     volumes:
       - ./sonarr/config:/config
-      - /mnt/nas/media/library/tv:/tv
-      - /mnt/nas/media/downloads:/downloads
+      - /mnt/nas/media:/media
     networks:
       - media_net
     healthcheck:
@@ -301,8 +311,8 @@ services:
   # RADARR - Movie Automation
   # ============================================================================
   # Access: http://10.10.10.113:7878
-  # Root folder: /movies
-  # Download path: /downloads
+  # Root folder: /media/library/movies
+  # Download paths: /media/downloads/sabnzbd/complete, /media/downloads/torrents/complete
 
   radarr:
     image: lscr.io/linuxserver/radarr:latest
@@ -316,8 +326,7 @@ services:
       - "10.10.10.113:7878:7878"
     volumes:
       - ./radarr/config:/config
-      - /mnt/nas/media/library/movies:/movies
-      - /mnt/nas/media/downloads:/downloads
+      - /mnt/nas/media:/media
     networks:
       - media_net
     healthcheck:
@@ -336,7 +345,7 @@ services:
   # BAZARR - Subtitle Automation
   # ============================================================================
   # Access: http://10.10.10.113:6767
-  # Auto-downloads subtitles for Sonarr/Radarr content
+  # Movies: /media/library/movies, TV: /media/library/tv
 
   bazarr:
     image: lscr.io/linuxserver/bazarr:latest
@@ -350,8 +359,7 @@ services:
       - "10.10.10.113:6767:6767"
     volumes:
       - ./bazarr/config:/config
-      - /mnt/nas/media/library/movies:/movies
-      - /mnt/nas/media/library/tv:/tv
+      - /mnt/nas/media:/media
     networks:
       - media_net
     healthcheck:
