@@ -38,16 +38,13 @@ User → Overseerr (requests) → Sonarr/Radarr (automation)
 
 ## Prerequisites
 
-### 1. Add Secrets to 1Password
+### 1. Verify 1Password Secrets
 
-Create these items in 1Password vault "Server":
+**Privado VPN** (already exists in vault "Personal"):
+- Item name: "Privado VPN"
+- Fields: `username`, `password` ✅
 
-**plex** (new item):
-- `claim-token`: Get from https://www.plex.tv/claim/ (valid for 4 minutes)
-
-**privado-vpn** (new item):
-- `username`: Your Privado VPN username
-- `password`: Your Privado VPN password
+**No other secrets needed** - Plex will be claimed via SSH tunnel (see Step 2)
 
 ### 2. Verify NFS Mount
 
@@ -69,20 +66,31 @@ op run --env-file=.env -- docker compose up -d portainer-agent alloy beszel-agen
 
 ### Step 2: Deploy Plex
 
-**IMPORTANT:** Get Plex claim token first (valid 4 minutes):
-1. Visit https://www.plex.tv/claim/
-2. Copy the claim token
-3. Add to 1Password: `op item create --category=login --title="plex" --vault="Server" claim-token="<token>"`
-
 ```bash
 op run --env-file=.env -- docker compose up -d plex
 docker logs -f plex
+# Wait for "Starting Plex Media Server" message
+```
+
+**Claim Plex Server via SSH Tunnel:**
+
+Since Plex is on internal IP (10.10.10.113), we need SSH tunnel to claim it:
+
+```bash
+# On your LOCAL machine (not the server):
+ssh -L 32400:10.10.10.113:32400 fx@10.10.10.113
+
+# Keep this terminal open, then in your browser visit:
+# http://localhost:32400/web
 ```
 
 **Initial Plex Setup:**
-1. Visit http://10.10.10.113:32400/web
-2. Sign in with your Plex account
-3. Skip library setup for now (we'll add after content arrives)
+1. Browser opens Plex at `http://localhost:32400/web` (via tunnel)
+2. Click "Sign In" and login with your Plex account
+3. Plex will auto-detect and claim the server ✅
+4. Server name: "media" (or your preference)
+5. Skip library setup for now (we'll add after content arrives)
+6. Close SSH tunnel (Ctrl+C)
 
 ### Step 3: Deploy SABnzbd (Usenet - PRIMARY)
 

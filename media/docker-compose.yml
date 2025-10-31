@@ -99,7 +99,7 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=UTC
-      - PLEX_CLAIM=${PLEX_CLAIM_TOKEN}
+      # PLEX_CLAIM not needed - claim via SSH tunnel on first run
       - ADVERTISE_IP=http://10.10.10.113:32400/
     ports:
       - "10.10.10.113:32400:32400/tcp"    # Web UI
