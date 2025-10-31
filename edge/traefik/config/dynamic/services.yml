@@ -115,6 +115,55 @@ http:
         servers:
           - url: "http://10.10.10.111:9000"
 
+    # ============================================================================
+    # Media Services - VM 113 (10.10.10.113)
+    # ============================================================================
+
+    plex:
+      loadBalancer:
+        servers:
+          - url: "http://10.10.10.113:32400"
+
+    overseerr:
+      loadBalancer:
+        servers:
+          - url: "http://10.10.10.113:5055"
+
+    sonarr:
+      loadBalancer:
+        servers:
+          - url: "http://10.10.10.113:8989"
+
+    radarr:
+      loadBalancer:
+        servers:
+          - url: "http://10.10.10.113:7878"
+
+    prowlarr:
+      loadBalancer:
+        servers:
+          - url: "http://10.10.10.113:9696"
+
+    sabnzbd:
+      loadBalancer:
+        servers:
+          - url: "http://10.10.10.113:8085"
+
+    qbittorrent:
+      loadBalancer:
+        servers:
+          - url: "http://10.10.10.113:8080"
+
+    bazarr:
+      loadBalancer:
+        servers:
+          - url: "http://10.10.10.113:6767"
+
+    notifiarr:
+      loadBalancer:
+        servers:
+          - url: "http://10.10.10.113:5454"
+
   # Transports - Connection Settings for Backend Servers
   serversTransports:
     # Skip TLS verification for self-signed certs (like Portainer)

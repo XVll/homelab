@@ -180,6 +180,109 @@ http:
         certResolver: cloudflare
 
     # ============================================================================
+    # MEDIA SERVICES (VM 113) - Private access only
+    # ============================================================================
+
+    # Plex (Media Server)
+    plex:
+      rule: "Host(`plex.onurx.com`)"
+      entryPoints:
+        - websecure
+      service: plex
+      middlewares:
+        - private-default
+      tls:
+        certResolver: cloudflare
+
+    # Overseerr (Request/Discovery UI)
+    overseerr:
+      rule: "Host(`overseerr.onurx.com`)"
+      entryPoints:
+        - websecure
+      service: overseerr
+      middlewares:
+        - private-default
+      tls:
+        certResolver: cloudflare
+
+    # Sonarr (TV Shows)
+    sonarr:
+      rule: "Host(`sonarr.onurx.com`)"
+      entryPoints:
+        - websecure
+      service: sonarr
+      middlewares:
+        - private-default
+      tls:
+        certResolver: cloudflare
+
+    # Radarr (Movies)
+    radarr:
+      rule: "Host(`radarr.onurx.com`)"
+      entryPoints:
+        - websecure
+      service: radarr
+      middlewares:
+        - private-default
+      tls:
+        certResolver: cloudflare
+
+    # Prowlarr (Indexer Manager)
+    prowlarr:
+      rule: "Host(`prowlarr.onurx.com`)"
+      entryPoints:
+        - websecure
+      service: prowlarr
+      middlewares:
+        - private-default
+      tls:
+        certResolver: cloudflare
+
+    # SABnzbd (Usenet Downloader)
+    sabnzbd:
+      rule: "Host(`sabnzbd.onurx.com`)"
+      entryPoints:
+        - websecure
+      service: sabnzbd
+      middlewares:
+        - private-default
+      tls:
+        certResolver: cloudflare
+
+    # qBittorrent (Torrent Downloader)
+    qbittorrent:
+      rule: "Host(`qbittorrent.onurx.com`)"
+      entryPoints:
+        - websecure
+      service: qbittorrent
+      middlewares:
+        - private-default
+      tls:
+        certResolver: cloudflare
+
+    # Bazarr (Subtitles)
+    bazarr:
+      rule: "Host(`bazarr.onurx.com`)"
+      entryPoints:
+        - websecure
+      service: bazarr
+      middlewares:
+        - private-default
+      tls:
+        certResolver: cloudflare
+
+    # Notifiarr (TRaSH Sync)
+    notifiarr:
+      rule: "Host(`notifiarr.onurx.com`)"
+      entryPoints:
+        - websecure
+      service: notifiarr
+      middlewares:
+        - private-default
+      tls:
+        certResolver: cloudflare
+
+    # ============================================================================
     # PUBLIC SERVICES - Explicitly accessible from internet
     # ============================================================================
     # These services use public-access middleware (no IP restriction)
