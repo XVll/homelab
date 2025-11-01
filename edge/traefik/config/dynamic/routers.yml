@@ -282,6 +282,17 @@ http:
       tls:
         certResolver: cloudflare
 
+    # Tautulli (Plex Monitoring)
+    tautulli:
+      rule: "Host(`tautulli.onurx.com`)"
+      entryPoints:
+        - websecure
+      service: tautulli
+      middlewares:
+        - private-default
+      tls:
+        certResolver: cloudflare
+
     # ============================================================================
     # PUBLIC SERVICES - Explicitly accessible from internet
     # ============================================================================

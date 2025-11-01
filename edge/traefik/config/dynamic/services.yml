@@ -164,6 +164,11 @@ http:
         servers:
           - url: "http://10.10.10.113:5454"
 
+    tautulli:
+      loadBalancer:
+        servers:
+          - url: "http://10.10.10.113:8181"
+
   # Transports - Connection Settings for Backend Servers
   serversTransports:
     # Skip TLS verification for self-signed certs (like Portainer)
