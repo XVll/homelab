@@ -40,6 +40,11 @@
 - [x] Beszel Agent (deploy VM 101) - ✅ Deployed
 - [x] Beszel Agent (ha VM) - System metrics (Home Assistant OS addon)
 - [x] **Quick Monitoring** - Real-time CPU, memory, disk, network, Docker stats for all VMs
+- [x] **Homepage Dashboard** (observability host - 10.10.10.112:3002) - Unified service directory and management portal
+  - Accessible at https://home.onurx.com
+  - Integrates with Portainer, Grafana, Docker, and all infrastructure services
+  - Service widgets with real-time metrics (*arr stack, qBittorrent, Jellyfin, MinIO, etc.)
+  - Comprehensive Infrastructure Overview dashboard in Grafana
 - [x] **✅ Full Infrastructure Monitoring Audit Complete (2025-10-28)**
   - All VMs now have Alloy + Beszel monitoring
   - Health checks added to all services where applicable
@@ -217,6 +222,116 @@
 ---
 
 ## Quick Reference Notes
+
+### 📊 Unified Management & Monitoring
+
+**We have a multi-layered management system for complete infrastructure visibility:**
+
+#### Layer 1: Homepage Dashboard (Primary Entry Point)
+- **URL:** https://home.onurx.com
+- **Purpose:** Single pane of glass for all services
+- **Features:**
+  - Service directory with health checks
+  - Quick access to all infrastructure services
+  - Real-time Docker container stats
+  - Service widgets showing detailed metrics (Portainer, Grafana, *arr stack, etc.)
+  - Organized by VM/category (Edge, Observability, Database, Media, Development)
+  - VM health status overview
+
+**Configuration:** `observability/homepage/config/`
+- `services.yaml` - Service definitions, widgets, health checks
+- `settings.yaml` - Dashboard layout and theme
+- `widgets.yaml` - System info and quick stats
+- `docker.yaml` - Docker integration (local + remote)
+- `bookmarks.yaml` - Quick links to docs and external services
+
+**To add new service to Homepage:**
+1. Add service entry to `services.yaml` with icon, URL, and optional widget
+2. Configure widget with API key/credentials (store in 1Password)
+3. Optionally add to Traefik routing if needs domain
+4. Reload Homepage container (or wait 10s for auto-refresh)
+
+#### Layer 2: Grafana Dashboards (Deep Metrics & Observability)
+- **URL:** https://grafana.onurx.com
+- **Purpose:** Deep dive into metrics, logs, and performance
+- **Key Dashboards:**
+  - **Infrastructure Overview** - Service health matrix, uptime, error logs from Loki
+  - **Node Exporter Full** - System metrics (CPU, RAM, disk, network) per VM
+  - **Docker Containers** - Container metrics, resource usage
+  - **Docker cAdvisor** - Detailed container performance
+
+**To access Grafana:**
+- Username/password in 1Password (vault: "Server", item: "grafana")
+- Explore → Loki for log queries
+- Dashboards → Browse for pre-built dashboards
+- Create custom dashboards for specific services
+
+#### Layer 3: Portainer (Container Management)
+- **URL:** https://portainer.onurx.com
+- **Purpose:** Manage Docker containers across all VMs
+- **Features:**
+  - Visual container management (start, stop, restart, logs)
+  - Environment management for all VMs (via Portainer agents)
+  - Stack deployment and updates
+  - Volume and network management
+  - Real-time container stats
+
+**Portainer Endpoints:**
+- Local (observability VM) - via Docker socket
+- edge VM (10.10.10.110) - via Edge Agent
+- db VM (10.10.10.111) - via Edge Agent
+- dev VM (10.10.10.114) - via Edge Agent
+- media VM (10.10.10.113) - via Edge Agent
+
+**To add new VM to Portainer:**
+1. Settings → Endpoints → Add Endpoint → Edge Agent
+2. Copy deployment command
+3. SSH to VM and run command
+4. Agent appears in Portainer after ~30s
+
+#### Layer 4: Beszel (Quick System Monitoring)
+- **URL:** https://beszel.onurx.com
+- **Purpose:** Lightweight real-time system monitoring
+- **Monitors:** CPU, RAM, disk, network, Docker stats for all VMs
+- **Agents on:** edge, db, observability, media, dev, deploy, ha VMs
+
+#### Quick Access Hierarchy
+```
+Homepage (home.onurx.com)
+├─ Edge Services
+│  ├─ Traefik (traefik.onurx.com)
+│  ├─ AdGuard (adguard.onurx.com)
+│  └─ Authentik (auth.onurx.com)
+├─ Observability & Management
+│  ├─ Portainer (portainer.onurx.com) → Container management
+│  ├─ Grafana (grafana.onurx.com) → Dashboards & logs
+│  ├─ Prometheus (prometheus.onurx.com) → Metrics storage
+│  ├─ Loki (loki.onurx.com) → Log aggregation
+│  └─ Beszel (beszel.onurx.com) → System monitoring
+├─ Database Services
+│  ├─ MongoDB (10.10.10.111:27017)
+│  ├─ PostgreSQL (10.10.10.111:5432)
+│  ├─ Redis (10.10.10.111:6379)
+│  └─ MinIO (minio.onurx.com)
+├─ Media & Automation
+│  ├─ Jellyfin (jellyfin.onurx.com)
+│  ├─ Tautulli (tautulli.onurx.com)
+│  ├─ *arr Stack (sonarr, radarr, prowlarr, bazarr)
+│  ├─ qBittorrent (qbittorrent.onurx.com)
+│  ├─ n8n (n8n.onurx.com)
+│  └─ Paperless (paperless.onurx.com)
+└─ Development
+   ├─ Gitea (git.onurx.com)
+   └─ Coolify (deploy.onurx.com)
+```
+
+**Recommendation for daily use:**
+1. Start at **Homepage** for quick overview and service access
+2. Use **Grafana** for troubleshooting, metrics, and log analysis
+3. Use **Portainer** for container operations (restart, logs, exec)
+4. Use **Beszel** for quick system health checks
+
+---
 
 ### 🔴 CRITICAL: Traefik Security - Always Choose Private or Public
 

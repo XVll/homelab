@@ -1,0 +1,12 @@
+---
+# Homepage Docker Integration
+# Monitors local containers on observability VM
+
+observability-docker:
+  socket: /var/run/docker.sock
+  host: 10.10.10.112
+
+# To add remote Docker hosts:
+# You can configure Portainer Edge Agents or Docker API endpoints
+# For now, local socket monitoring is enabled
+# Remote hosts can be added via Portainer widget integration

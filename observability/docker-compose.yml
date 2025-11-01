@@ -248,6 +248,39 @@ services:
         max-size: "10m"
         max-file: "3"
 
+  # ============================================================================
+  # 8. HOMEPAGE - Unified Dashboard & Service Directory
+  # ============================================================================
+  # Deploy last - provides unified view of all infrastructure
+  # Web UI: http://10.10.10.112:3002 or https://home.onurx.com
+  # Configuration: homepage/config/ directory
+
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    restart: unless-stopped
+    ports:
+      - "10.10.10.112:3002:3000"
+    volumes:
+      - ./homepage/config:/app/config
+      - /var/run/docker.sock:/var/run/docker.sock:ro  # Docker integration
+      - ./homepage/images:/app/public/images  # Custom icons
+    environment:
+      - PUID=1000
+      - PGID=1000
+    networks:
+      - obs_net
+    healthcheck:
+      test: ["CMD", "wget", "--tries=1", "--spider", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
 networks:
   obs_net:
     driver: bridge
