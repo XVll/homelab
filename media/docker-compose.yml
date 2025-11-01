@@ -435,6 +435,38 @@ services:
         max-size: "10m"
         max-file: "3"
 
+  # ============================================================================
+  # TAUTULLI - Plex Monitoring & Statistics
+  # ============================================================================
+  # Access: http://10.10.10.113:8181
+  # Watch history, user stats, play counts, newsletters
+
+  tautulli:
+    image: lscr.io/linuxserver/tautulli:latest
+    container_name: tautulli
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=UTC
+    ports:
+      - "10.10.10.113:8181:8181"
+    volumes:
+      - ./tautulli/config:/config
+    networks:
+      - media_net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8181/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
 networks:
   media_net:
     driver: bridge
