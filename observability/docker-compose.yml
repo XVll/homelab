@@ -268,7 +268,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - HOMEPAGE_VAR_ALLOWED_HOSTS=home.onurx.com
+      - HOMEPAGE_ALLOWED_HOSTS=home.onurx.com
     networks:
       - obs_net
     healthcheck:
