@@ -862,7 +862,7 @@
             "type": "loki",
             "uid": "loki"
           },
-          "expr": "{job=~\".*\"} |~ \"(?i)(error|fail|exception|critical|fatal|panic)\"",
+          "expr": "{job=~\".+\"} |~ \"(?i)(error|fail|exception|critical|fatal|panic)\"",
           "refId": "A"
         }
       ],
