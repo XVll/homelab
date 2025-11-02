@@ -46,7 +46,7 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 140
+                "value": 120
               },
               {
                 "id": "displayName",
@@ -109,7 +109,7 @@
               },
               {
                 "id": "custom.width",
-                "value": 180
+                "value": 160
               }
             ]
           },
@@ -168,7 +168,7 @@
               },
               {
                 "id": "custom.width",
-                "value": 180
+                "value": 160
               }
             ]
           },
@@ -227,7 +227,7 @@
               },
               {
                 "id": "custom.width",
-                "value": 180
+                "value": 160
               }
             ]
           },
@@ -360,14 +360,14 @@
         ]
       },
       "gridPos": {
-        "h": 10,
+        "h": 6,
         "w": 24,
         "x": 0,
         "y": 0
       },
       "id": 1,
       "options": {
-        "cellHeight": "sm",
+        "cellHeight": "xs",
         "footer": {
           "countRows": false,
           "fields": "",
@@ -587,7 +587,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 10
+        "y": 6
       },
       "id": 2,
       "options": {
@@ -687,7 +687,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 10
+        "y": 6
       },
       "id": 3,
       "options": {
@@ -786,7 +786,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 18
+        "y": 14
       },
       "id": 4,
       "options": {
@@ -885,7 +885,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 18
+        "y": 14
       },
       "id": 5,
       "options": {
