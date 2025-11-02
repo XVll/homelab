@@ -89,6 +89,8 @@ prometheus.remote_write "prometheus" {
   external_labels = {
     cluster = "homelab",
     host = "observability-vm",
+    host_ip = "10.10.10.112",
+    os = "Debian GNU/Linux 13 (trixie)",
   }
 }
 

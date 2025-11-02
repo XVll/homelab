@@ -125,23 +125,11 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "max(node_network_info{host=\"$host\",device!~\"lo|docker.*|veth.*\"}) by (address)",
-          "hide": false,
-          "legendFormat": "MAC: {{address}}",
-          "range": true,
-          "refId": "MAC"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
           "expr": "count(node_uname_info{host=\"$host\"})",
           "hide": false,
-          "legendFormat": "OS: {{sysname}} {{release}}",
+          "legendFormat": "IP: {{host_ip}} | OS: {{os}}",
           "range": true,
-          "refId": "OS"
+          "refId": "INFO"
         },
         {
           "datasource": {
