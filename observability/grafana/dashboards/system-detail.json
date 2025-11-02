@@ -52,7 +52,7 @@
             "properties": [
               {
                 "id": "unit",
-                "value": "dtdurations"
+                "value": "s"
               }
             ]
           },
@@ -91,8 +91,8 @@
         ]
       },
       "gridPos": {
-        "h": 4,
-        "w": 24,
+        "h": 8,
+        "w": 3,
         "x": 0,
         "y": 0
       },
@@ -101,7 +101,7 @@
         "colorMode": "none",
         "graphMode": "none",
         "justifyMode": "auto",
-        "orientation": "horizontal",
+        "orientation": "vertical",
         "reduceOptions": {
           "values": false,
           "calcs": [
@@ -111,7 +111,7 @@
         },
         "showPercentChange": false,
         "textMode": "value_and_name",
-        "wideLayout": true
+        "wideLayout": false
       },
       "pluginVersion": "11.4.0",
       "targets": [
@@ -121,7 +121,31 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
+          "expr": "node_network_info{host=\"$host\",device!~\"lo|docker.*|veth.*\"}",
+          "legendFormat": "IP: {{address}}",
+          "range": true,
+          "refId": "IP"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "(time() - node_boot_time_seconds{host=\"$host\"})",
+          "hide": false,
+          "legendFormat": "Uptime",
+          "range": true,
+          "refId": "UPTIME"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
           "expr": "node_uname_info{host=\"$host\"}",
+          "hide": false,
           "legendFormat": "OS: {{sysname}} {{release}}",
           "range": true,
           "refId": "OS"
@@ -161,18 +185,6 @@
           "legendFormat": "Total Disk",
           "range": true,
           "refId": "DISK"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "expr": "node_boot_time_seconds{host=\"$host\"} * 1000",
-          "hide": false,
-          "legendFormat": "Uptime",
-          "range": true,
-          "refId": "UPTIME"
         }
       ],
       "title": "Host Information: $host",
@@ -239,9 +251,9 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 4
+        "w": 10,
+        "x": 3,
+        "y": 0
       },
       "id": 1,
       "options": {
@@ -337,9 +349,9 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 4
+        "w": 11,
+        "x": 13,
+        "y": 0
       },
       "id": 2,
       "options": {
@@ -462,9 +474,9 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 12
+        "w": 10,
+        "x": 3,
+        "y": 8
       },
       "id": 3,
       "options": {
@@ -570,9 +582,9 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 12
+        "w": 11,
+        "x": 13,
+        "y": 8
       },
       "id": 4,
       "options": {
@@ -695,9 +707,9 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 20
+        "w": 10,
+        "x": 3,
+        "y": 16
       },
       "id": 5,
       "options": {
@@ -803,9 +815,9 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 20
+        "w": 11,
+        "x": 13,
+        "y": 16
       },
       "id": 6,
       "options": {
@@ -911,9 +923,9 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 28
+        "w": 10,
+        "x": 3,
+        "y": 24
       },
       "id": 7,
       "options": {
@@ -1019,9 +1031,9 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 28
+        "w": 11,
+        "x": 13,
+        "y": 24
       },
       "id": 8,
       "options": {
@@ -1115,9 +1127,9 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 36
+        "w": 10,
+        "x": 3,
+        "y": 32
       },
       "id": 9,
       "options": {
@@ -1248,9 +1260,9 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 44
+        "w": 10,
+        "x": 3,
+        "y": 40
       },
       "id": 11,
       "options": {
@@ -1356,9 +1368,9 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 44
+        "w": 11,
+        "x": 13,
+        "y": 40
       },
       "id": 12,
       "options": {
