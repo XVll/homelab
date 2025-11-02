@@ -456,6 +456,26 @@
           {
             "matcher": {
               "id": "byName",
+              "options": "Value #DiskIO"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Disk I/O"
+              },
+              {
+                "id": "unit",
+                "value": "Bps"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
               "options": "Value #Temp"
             },
             "properties": [
@@ -674,6 +694,21 @@
           "legendFormat": "__auto",
           "range": false,
           "refId": "Temp"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "sum by (host) (rate(node_disk_read_bytes_total[5m])) + sum by (host) (rate(node_disk_written_bytes_total[5m]))",
+          "format": "table",
+          "hide": false,
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "DiskIO"
         }
       ],
       "title": "All Systems",
@@ -708,7 +743,8 @@
               "Value #Load5": 8,
               "Value #Load15": 9,
               "Value #Net": 10,
-              "Value #Temp": 11
+              "Value #DiskIO": 11,
+              "Value #Temp": 12
             },
             "renameByName": {}
           }
