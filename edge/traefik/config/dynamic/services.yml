@@ -62,11 +62,6 @@ http:
         servers:
           - url: "http://10.10.10.112:12345"
 
-    beszel:
-      loadBalancer:
-        servers:
-          - url: "http://10.10.10.112:8090"
-
     homepage:
       loadBalancer:
         servers:

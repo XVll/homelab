@@ -60,34 +60,6 @@ services:
         max-size: "10m"
         max-file: "3"
 
-  # ============================================================================
-  # BESZEL AGENT - System Monitor (sends data to Hub on observability VM)
-  # ============================================================================
-  # Configure after deploying Hub (copy connection details from Hub web UI)
-
-  beszel-agent:
-    image: henrygd/beszel-agent:latest
-    container_name: beszel-agent
-    restart: unless-stopped
-    network_mode: host  # Required for network interface stats
-    volumes:
-      - ./beszel/agent_data:/var/lib/beszel-agent  # Agent persistent data
-      - /var/run/docker.sock:/var/run/docker.sock:ro  # Docker container stats
-    environment:
-      LISTEN: 45876
-      HUB_URL: http://10.10.10.112:8090
-      KEY: ${BESZEL_KEY}
-      TOKEN: ${BESZEL_TOKEN}
-    healthcheck:
-      test: ['CMD', '/agent', 'health']
-      start_period: 5s
-      interval: 120s
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
-
   # ==========================================================================
   # GITEA - Self-hosted Git with Actions & Container Registry
   # ==========================================================================

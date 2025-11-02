@@ -122,17 +122,6 @@ http:
       tls:
         certResolver: cloudflare
 
-    # Beszel (System monitoring)
-    beszel:
-      rule: "Host(`beszel.onurx.com`)"
-      entryPoints:
-        - websecure
-      service: beszel
-      middlewares:
-        - private-default
-      tls:
-        certResolver: cloudflare
-
     # Homepage (Unified Dashboard)
     homepage:
       rule: "Host(`home.onurx.com`)"
