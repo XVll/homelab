@@ -46,6 +46,28 @@
         "overrides": [
           {
             "matcher": {
+              "id": "byRegexp",
+              "options": "/IP:.*/"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "1": {
+                        "text": "",
+                        "index": 0
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
               "id": "byName",
               "options": "Uptime"
             },
