@@ -135,7 +135,7 @@
         ]
       },
       "gridPos": {
-        "h": 3,
+        "h": 2,
         "w": 24,
         "x": 0,
         "y": 0
@@ -145,7 +145,7 @@
         "colorMode": "none",
         "graphMode": "none",
         "justifyMode": "auto",
-        "orientation": "vertical",
+        "orientation": "horizontal",
         "reduceOptions": {
           "values": false,
           "calcs": [
@@ -299,7 +299,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 3
+        "y": 2
       },
       "id": 1,
       "options": {
@@ -397,7 +397,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 3
+        "y": 2
       },
       "id": 2,
       "options": {
@@ -522,7 +522,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 11
+        "y": 10
       },
       "id": 3,
       "options": {
@@ -630,7 +630,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 11
+        "y": 10
       },
       "id": 4,
       "options": {
@@ -755,7 +755,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 19
+        "y": 18
       },
       "id": 5,
       "options": {
@@ -863,7 +863,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 19
+        "y": 18
       },
       "id": 6,
       "options": {
@@ -971,7 +971,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 27
+        "y": 26
       },
       "id": 7,
       "options": {
@@ -1079,7 +1079,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 27
+        "y": 26
       },
       "id": 8,
       "options": {
@@ -1175,7 +1175,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 35
+        "y": 34
       },
       "id": 9,
       "options": {
@@ -1308,7 +1308,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 43
+        "y": 42
       },
       "id": 11,
       "options": {
@@ -1416,7 +1416,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 43
+        "y": 42
       },
       "id": 12,
       "options": {
@@ -1441,7 +1441,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum by (name) (rate(container_network_receive_bytes_total{name!=\"\",id=~\"/system.slice/docker.*\",host=\"$host\"}[5m]) + rate(container_network_transmit_bytes_total{name!=\"\",id=~\"/system.slice/docker.*\",host=\"$host\"}[5m]))",
+          "expr": "sum by (name) (rate(container_network_receive_bytes_total{name!=\"\",name!~\"POD\",id=~\"/system.slice/docker.*\"}[5m])) + sum by (name) (rate(container_network_transmit_bytes_total{name!=\"\",name!~\"POD\",id=~\"/system.slice/docker.*\"}[5m]))",
           "legendFormat": "{{name}}",
           "range": true,
           "refId": "A"
