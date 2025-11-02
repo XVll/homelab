@@ -46,32 +46,6 @@
         "overrides": [
           {
             "matcher": {
-              "id": "byRegexp",
-              "options": "/Host:.*/"
-            },
-            "properties": [
-              {
-                "id": "custom.displayMode",
-                "value": "color-text"
-              },
-              {
-                "id": "mappings",
-                "value": [
-                  {
-                    "type": "value",
-                    "options": {
-                      "1": {
-                        "text": "",
-                        "index": 0
-                      }
-                    }
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "matcher": {
               "id": "byName",
               "options": "Uptime"
             },
@@ -151,11 +125,23 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "max(node_uname_info{host=\"$host\"}) * 0 + 1",
-          "instant": true,
-          "legendFormat": "Host: $host | OS: {{sysname}} {{release}}",
-          "range": false,
-          "refId": "INFO"
+          "expr": "max(node_network_info{host=\"$host\",device!~\"lo|docker.*|veth.*\"}) by (address)",
+          "hide": false,
+          "legendFormat": "MAC: {{address}}",
+          "range": true,
+          "refId": "MAC"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "count(node_uname_info{host=\"$host\"})",
+          "hide": false,
+          "legendFormat": "OS: {{sysname}} {{release}}",
+          "range": true,
+          "refId": "OS"
         },
         {
           "datasource": {
@@ -1148,7 +1134,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 34
+        "y": 50
       },
       "id": 9,
       "options": {
@@ -1281,7 +1267,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 42
+        "y": 34
       },
       "id": 11,
       "options": {
@@ -1389,7 +1375,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 42
+        "y": 34
       },
       "id": 12,
       "options": {
