@@ -467,6 +467,49 @@ services:
         max-size: "10m"
         max-file: "3"
 
+  # ============================================================================
+  # NETDATA AGENT - Real-time Metrics Collection
+  # ============================================================================
+  # Streams metrics to Netdata parent on observability VM
+  # Local web UI: http://10.10.10.113:19999 (optional)
+
+  netdata:
+    image: netdata/netdata:latest
+    container_name: netdata-agent
+    restart: unless-stopped
+    hostname: media-netdata
+    pid: host
+    network_mode: host
+    cap_add:
+      - SYS_PTRACE
+      - SYS_ADMIN
+    security_opt:
+      - apparmor:unconfined
+    volumes:
+      - ./netdata/config:/etc/netdata
+      - ./netdata/data:/var/lib/netdata
+      - ./netdata/cache:/var/cache/netdata
+      - /etc/passwd:/host/etc/passwd:ro
+      - /etc/group:/host/etc/group:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /etc/os-release:/host/etc/os-release:ro
+      - /var/log:/host/var/log:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /mnt/nas/media:/host/media:ro  # Monitor NAS usage
+    healthcheck:
+      test: ["CMD", "wget", "--tries=1", "--spider", "http://localhost:19999/api/v1/info"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
 networks:
   media_net:
     driver: bridge

@@ -133,6 +133,17 @@ http:
       tls:
         certResolver: cloudflare
 
+    # Netdata (Real-time Monitoring)
+    netdata:
+      rule: "Host(`netdata.onurx.com`)"
+      entryPoints:
+        - websecure
+      service: netdata
+      middlewares:
+        - private-default
+      tls:
+        certResolver: cloudflare
+
     # Homepage (Unified Dashboard)
     homepage:
       rule: "Host(`home.onurx.com`)"
