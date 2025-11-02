@@ -1,0 +1,61 @@
+# SNMP Exporter Configuration for Synology NAS
+# Uses standard Synology MIBs
+
+# Default module for basic Linux/network stats
+synology:
+  version: 2
+  auth:
+    community: public  # Change this to match your SNMP community string
+  walk:
+    # System info
+    - sysDescr
+    - sysUpTime
+    - sysName
+
+    # CPU (HOST-RESOURCES-MIB)
+    - hrProcessorLoad
+
+    # Memory (HOST-RESOURCES-MIB)
+    - hrStorageDescr
+    - hrStorageUsed
+    - hrStorageSize
+
+    # Disk usage (HOST-RESOURCES-MIB)
+    - hrStorageType
+
+    # Network interfaces (IF-MIB)
+    - ifName
+    - ifDescr
+    - ifType
+    - ifSpeed
+    - ifPhysAddress
+    - ifAdminStatus
+    - ifOperStatus
+    - ifInOctets
+    - ifOutOctets
+    - ifInErrors
+    - ifOutErrors
+    - ifInDiscards
+    - ifOutDiscards
+
+    # Synology-specific OIDs
+    - 1.3.6.1.4.1.6574.1       # Synology system stats
+    - 1.3.6.1.4.1.6574.2       # Synology disk stats
+    - 1.3.6.1.4.1.6574.3       # Synology RAID stats
+    - 1.3.6.1.4.1.6574.4       # Synology services
+    - 1.3.6.1.4.1.6574.5       # Synology upgrade status
+    - 1.3.6.1.4.1.6574.6       # Synology temperature
+
+  lookups:
+    - source_indexes: [hrStorageIndex]
+      lookup: hrStorageDescr
+    - source_indexes: [ifIndex]
+      lookup: ifName
+    - source_indexes: [ifIndex]
+      lookup: ifDescr
+
+  overrides:
+    ifPhysAddress:
+      type: PhysAddress48
+    ifType:
+      type: EnumAsInfo

@@ -249,7 +249,36 @@ services:
         max-file: "3"
 
   # ============================================================================
-  # 8. HOMEPAGE - Unified Dashboard & Service Directory
+  # 8. SNMP EXPORTER - SNMP to Prometheus Metrics
+  # ============================================================================
+  # Monitors Synology NAS and other SNMP-enabled devices
+  # No agent needed on target devices - uses SNMP protocol
+
+  snmp-exporter:
+    image: prom/snmp-exporter:v0.26.0
+    container_name: snmp-exporter
+    restart: unless-stopped
+    ports:
+      - "10.10.10.112:9116:9116"
+    volumes:
+      - ./snmp-exporter/snmp.yml:/etc/snmp_exporter/snmp.yml:ro
+    command:
+      - '--config.file=/etc/snmp_exporter/snmp.yml'
+    networks:
+      - obs_net
+    healthcheck:
+      test: ["CMD", "wget", "--tries=1", "--spider", "http://localhost:9116/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ============================================================================
+  # 9. HOMEPAGE - Unified Dashboard & Service Directory
   # ============================================================================
   # Deploy last - provides unified view of all infrastructure
   # Web UI: http://10.10.10.112:3002 or https://home.onurx.com
