@@ -163,6 +163,23 @@ scrape_configs:
       - target_label: service
         replacement: 'nas'
 
+  # --------------------------------------------------------------------------
+  # Home Automation (VM: 10.10.10.116)
+  # --------------------------------------------------------------------------
+
+  # Home Assistant - native Prometheus integration
+  # Note: Requires Prometheus integration to be enabled in HA
+  # Settings → Integrations → Add Integration → Prometheus
+  - job_name: 'homeassistant'
+    static_configs:
+      - targets: ['10.10.10.116:8123']
+        labels:
+          instance: 'homeassistant'
+          vm: 'ha'
+          service: 'automation'
+    metrics_path: /api/prometheus
+    scheme: http
+
 # ============================================================================
 # NOTES FOR FUTURE EXPANSION
 # ============================================================================
