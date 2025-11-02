@@ -915,7 +915,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "Home Assistant API response times",
+      "description": "Home Assistant VM system metrics",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -997,13 +997,35 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "homeassistant_sensor_state{job=\"homeassistant\", domain=\"sensor\", entity=~\"sensor.processor.*\"}",
-          "legendFormat": "{{friendly_name}}",
+          "expr": "homeassistant_sensor_unit_percent{entity=\"sensor.system_monitor_processor_use\"}",
+          "legendFormat": "CPU Usage",
           "range": true,
-          "refId": "A"
+          "refId": "CPU"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "homeassistant_sensor_unit_percent{entity=\"sensor.system_monitor_memory_usage\"}",
+          "legendFormat": "Memory Usage",
+          "range": true,
+          "refId": "Memory"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "homeassistant_sensor_unit_percent{entity=\"sensor.system_monitor_disk_usage\"}",
+          "legendFormat": "Disk Usage",
+          "range": true,
+          "refId": "Disk"
         }
       ],
-      "title": "System Sensors",
+      "title": "System Metrics",
       "type": "timeseries"
     }
   ],
