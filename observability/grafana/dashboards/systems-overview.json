@@ -91,6 +91,15 @@
               {
                 "id": "displayName",
                 "value": "System"
+              },
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "View ${__value.text} details",
+                    "url": "/d/system-detail?var-host=${__value.text}"
+                  }
+                ]
               }
             ]
           },
