@@ -41,18 +41,6 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "host"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "System"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
               "options": "Value #Status"
             },
             "properties": [
@@ -63,6 +51,10 @@
               {
                 "id": "custom.width",
                 "value": 60
+              },
+              {
+                "id": "custom.align",
+                "value": "center"
               },
               {
                 "id": "mappings",
@@ -93,6 +85,18 @@
           {
             "matcher": {
               "id": "byName",
+              "options": "host"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "System"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
               "options": "Value #CPU"
             },
             "properties": [
@@ -112,7 +116,8 @@
                 "id": "custom.cellOptions",
                 "value": {
                   "mode": "gradient",
-                  "type": "gauge"
+                  "type": "gauge",
+                  "valueDisplayMode": "text"
                 }
               },
               {
@@ -167,7 +172,8 @@
                 "id": "custom.cellOptions",
                 "value": {
                   "mode": "gradient",
-                  "type": "gauge"
+                  "type": "gauge",
+                  "valueDisplayMode": "text"
                 }
               },
               {
@@ -222,7 +228,8 @@
                 "id": "custom.cellOptions",
                 "value": {
                   "mode": "gradient",
-                  "type": "gauge"
+                  "type": "gauge",
+                  "valueDisplayMode": "text"
                 }
               },
               {
@@ -282,21 +289,117 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Value #Load"
+              "options": "Value #Load1"
             },
             "properties": [
               {
                 "id": "displayName",
-                "value": "Load 1m"
+                "value": "1m"
               },
               {
                 "id": "decimals",
                 "value": 2
               },
               {
+                "id": "custom.width",
+                "value": 80
+              },
+              {
                 "id": "custom.cellOptions",
                 "value": {
-                  "type": "color-background"
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 2
+                    },
+                    {
+                      "color": "red",
+                      "value": 4
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value #Load5"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "5m"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "custom.width",
+                "value": 80
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 2
+                    },
+                    {
+                      "color": "red",
+                      "value": 4
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value #Load15"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "15m"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "custom.width",
+                "value": 80
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
                 }
               },
               {
@@ -501,7 +604,37 @@
           "instant": true,
           "legendFormat": "__auto",
           "range": false,
-          "refId": "Load"
+          "refId": "Load1"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "node_load5",
+          "format": "table",
+          "hide": false,
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "Load5"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "node_load15",
+          "format": "table",
+          "hide": false,
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "Load15"
         },
         {
           "datasource": {
@@ -556,15 +689,17 @@
             "includeByName": {},
             "indexByName": {
               "Time": 0,
-              "Value #Status": 2,
+              "Value #Status": 1,
+              "host": 2,
               "Value #CPU": 3,
+              "Value #Memory": 4,
               "Value #Disk": 5,
               "Value #GPU": 6,
-              "Value #Load": 7,
-              "Value #Memory": 4,
-              "Value #Net": 8,
-              "Value #Temp": 9,
-              "host": 1
+              "Value #Load1": 7,
+              "Value #Load5": 8,
+              "Value #Load15": 9,
+              "Value #Net": 10,
+              "Value #Temp": 11
             },
             "renameByName": {}
           }
