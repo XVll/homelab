@@ -1,7 +1,98 @@
 // ============================================================================
-// GRAFANA ALLOY - REMOTE LOG SHIPPER (EDGE VM)
-// Lightweight config: Docker logs only → sends to central Loki
+// GRAFANA ALLOY CONFIGURATION (v1.11+) - EDGE VM
+// Modern unified telemetry collector for metrics and logs
 // ============================================================================
+
+// ============================================================================
+// METRICS: System Metrics (replaces Node Exporter)
+// ============================================================================
+
+prometheus.exporter.unix "system" {
+  // Collects CPU, memory, disk, network metrics
+  // Enable all collectors for comprehensive system monitoring
+  enable_collectors = [
+    "cpu",
+    "cpufreq",
+    "diskstats",
+    "filesystem",
+    "loadavg",
+    "meminfo",
+    "netdev",
+    "netstat",
+    "stat",
+    "time",
+    "uname",
+    "vmstat",
+  ]
+}
+
+// Scrape system metrics from unix exporter
+prometheus.scrape "system_metrics" {
+  targets    = prometheus.exporter.unix.system.targets
+  forward_to = [prometheus.remote_write.prometheus.receiver]
+  scrape_interval = "15s"
+
+  clustering {
+    enabled = false
+  }
+}
+
+// ============================================================================
+// METRICS: Docker Container Metrics (replaces cAdvisor)
+// ============================================================================
+
+prometheus.exporter.cadvisor "docker" {
+  docker_host = "unix:///var/run/docker.sock"
+  storage_duration = "5m"
+  docker_only = false
+  store_container_labels = true
+
+  // Enable all metric types including network
+  enabled_metrics = [
+    "cpu",
+    "memory",
+    "network",
+    "disk",
+    "diskIO",
+  ]
+
+  // Collect container-level metrics
+  // Includes CPU, memory, network, disk I/O per container
+}
+
+// Scrape Docker container metrics from cAdvisor exporter
+prometheus.scrape "docker_metrics" {
+  targets    = prometheus.exporter.cadvisor.docker.targets
+  forward_to = [prometheus.remote_write.prometheus.receiver]
+  scrape_interval = "15s"
+
+  clustering {
+    enabled = false
+  }
+}
+
+// ============================================================================
+// METRICS: Prometheus Remote Write
+// ============================================================================
+
+prometheus.remote_write "prometheus" {
+  endpoint {
+    url = "http://10.10.10.112:9090/api/v1/write"
+
+    // Optional: Add metadata
+    headers = {
+      "X-Source" = "alloy",
+    }
+  }
+
+  // External labels added to all metrics
+  external_labels = {
+    cluster = "homelab",
+    host = "edge-vm",
+    host_ip = "10.10.10.110",
+    os = "Debian GNU/Linux 13 (trixie)",
+  }
+}
 
 // ============================================================================
 // LOGS: Docker Container Discovery

@@ -33,21 +33,35 @@ services:
         max-file: "3"
 
   # ============================================================================
-  # ALLOY - Log Shipper (sends Docker logs to Loki on observability VM)
+  # ALLOY - Metrics & Logs Collector (sends to observability VM)
   # ============================================================================
 
   alloy:
-    image: grafana/alloy:latest
+    image: grafana/alloy:v1.11.2
     container_name: alloy
     restart: unless-stopped
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./alloy/config:/etc/alloy
-    command: run --server.http.listen-addr=0.0.0.0:12345 --storage.path=/var/lib/alloy/data /etc/alloy/config.alloy
+    privileged: true  # Required for system metrics collection
+    command:
+      - run
+      - /etc/alloy/config.alloy
+      - --server.http.listen-addr=0.0.0.0:12345
+      - --storage.path=/var/lib/alloy/data
     ports:
       - "10.10.10.114:12345:12345"  # Alloy UI
+    volumes:
+      - ./alloy/config/config.alloy:/etc/alloy/config.alloy:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro  # Docker metrics + logs
+      - /:/host/root:ro  # System metrics (CPU, disk, etc.)
+      - /sys:/host/sys:ro  # System metrics
+      - /proc:/host/proc:ro  # System metrics
+      - /var/lib/docker:/var/lib/docker:ro  # Docker container info for cAdvisor
+      - /dev/disk:/dev/disk:ro  # Disk info for cAdvisor
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro  # cgroups for container metrics
+      - ./alloy/data:/var/lib/alloy/data  # Alloy state
     networks:
       - dev_net
+    environment:
+      - HOSTNAME=dev-vm
     healthcheck:
       test: ["CMD-SHELL", "alloy tools pprof health http://localhost:12345 || exit 1"]
       interval: 30s
