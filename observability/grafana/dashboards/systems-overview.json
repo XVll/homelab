@@ -1267,7 +1267,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "count(homeassistant_automation_triggered_total{job=\"homeassistant\"})",
+          "expr": "count(homeassistant_automation_triggered_count_total{job=\"homeassistant\"})",
           "format": "table",
           "instant": true,
           "legendFormat": "__auto",
