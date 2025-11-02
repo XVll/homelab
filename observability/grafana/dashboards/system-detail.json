@@ -145,7 +145,7 @@
         "colorMode": "none",
         "graphMode": "none",
         "justifyMode": "auto",
-        "orientation": "horizontal",
+        "orientation": "vertical",
         "reduceOptions": {
           "values": false,
           "calcs": [
@@ -154,8 +154,12 @@
           "fields": ""
         },
         "showPercentChange": false,
-        "textMode": "value_and_name",
-        "wideLayout": false
+        "textMode": "name",
+        "wideLayout": false,
+        "text": {
+          "titleSize": 10,
+          "valueSize": 12
+        }
       },
       "pluginVersion": "11.4.0",
       "targets": [
@@ -167,7 +171,7 @@
           "editorMode": "code",
           "expr": "max(node_network_info{host=\"$host\",device!~\"lo|docker.*|veth.*\"}) by (address)",
           "instant": true,
-          "legendFormat": "IP",
+          "legendFormat": "IP: {{address}}",
           "range": false,
           "refId": "IP"
         },
@@ -192,7 +196,7 @@
           "expr": "max(node_uname_info{host=\"$host\"}) by (sysname, release)",
           "hide": false,
           "instant": true,
-          "legendFormat": "OS",
+          "legendFormat": "OS: {{sysname}} {{release}}",
           "range": false,
           "refId": "OS"
         },
@@ -1441,7 +1445,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum by (name) (rate(container_network_receive_bytes_total{name!=\"\",name!~\"POD\",id=~\"/system.slice/docker.*\"}[5m])) + sum by (name) (rate(container_network_transmit_bytes_total{name!=\"\",name!~\"POD\",id=~\"/system.slice/docker.*\"}[5m]))",
+          "expr": "sum by (name) (rate(container_network_receive_bytes_total{name!=\"\",id=~\"/system.slice/docker.*\",host=\"$host\"}[5m]) + rate(container_network_transmit_bytes_total{name!=\"\",id=~\"/system.slice/docker.*\",host=\"$host\"}[5m]))",
           "legendFormat": "{{name}}",
           "range": true,
           "refId": "A"
