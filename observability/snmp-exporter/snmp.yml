@@ -1,12 +1,9 @@
 # SNMP Exporter Configuration for Synology NAS
-# Version 0.26.0+ format (new auth split structure)
+# Minimal config for v0.26.0+
 
 auths:
   homelab_v2:
     community: homelab
-    security_level: noAuthNoPriv
-    auth_protocol: MD5
-    priv_protocol: DES
     version: 2
 
 modules:
@@ -16,27 +13,7 @@ modules:
       - sysUpTime
       - sysName
       - 1.3.6.1.2.1.25.3.3.1.2    # hrProcessorLoad
-      - 1.3.6.1.2.1.25.2.3.1.3    # hrStorageDescr
-      - 1.3.6.1.2.1.25.2.3.1.5    # hrStorageSize
-      - 1.3.6.1.2.1.25.2.3.1.6    # hrStorageUsed
-      - 1.3.6.1.2.1.2.2.1.1       # ifIndex
-      - 1.3.6.1.2.1.2.2.1.2       # ifDescr
-      - 1.3.6.1.2.1.2.2.1.5       # ifSpeed
-      - 1.3.6.1.2.1.2.2.1.8       # ifOperStatus
-      - 1.3.6.1.2.1.2.2.1.10      # ifInOctets
-      - 1.3.6.1.2.1.2.2.1.16      # ifOutOctets
-      - 1.3.6.1.4.1.6574.1        # Synology system
-      - 1.3.6.1.4.1.6574.2        # Synology disk
-      - 1.3.6.1.4.1.6574.3        # Synology RAID
-      - 1.3.6.1.4.1.6574.4        # Synology services
-      - 1.3.6.1.4.1.6574.5        # Synology upgrade
-      - 1.3.6.1.4.1.6574.6        # Synology temperature
+      - 1.3.6.1.2.1.25.2.3        # hrStorage (all)
+      - 1.3.6.1.2.1.2.2           # ifTable (all interfaces)
+      - 1.3.6.1.4.1.6574          # Synology MIB (all)
     auth: homelab_v2
-    lookups:
-      - source_indexes: [hrStorageIndex]
-        lookup: hrStorageDescr
-      - source_indexes: [ifIndex]
-        lookup: ifDescr
-    overrides:
-      ifPhysAddress:
-        type: PhysAddress48
