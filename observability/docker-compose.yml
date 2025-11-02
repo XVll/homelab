@@ -285,7 +285,7 @@ services:
   # Agents on other VMs stream metrics here
 
   netdata:
-    image: netdata/netdata:latest
+    image: netdata/netdata:stable  # Use stable instead of edge
     container_name: netdata
     restart: unless-stopped
     hostname: observability-netdata
@@ -300,6 +300,7 @@ services:
       - ./netdata/config:/etc/netdata
       - ./netdata/data:/var/lib/netdata
       - ./netdata/cache:/var/cache/netdata
+      - /:/host/root:ro,rslave  # Full root filesystem access (recommended by Netdata)
       - /etc/passwd:/host/etc/passwd:ro
       - /etc/group:/host/etc/group:ro
       - /etc/localtime:/etc/localtime:ro
@@ -308,6 +309,7 @@ services:
       - /etc/os-release:/host/etc/os-release:ro
       - /var/log:/host/var/log:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /run/dbus:/run/dbus:ro  # For systemd-journald integration
     environment:
       - NETDATA_CLAIM_TOKEN=${NETDATA_CLAIM_TOKEN}
       - NETDATA_CLAIM_URL=https://app.netdata.cloud

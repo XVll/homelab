@@ -474,7 +474,7 @@ services:
   # Local web UI: http://10.10.10.113:19999 (optional)
 
   netdata:
-    image: netdata/netdata:latest
+    image: netdata/netdata:stable  # Use stable instead of edge
     container_name: netdata-agent
     restart: unless-stopped
     hostname: media-netdata
@@ -489,6 +489,7 @@ services:
       - ./netdata/config:/etc/netdata
       - ./netdata/data:/var/lib/netdata
       - ./netdata/cache:/var/cache/netdata
+      - /:/host/root:ro,rslave  # Full root filesystem access (recommended by Netdata)
       - /etc/passwd:/host/etc/passwd:ro
       - /etc/group:/host/etc/group:ro
       - /etc/localtime:/etc/localtime:ro
@@ -497,7 +498,7 @@ services:
       - /etc/os-release:/host/etc/os-release:ro
       - /var/log:/host/var/log:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /mnt/nas/media:/host/media:ro  # Monitor NAS usage
+      - /run/dbus:/run/dbus:ro  # For systemd-journald integration
     healthcheck:
       test: ["CMD", "wget", "--tries=1", "--spider", "http://localhost:19999/api/v1/info"]
       interval: 30s
