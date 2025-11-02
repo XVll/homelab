@@ -207,7 +207,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum by (name) (rate(container_cpu_usage_seconds_total{name=~\".+\",host=\"$host\"}[5m])) * 100",
+          "expr": "sum by (name) (rate(container_cpu_usage_seconds_total{name!=\"\",id=~\"/system.slice/docker.*\",host=\"$host\"}[5m])) * 100",
           "legendFormat": "{{name}}",
           "range": true,
           "refId": "A"
@@ -440,7 +440,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "container_memory_usage_bytes{name=~\".+\",host=\"$host\"}",
+          "expr": "container_memory_usage_bytes{name!=\"\",id=~\"/system.slice/docker.*\",host=\"$host\"}",
           "legendFormat": "{{name}}",
           "range": true,
           "refId": "A"
