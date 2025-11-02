@@ -47,50 +47,6 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "IP"
-            },
-            "properties": [
-              {
-                "id": "mappings",
-                "value": [
-                  {
-                    "type": "regex",
-                    "options": {
-                      "pattern": ".*address=\"([^\"]+)\".*",
-                      "result": {
-                        "text": "$1"
-                      }
-                    }
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "OS"
-            },
-            "properties": [
-              {
-                "id": "mappings",
-                "value": [
-                  {
-                    "type": "regex",
-                    "options": {
-                      "pattern": ".*sysname=\"([^\"]+)\".*release=\"([^\"]+)\".*",
-                      "result": {
-                        "text": "$1 $2"
-                      }
-                    }
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
               "options": "Uptime"
             },
             "properties": [
@@ -154,7 +110,7 @@
           "fields": ""
         },
         "showPercentChange": false,
-        "textMode": "name",
+        "textMode": "value_and_name",
         "wideLayout": false,
         "text": {
           "titleSize": 10,
@@ -169,36 +125,11 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "max(node_network_info{host=\"$host\",device!~\"lo|docker.*|veth.*\"}) by (address)",
-          "instant": true,
-          "legendFormat": "IP: {{address}}",
-          "range": false,
-          "refId": "IP"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
           "expr": "(time() - node_boot_time_seconds{host=\"$host\"})",
           "hide": false,
           "legendFormat": "Uptime",
           "range": true,
           "refId": "UPTIME"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "expr": "max(node_uname_info{host=\"$host\"}) by (sysname, release)",
-          "hide": false,
-          "instant": true,
-          "legendFormat": "OS: {{sysname}} {{release}}",
-          "range": false,
-          "refId": "OS"
         },
         {
           "datasource": {
@@ -1445,13 +1376,25 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum by (name) (rate(container_network_receive_bytes_total{name!=\"\",id=~\"/system.slice/docker.*\",host=\"$host\"}[5m]) + rate(container_network_transmit_bytes_total{name!=\"\",id=~\"/system.slice/docker.*\",host=\"$host\"}[5m]))",
-          "legendFormat": "{{name}}",
+          "expr": "rate(container_network_receive_bytes_total{id=\"/\",host=\"$host\"}[5m])",
+          "legendFormat": "Receive",
           "range": true,
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "rate(container_network_transmit_bytes_total{id=\"/\",host=\"$host\"}[5m])",
+          "hide": false,
+          "legendFormat": "Transmit",
+          "range": true,
+          "refId": "B"
         }
       ],
-      "title": "Docker Network",
+      "title": "Docker Network (Total)",
       "type": "timeseries"
     }
   ],
