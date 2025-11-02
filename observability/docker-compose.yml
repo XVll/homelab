@@ -56,6 +56,7 @@ services:
     volumes:
       - ./prometheus/config/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - ./prometheus/config/rules:/etc/prometheus/rules:ro
+      - ./prometheus/config/secrets:/etc/prometheus/secrets:ro
       - ./prometheus/data:/prometheus
     networks:
       - obs_net

@@ -170,6 +170,7 @@ scrape_configs:
   # Home Assistant - native Prometheus integration
   # Note: Requires Prometheus integration to be enabled in HA
   # Settings → Integrations → Add Integration → Prometheus
+  # Also requires long-lived access token for authentication
   - job_name: 'homeassistant'
     static_configs:
       - targets: ['10.10.10.116:8123']
@@ -179,6 +180,9 @@ scrape_configs:
           service: 'automation'
     metrics_path: /api/prometheus
     scheme: http
+    authorization:
+      type: Bearer
+      credentials_file: /etc/prometheus/secrets/homeassistant_token.txt
 
 # ============================================================================
 # NOTES FOR FUTURE EXPANSION
