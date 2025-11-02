@@ -1,40 +1,46 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code when working with code in this repository.
 
-## CRITICAL DOCUMENTATION RULES
+## Documentation Strategy
 
-**SINGLE SOURCE OF TRUTH: Use INFRASTRUCTURE.md ONLY**
+**SINGLE SOURCE OF TRUTH: README.md ONLY**
 
 1. **NEVER create new .md files** for documentation, notes, or deployment instructions
-2. **ALWAYS update INFRASTRUCTURE.md** when:
+2. **ALWAYS update README.md** when:
    - A service is deployed or configured
    - Important decisions are made
    - Quick reference notes are needed
    - Progress needs to be tracked
 3. **NEVER create files like**:
-   - DEPLOY.md, SETUP.md, NOTES.md, README.md (in VM dirs)
+   - DEPLOY.md, SETUP.md, NOTES.md, INFRASTRUCTURE.md
    - Service-specific docs (ADGUARD-SETUP.md, TRAEFIK-NOTES.md, etc.)
    - Any other markdown files for tracking or documentation
 
-**Exceptions** (keep these files only):
+**Exception:**
 - `CLAUDE.md` - This file (instructions for Claude)
-- `INFRASTRUCTURE.md` - Single source of truth (UPDATE THIS)
-- `README.md` (root only) - Brief overview pointing to INFRASTRUCTURE.md
+- `README.md` - Single source of truth (UPDATE THIS)
 
-**When to update INFRASTRUCTURE.md:**
-- Service deployed → Update "Current Progress" section
-- New pattern learned → Add to "Quick Reference Notes"
-- Important command used → Add to "Common Commands" if useful
+**When to update README.md:**
+- Service deployed → Update "Current Status" section
+- New pattern learned → Add to relevant section
+- Important command used → Add to "Common Operations"
 - Decision made → Update relevant section
-- Next steps identified → Update "Next Steps" section
+- Next steps identified → Update "Critical Action Items"
 
-**Documentation style in INFRASTRUCTURE.md:**
+**Documentation style in README.md:**
 - Focused, not stories
 - Actionable commands and notes
 - "To do X: do Y" format
-- Example: "Traefik: to add service → create router + service in .yml files"
+- Example: "To add Traefik route → edit services.yml + routers.yml"
 - Keep it scannable and quick to reference
+
+## Repository Overview
+
+Homelab infrastructure repository managing Docker-based services across multiple Proxmox VMs. All VMs use the same pattern:
+- Repository cloned at `/opt/homelab/` on each VM
+- Each VM has a subdirectory (e.g., `db/`, `edge/`, `observability/`)
+- All VMs are stateless and disposable
 
 ## Working Philosophy
 
@@ -44,14 +50,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Decision Tracking**: When decisions are made during implementation:
 1. Update affected code immediately
-2. Update INFRASTRUCTURE.md (NOT separate files)
+2. Update README.md (NOT separate files)
 3. No over-engineering - simple solutions first
-
-## Repository Overview
-
-This is a homelab infrastructure repository for managing Docker-based services across multiple Proxmox VMs. The architecture uses VirtioFS to mount subdirectories from a central git repository on the Proxmox host to individual VMs, making all VMs stateless and disposable.
-
-**Key Principle**: All work happens inside `/opt/homelab` on each VM, which is mounted via VirtioFS from `/flash/docker/homelab/<vm-name>` on the Proxmox host.
 
 ## Architecture
 
@@ -59,63 +59,39 @@ This is a homelab infrastructure repository for managing Docker-based services a
 
 | VM | IP | Directory | Services |
 |----|-----|-----------|----------|
-| db | 10.10.10.111 | `/opt/homelab` (→ `db/`) | MongoDB, PostgreSQL, Redis, MinIO |
-| observability | 10.10.10.112 | `/opt/homelab` (→ `observability/`) | Portainer, Prometheus, Grafana, Loki |
-| edge | 10.10.10.110 | `/opt/homelab` (→ `edge/`) | Traefik, AdGuard, Authentik |
-| media | 10.10.10.113 | `/opt/homelab` (→ `media/`) | Jellyfin, Arr Stack, n8n, Paperless |
-| dev | 10.10.10.114 | `/opt/homelab` (→ `dev/`) | Gitea, Dokploy |
+| edge | 10.10.10.110 | `/opt/homelab/` | Traefik, AdGuard, Authentik, NetBird |
+| db | 10.10.10.111 | `/opt/homelab/` | MongoDB, PostgreSQL, Redis, MinIO, Mosquitto |
+| observability | 10.10.10.112 | `/opt/homelab/` | Portainer, Prometheus, Grafana, Loki, Alloy, Beszel, Homepage |
+| media | 10.10.10.113 | `/opt/homelab/` | Plex, Sonarr, Radarr, Prowlarr, SABnzbd, qBittorrent, Bazarr, Overseerr |
+| dev | 10.10.10.114 | `/opt/homelab/` | Gitea, Docker Registry, GitHub Runner |
+| deploy | 10.10.10.101 | `/opt/homelab/` | Coolify |
+| ha | 10.10.10.116 | N/A | Home Assistant (Home Assistant OS) |
 
 ### Deployment Strategy
 
 Services are deployed progressively in dependency order:
-1. **Phase 1**: MongoDB, PostgreSQL, Redis, MinIO (databases) → Portainer (management UI)
-2. **Phase 2**: Traefik → AdGuard → Authentik
-3. **Phase 3**: Prometheus → Grafana → Loki → Alloy
-4. **Phase 4**: Media services, n8n, Paperless, Development Stack (Gitea + Dokploy)
+1. **Phase 1**: MongoDB, PostgreSQL, Redis, MinIO, Mosquitto → Portainer
+2. **Phase 2**: Traefik → AdGuard → Authentik → NetBird
+3. **Phase 3**: Prometheus → Grafana → Loki → Alloy → Beszel → Homepage
+4. **Phase 4**: Applications (media, dev, deploy stacks)
 
 ## Common Commands
 
 ### Deploying Services
 
-All services use 1Password for secrets management. The pattern is:
+All services use 1Password for secrets management:
 ```bash
 # Deploy a service
 op run --env-file=.env -- docker compose up -d <service-name>
 
-# Deploy multiple services
-op run --env-file=.env -- docker compose up -d service1 service2
-
-# Deploy all services in a compose file
+# Deploy all services in compose file
 op run --env-file=.env -- docker compose up -d
-```
 
-### Portainer Setup
-
-Portainer deployed on observability VM manages local Docker. To add remote VMs as endpoints:
-
-**Option 1 - Edge Agent (Recommended):**
-1. In Portainer UI: Settings → Endpoints → Add Endpoint → Edge Agent
-2. Copy the Edge Agent deployment command
-3. Run on remote VM to install agent
-
-**Option 2 - Docker API:**
-1. Expose Docker API on remote VM (requires TLS for security)
-2. In Portainer UI: Add Endpoint → Docker → TCP connection
-3. Enter: `tcp://<vm-ip>:2376` with TLS certificates
-
-**Access:** https://10.10.10.112:9443
-
-### Checking Status
-
-```bash
-# Check running containers
-docker compose ps
-
-# View logs (follow mode)
+# Check logs
 docker compose logs -f <service-name>
 
-# Check specific service health
-docker compose exec <service-name> <health-command>
+# Check status
+docker compose ps
 ```
 
 ### Updating Services
@@ -142,11 +118,10 @@ docker compose down <service-name> -v
 sudo rm -rf <service-name>/data/*
 
 # Remove from database if service uses one
-# MongoDB example (for Komodo):
-docker exec -it mongodb mongosh --host 10.10.10.111:27017 -u <user> -p <pass> --authenticationDatabase admin --eval "use <dbname>; db.dropDatabase();"
-
-# PostgreSQL example (for Authentik):
-docker exec -it postgres psql -U postgres -c "DROP DATABASE <dbname>;"
+# PostgreSQL:
+docker exec postgres psql -U postgres -c "DROP DATABASE dbname;"
+# MongoDB:
+docker exec mongodb mongosh --eval "use dbname; db.dropDatabase();"
 
 # Redeploy fresh
 docker compose pull <service-name>
@@ -154,22 +129,6 @@ op run --env-file=.env -- docker compose up -d <service-name>
 
 # Clean up dangling resources
 docker system prune -f
-```
-
-**Note:** `docker compose down -v` removes named volumes but does NOT delete bind mount directories. You must manually remove bind mount data.
-
-### Testing Database Connections
-
-```bash
-# MongoDB (from db host)
-docker exec mongodb mongosh --eval "db.adminCommand('ping')"
-
-# PostgreSQL (from db host)
-docker exec postgres pg_isready -U postgres
-
-# Test from another VM
-mongosh --host 10.10.10.111:27017 -u <user> -p <pass>
-psql -h 10.10.10.111 -U <user> -d <database>
 ```
 
 ## Important Patterns
@@ -185,28 +144,28 @@ MONGODB_ROOT_PASSWORD=op://Server/mongodb/password
 
 The `op run --env-file=.env` command fetches secrets at runtime. Never commit actual passwords.
 
-### VirtioFS Workflow
+### Git Workflow
 
 Changes to configuration files follow this pattern:
-1. Edit files on Proxmox host: `/flash/docker/homelab/<vm-name>/`
-2. Commit changes: `git commit` and `git push`
-3. Changes are immediately visible on all VMs (no git pull needed)
-4. Restart affected services on each VM
+1. Edit files on local machine: `~/Repositories/infrastructure-1/`
+2. Commit changes: `git add . && git commit -m "message" && git push`
+3. Pull on VMs: `ssh fx@10.10.10.xxx 'cd /opt/homelab && git pull'`
+4. Restart affected services: `op run --env-file=.env -- docker compose up -d <service>`
 
 ### Service Dependencies
 
-All services connect to centralized databases on the db host:
+All services connect to centralized databases on db host:
 ```yaml
-# PostgreSQL connection format
+# PostgreSQL
 DATABASE_URL: postgresql://user:pass@10.10.10.111:5432/dbname
 
-# MongoDB connection format
+# MongoDB
 MONGO_URL: mongodb://user:pass@10.10.10.111:27017/dbname
 
-# Redis connection format
-REDIS_URL: redis://10.10.10.111:6379/0
+# Redis
+REDIS_URL: redis://:password@10.10.10.111:6379/0
 
-# MinIO connection format
+# MinIO
 S3_ENDPOINT: http://10.10.10.111:9000
 ```
 
@@ -215,8 +174,8 @@ S3_ENDPOINT: http://10.10.10.111:9000
 When enabling new services:
 1. Uncomment the service in `docker-compose.yml`
 2. Uncomment corresponding env vars in `.env`
-3. Ensure dependencies are running (check the dependency tree in README.md)
-4. Deploy with `op run --env-file=.env -- docker compose up -d <service-name>`
+3. Ensure dependencies are running
+4. Deploy: `op run --env-file=.env -- docker compose up -d <service-name>`
 
 ## Directory Structure
 
@@ -232,74 +191,11 @@ When enabling new services:
 │   └── data/                   # Runtime data (gitignored)
 ```
 
-**Example:**
-
-```
-infrastructure/
-├── db/
-│   ├── docker-compose.yml
-│   ├── .env
-│   ├── mongodb/
-│   │   ├── config/mongod.conf
-│   │   ├── certs/
-│   │   └── data/
-│   ├── postgres/
-│   │   ├── config/
-│   │   ├── certs/
-│   │   └── data/
-│   ├── redis/
-│   │   ├── certs/
-│   │   └── data/
-│   └── minio/
-│       ├── certs/
-│       └── data/
-│
-├── observability/
-│   ├── docker-compose.yml
-│   ├── .env
-│   ├── portainer/data/
-│   ├── prometheus/
-│   │   ├── config/
-│   │   └── data/
-│   ├── grafana/
-│   │   ├── provisioning/
-│   │   └── data/
-│   ├── loki/
-│   │   ├── config/
-│   │   └── data/
-│   └── alloy/config/
-│
-├── edge/
-│   ├── docker-compose.yml
-│   ├── .env
-│   ├── traefik/
-│   │   ├── config/
-│   │   └── data/
-│   ├── adguard/data/
-│   └── authentik/
-│       ├── certs/
-│       └── data/
-│
-├── media/
-│   ├── docker-compose.yml
-│   ├── .env
-│   ├── jellyfin/data/
-│   ├── prowlarr/data/
-│   ├── sonarr/data/
-│   ├── radarr/data/
-│   ├── qbittorrent/data/
-│   ├── n8n/data/
-│   └── paperless/data/
-│
-└── dev/
-    └── README.md
-```
-
 ## Key Configuration Files
 
 ### Database Configurations
 
-- `db/mongodb/config/mongod.conf` - MongoDB config (TLS, replication)
+- `db/mongodb/config/mongod.conf` - MongoDB config
 - `db/postgres/config/postgresql.conf` - PostgreSQL tuning
 - `db/postgres/config/pg_hba.conf` - PostgreSQL access control
 
@@ -308,29 +204,18 @@ infrastructure/
 - `observability/prometheus/config/prometheus.yml` - Scrape configs
 - `observability/prometheus/config/rules/alerts.yml` - Alerting rules
 - `observability/grafana/provisioning/` - Datasources, dashboards
-- `observability/loki/config/config.yml` - Loki with MinIO backend
+- `observability/loki/config/config.yml` - Log aggregation
 - `observability/alloy/config/config.alloy` - Metrics/logs collection
+- `observability/homepage/config/` - Homepage dashboard configuration
 
 ### Edge Configurations
 
-- `edge/traefik/config/traefik.yml` - Traefik static config (entrypoints, SSL)
+- `edge/traefik/config/traefik.yml` - Static config (entrypoints, SSL)
 - `edge/traefik/config/dynamic/middlewares.yml` - Auth, headers, rate limiting
 - `edge/traefik/config/dynamic/services.yml` - Backend server targets
 - `edge/traefik/config/dynamic/routers.yml` - Domain routing rules
 
 ## Troubleshooting
-
-### VirtioFS Mount Issues
-```bash
-# Check if mounted
-mount | grep virtiofs
-
-# Remount manually
-sudo mount -a
-
-# Check fstab
-cat /etc/fstab | grep docker-vm
-```
 
 ### 1Password Issues
 ```bash
@@ -352,8 +237,8 @@ sudo netstat -tulpn | grep <port>
 # Check container logs
 docker compose logs --tail=50 <service-name>
 
-# Verify secrets loaded correctly (debug only, careful with sensitive data)
-op run --env-file=.env -- env | grep -i password
+# Restart service
+docker compose restart <service-name>
 ```
 
 ### Network Connectivity
@@ -368,12 +253,10 @@ nc -zv 10.10.10.111 6379     # Redis
 
 ### Making Changes to Configuration
 
-1. SSH to Proxmox host
-2. Navigate to `/flash/docker/homelab`
-3. Make changes to files
-4. Commit and push: `git add . && git commit -m "message" && git push`
-5. Changes are immediately visible on VMs via VirtioFS
-6. SSH to affected VM and restart services
+1. Edit files on local machine: `~/Repositories/infrastructure-1/`
+2. Commit and push: `git add . && git commit -m "message" && git push`
+3. Pull on affected VMs: `ssh fx@10.10.10.xxx 'cd /opt/homelab && git pull'`
+4. Restart affected services
 
 ### Adding a New Service
 
@@ -383,25 +266,27 @@ nc -zv 10.10.10.111 6379     # Redis
 4. Add any config files to `config/` directory
 5. Test deploy: `op run --env-file=.env -- docker compose up -d <service-name>`
 6. Check logs: `docker compose logs -f <service-name>`
-7. Commit changes
+7. Update README.md with service details
+8. Commit changes
 
 ### Creating a New VM
 
-Key points (see INFRASTRUCTURE.md for full details):
-1. Clone from template (full clone recommended)
+See README.md → "Initial Setup" → "Creating a New VM" for complete checklist.
+
+Key points:
+1. Clone from template (full clone)
 2. Set static IP in Proxmox
-3. Add VirtioFS mount pointing to subdirectory: `qm set <vm-id> --virtfs0 /flash/docker/homelab/<vm-name>,mp=docker-vm`
-4. Boot VM and configure hostname
-5. Mount VirtioFS: `sudo mount -t virtiofs docker-vm /opt/homelab`
-6. Set `OP_SERVICE_ACCOUNT_TOKEN` in `~/.bashrc`
-7. Navigate to `/opt/homelab` and deploy services
+3. Boot VM and configure hostname
+4. Set `OP_SERVICE_ACCOUNT_TOKEN` in `~/.bashrc`
+5. Clone repository: `git clone https://git.onurx.com/fx/homelab.git /opt/homelab`
+6. Navigate to VM directory and deploy services
 
 ## Security Notes
 
 - All secrets stored in 1Password (vault: "Server")
 - `.env` files are safe to commit (contain only `op://` references)
 - Never commit actual passwords or tokens
-- Each VM should have its own SSH key for git (or use same key, copied after cloning)
+- Each VM should have its own SSH key (or use same key, copied after cloning)
 - TLS certificates auto-generated in `certs/` directories (gitignored)
 
 ## Network Information
@@ -410,3 +295,44 @@ Key points (see INFRASTRUCTURE.md for full details):
 - Gateway: 10.10.10.1
 - DNS: AdGuard Home on 10.10.10.110
 - All VMs communicate over VLAN 10
+- VPN: NetBird (100.92.0.0/16)
+
+## Critical Rules for Claude
+
+### Always Use Existing Infrastructure Services
+
+**NEVER deploy separate databases or services when we already have them!**
+
+Use these existing services from db host (10.10.10.111):
+- **PostgreSQL** - For any app needing SQL database
+- **MongoDB** - For any app needing NoSQL/document database
+- **Redis** - For caching, sessions, queues
+- **MinIO** - For object storage (S3-compatible)
+- **Mosquitto MQTT** - For message broker / IoT communication
+
+### Always Choose Private or Public in Traefik
+
+**NEVER add a Traefik route without explicit middleware!**
+
+Every service in `edge/traefik/config/dynamic/routers.yml` MUST have either:
+- **`private-default`** - Internal only (home + NetBird VPN) ← Use this by default
+- **`public-access`** - Internet accessible ← Only for public services
+
+**IP Whitelist:**
+- Home network: `10.10.10.0/24`
+- NetBird VPN: `100.92.0.0/16`
+
+**Testing:**
+- Private services from internet → **403 Forbidden** ✅
+- Private services from home/VPN → Works ✅
+- Public services from anywhere → Works ✅
+
+### Documentation Updates
+
+When making any infrastructure changes:
+1. Update the code/configuration
+2. Update README.md immediately
+3. Commit both together
+4. NEVER create new markdown files
+
+Keep README.md as the single source of truth.
