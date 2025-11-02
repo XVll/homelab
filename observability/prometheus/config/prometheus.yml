@@ -139,12 +139,14 @@ scrape_configs:
   # --------------------------------------------------------------------------
 
   # Synology NAS - SNMP monitoring (no agent required)
+  # Uses official synology module + homelab_v2 auth from snmp.yml
   - job_name: 'synology'
     static_configs:
       - targets:
         - 10.10.10.116  # Synology NAS IP
     metrics_path: /snmp
     params:
+      auth: [homelab_v2]
       module: [synology]
     relabel_configs:
       - source_labels: [__address__]

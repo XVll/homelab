@@ -255,7 +255,7 @@ services:
   # No agent needed on target devices - uses SNMP protocol
 
   snmp-exporter:
-    image: prom/snmp-exporter:v0.25.0
+    image: prom/snmp-exporter:latest
     container_name: snmp-exporter
     restart: unless-stopped
     ports:
