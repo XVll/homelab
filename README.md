@@ -333,6 +333,7 @@ router-name:
 ### Layer 2: Grafana (Deep Metrics & Observability)
 - **URL:** https://grafana.onurx.com
 - **Purpose:** Metrics, logs, performance analysis
+- **Systems Overview Dashboard:** Clean table view with CPU, memory, disk, network, load avg (Beszel-style)
 - Explore → Loki for log queries
 - Pre-built dashboards for infrastructure overview
 
