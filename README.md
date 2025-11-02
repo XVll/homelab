@@ -10,7 +10,7 @@ Docker-based homelab infrastructure on Proxmox VMs. All VMs are stateless and di
 |----|-----|----------|
 | edge | 10.10.10.110 | Traefik, AdGuard, Authentik, NetBird |
 | db | 10.10.10.111 | MongoDB, PostgreSQL, Redis, MinIO, Mosquitto |
-| observability | 10.10.10.112 | Portainer, Prometheus, Grafana, Loki, Alloy, Beszel, Homepage |
+| observability | 10.10.10.112 | Portainer, Prometheus, Grafana, Loki, Alloy, Homepage |
 | media | 10.10.10.113 | Plex, Sonarr, Radarr, Prowlarr, SABnzbd, qBittorrent, Bazarr, Overseerr |
 | dev | 10.10.10.114 | Gitea, Docker Registry, GitHub Runner |
 | deploy | 10.10.10.101 | Coolify (deployment platform) |
@@ -70,7 +70,7 @@ All secrets stored in **1Password vault "Server"**:
 
 Services should be deployed in this order:
 1. **db VM:** MongoDB → PostgreSQL → Redis → MinIO → Mosquitto
-2. **observability VM:** Portainer → Prometheus → Grafana → Loki → Alloy → Beszel → Homepage
+2. **observability VM:** Portainer → Prometheus → Grafana → Loki → Alloy → Homepage
 3. **edge VM:** Traefik → AdGuard → Authentik → NetBird
 4. **Other VMs:** Deploy as needed
 
@@ -243,11 +243,6 @@ router-name:
 - Other VMs: Logs only
 - UI: http://10.10.10.112:12345 (observability VM only)
 
-**Beszel:**
-- Hub: http://10.10.10.112:8090 or https://beszel.onurx.com
-- Agents on: all VMs (Unix socket or port 45876)
-- Monitors: CPU, RAM, disk, network, Docker stats
-
 **Homepage:**
 - URL: https://home.onurx.com
 - Port: 3002
@@ -333,7 +328,7 @@ router-name:
 ### Layer 2: Grafana (Deep Metrics & Observability)
 - **URL:** https://grafana.onurx.com
 - **Purpose:** Metrics, logs, performance analysis
-- **Systems Overview Dashboard:** Clean table view with CPU, memory, disk, network, load avg (Beszel-style)
+- **Systems Overview Dashboard:** Clean table view with CPU, memory, disk, network, load avg for all VMs
 - Explore → Loki for log queries
 - Pre-built dashboards for infrastructure overview
 
@@ -341,10 +336,6 @@ router-name:
 - **URL:** https://portainer.onurx.com
 - **Purpose:** Visual Docker management across all VMs
 - Portainer agents on: edge, db, dev, media VMs
-
-### Layer 4: Beszel (Quick System Monitoring)
-- **URL:** https://beszel.onurx.com
-- **Purpose:** Real-time CPU, RAM, disk, network stats
 
 ---
 
@@ -498,7 +489,6 @@ Required items in vault "Server":
 - `cloudflare` - fields: email, api_token
 - `authentik-db` - field: password
 - `authentik` - field: secret_key
-- `beszel` - fields: key, token
 - `netbird` - field: token
 
 Generate secrets:
@@ -619,10 +609,9 @@ sudo chown -R fx:fx /opt/homelab
 
 **Phase 3 - Observability:** ✅ Complete
 - Prometheus (metrics - 90 day retention)
-- Grafana (dashboards)
+- Grafana (dashboards - systems overview, system detail)
 - Loki (logs - 90 day retention)
-- Alloy (collectors on all VMs)
-- Beszel (system monitoring)
+- Alloy (collectors on all VMs - metrics + logs)
 - Homepage (unified dashboard)
 - SNMP monitoring for Synology NAS
 
@@ -643,7 +632,7 @@ sudo chown -R fx:fx /opt/homelab
 4. **Health Checks** - Several services missing health checks
 
 **🟡 MEDIUM PRIORITY:**
-1. **SSL Migration** - Route more services via Traefik (Beszel, AdGuard, Portainer)
+1. **SSL Migration** - Route more services via Traefik (AdGuard, Portainer)
 2. **Synology Monitoring** - SNMP configured but needs Grafana dashboard
 3. **Media Stack** - Deploy and configure all services
 
@@ -664,9 +653,8 @@ sudo chown -R fx:fx /opt/homelab
 **Management:**
 - Homepage: https://home.onurx.com
 - Portainer: https://portainer.onurx.com
-- Grafana: https://grafana.onurx.com
+- Grafana: https://grafana.onurx.com (Systems Overview, System Detail dashboards)
 - Prometheus: https://prometheus.onurx.com
-- Beszel: https://beszel.onurx.com
 - Traefik: https://traefik.onurx.com
 
 **Edge:**
