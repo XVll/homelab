@@ -170,6 +170,9 @@ services:
       - /sys:/host/sys:ro  # System metrics
       - /proc:/host/proc:ro  # System metrics
       - /var/log:/var/log:ro  # System logs (syslog, auth.log)
+      - /var/lib/docker:/var/lib/docker:ro  # Docker container info for cAdvisor
+      - /dev/disk:/dev/disk:ro  # Disk info for cAdvisor
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro  # cgroups for container metrics
       - ./alloy/data:/var/lib/alloy/data  # Alloy state
     networks:
       - obs_net
