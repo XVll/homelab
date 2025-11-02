@@ -143,7 +143,7 @@ scrape_configs:
   - job_name: 'synology'
     static_configs:
       - targets:
-        - 10.10.10.116  # Synology NAS IP
+        - 10.10.10.100  # Synology NAS IP (Xpenology)
     metrics_path: /snmp
     params:
       auth: [homelab_v2]
