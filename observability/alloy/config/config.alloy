@@ -44,6 +44,17 @@ prometheus.scrape "system_metrics" {
 prometheus.exporter.cadvisor "docker" {
   docker_host = "unix:///var/run/docker.sock"
   storage_duration = "5m"
+  docker_only = false
+  store_container_labels = true
+
+  // Enable all metric types including network
+  enabled_metrics = [
+    "cpu",
+    "memory",
+    "network",
+    "disk",
+    "diskIO",
+  ]
 
   // Collect container-level metrics
   // Includes CPU, memory, network, disk I/O per container
