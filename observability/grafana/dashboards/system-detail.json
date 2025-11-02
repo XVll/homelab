@@ -125,7 +125,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "count(node_uname_info{host=\"$host\"})",
+          "expr": "max(node_uname_info{host=\"$host\",host_ip!=\"\"})",
           "hide": false,
           "legendFormat": "IP: {{host_ip}} | OS: {{os}}",
           "range": true,
@@ -137,7 +137,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "(time() - node_boot_time_seconds{host=\"$host\"})",
+          "expr": "max(time() - node_boot_time_seconds{host=\"$host\"})",
           "hide": false,
           "legendFormat": "Uptime",
           "range": true,
@@ -149,7 +149,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "count(node_cpu_seconds_total{mode=\"idle\",host=\"$host\"})",
+          "expr": "count(node_cpu_seconds_total{mode=\"idle\",host=\"$host\"} offset 1m)",
           "hide": false,
           "legendFormat": "CPU Cores",
           "range": true,
@@ -161,7 +161,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "node_memory_MemTotal_bytes{host=\"$host\"}",
+          "expr": "max(node_memory_MemTotal_bytes{host=\"$host\"})",
           "hide": false,
           "legendFormat": "Total RAM",
           "range": true,
@@ -173,7 +173,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "node_filesystem_size_bytes{mountpoint=\"/host/root\",host=\"$host\"}",
+          "expr": "max(node_filesystem_size_bytes{mountpoint=\"/host/root\",host=\"$host\"})",
           "hide": false,
           "legendFormat": "Total Disk",
           "range": true,
