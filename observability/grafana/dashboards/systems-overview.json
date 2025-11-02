@@ -26,7 +26,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "System overview showing CPU, Memory, Disk, Network, and Load metrics for all monitored hosts",
+      "description": "System overview showing all monitored hosts with real-time metrics",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -59,43 +59,7 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 150
-              },
-              {
-                "id": "links",
-                "value": [
-                  {
-                    "title": "View System Details",
-                    "url": "/d/system-details?var-host=${__data.fields.System}"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Status"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 80
-              },
-              {
-                "id": "mappings",
-                "value": [
-                  {
-                    "options": {
-                      "1": {
-                        "color": "green",
-                        "index": 0,
-                        "text": "🟢 UP"
-                      }
-                    },
-                    "type": "value"
-                  }
-                ]
+                "value": 120
               },
               {
                 "id": "custom.cellOptions",
@@ -108,12 +72,12 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "CPU %"
+              "options": "CPU"
             },
             "properties": [
               {
                 "id": "custom.width",
-                "value": 200
+                "value": 180
               },
               {
                 "id": "unit",
@@ -163,12 +127,12 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Memory %"
+              "options": "Memory"
             },
             "properties": [
               {
                 "id": "custom.width",
-                "value": 200
+                "value": 180
               },
               {
                 "id": "unit",
@@ -218,12 +182,12 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Disk %"
+              "options": "Disk"
             },
             "properties": [
               {
                 "id": "custom.width",
-                "value": 200
+                "value": 180
               },
               {
                 "id": "unit",
@@ -267,6 +231,30 @@
               {
                 "id": "min",
                 "value": 0
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "GPU"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 100
+              },
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "decimals",
+                "value": 1
+              },
+              {
+                "id": "noValue",
+                "value": "0.00%"
               }
             ]
           },
@@ -289,12 +277,12 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Network"
+              "options": "Net"
             },
             "properties": [
               {
                 "id": "custom.width",
-                "value": 120
+                "value": 110
               },
               {
                 "id": "unit",
@@ -302,38 +290,76 @@
               },
               {
                 "id": "decimals",
-                "value": 1
+                "value": 0
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "Uptime"
+              "options": "Temp"
             },
             "properties": [
               {
                 "id": "custom.width",
-                "value": 120
+                "value": 90
               },
               {
                 "id": "unit",
-                "value": "s"
+                "value": "celsius"
               },
               {
                 "id": "decimals",
                 "value": 0
               },
               {
-                "id": "mappings",
-                "value": []
+                "id": "noValue",
+                "value": "-"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 60
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Agent"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 100
               }
             ]
           }
         ]
       },
       "gridPos": {
-        "h": 14,
+        "h": 12,
         "w": 24,
         "x": 0,
         "y": 0
@@ -381,7 +407,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "100 - (avg by (instance) (irate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
+          "expr": "100 - (avg by (instance, host) (irate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -471,7 +497,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum by (instance) (irate(node_network_receive_bytes_total{device!~\"lo|docker.*|veth.*|br-.*\"}[5m]) + irate(node_network_transmit_bytes_total{device!~\"lo|docker.*|veth.*|br-.*\"}[5m]))",
+          "expr": "sum by (instance, host) (irate(node_network_receive_bytes_total{device!~\"lo|docker.*|veth.*|br-.*\"}[5m]) + irate(node_network_transmit_bytes_total{device!~\"lo|docker.*|veth.*|br-.*\"}[5m]))",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -486,13 +512,13 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "time() - node_boot_time_seconds",
+          "expr": "avg by (instance, host) (node_hwmon_temp_celsius)",
           "format": "table",
           "hide": false,
           "instant": true,
           "legendFormat": "__auto",
           "range": false,
-          "refId": "Uptime"
+          "refId": "Temp"
         }
       ],
       "title": "All Systems",
@@ -527,6 +553,7 @@
               "__name__ 6": true,
               "__name__ 7": true,
               "__name__ 8": true,
+              "__name__ 9": true,
               "cluster": true,
               "cluster 1": true,
               "cluster 2": true,
@@ -536,8 +563,10 @@
               "cluster 6": true,
               "cluster 7": true,
               "cluster 8": true,
+              "cluster 9": true,
               "device": true,
               "fstype": true,
+              "instance": true,
               "job": true,
               "job 1": true,
               "job 2": true,
@@ -547,34 +576,33 @@
               "job 6": true,
               "job 7": true,
               "job 8": true,
+              "job 9": true,
               "mountpoint": true
             },
             "includeByName": {},
             "indexByName": {
-              "Value #CPU": 3,
-              "Value #Disk": 5,
+              "Value #CPU": 2,
+              "Value #Disk": 4,
               "Value #Load1": 6,
               "Value #Load15": 8,
               "Value #Load5": 7,
-              "Value #Memory": 4,
+              "Value #Memory": 3,
               "Value #Network": 9,
               "Value #Status": 1,
-              "Value #Uptime": 10,
-              "host": 2,
-              "instance": 0
+              "Value #Temp": 10,
+              "host": 0
             },
             "renameByName": {
-              "Value #CPU": "CPU %",
-              "Value #Disk": "Disk %",
-              "Value #Load1": "1m",
-              "Value #Load15": "15m",
-              "Value #Load5": "5m",
-              "Value #Memory": "Memory %",
-              "Value #Network": "Network",
-              "Value #Status": "Status",
-              "Value #Uptime": "Uptime",
-              "host": "System",
-              "instance": "Instance"
+              "Value #CPU": "CPU",
+              "Value #Disk": "Disk",
+              "Value #Load1": "load1",
+              "Value #Load15": "load15",
+              "Value #Load5": "load5",
+              "Value #Memory": "Memory",
+              "Value #Network": "Net",
+              "Value #Status": "●",
+              "Value #Temp": "Temp",
+              "host": "System"
             }
           }
         },
@@ -582,53 +610,25 @@
           "id": "groupBy",
           "options": {
             "fields": {
-              "1m": {
+              "CPU": {
                 "aggregations": [
                   "lastNotNull"
                 ],
                 "operation": "aggregate"
               },
-              "15m": {
+              "Disk": {
                 "aggregations": [
                   "lastNotNull"
                 ],
                 "operation": "aggregate"
               },
-              "5m": {
+              "Memory": {
                 "aggregations": [
                   "lastNotNull"
                 ],
                 "operation": "aggregate"
               },
-              "CPU %": {
-                "aggregations": [
-                  "lastNotNull"
-                ],
-                "operation": "aggregate"
-              },
-              "Disk %": {
-                "aggregations": [
-                  "lastNotNull"
-                ],
-                "operation": "aggregate"
-              },
-              "Instance": {
-                "aggregations": [],
-                "operation": "groupby"
-              },
-              "Memory %": {
-                "aggregations": [
-                  "lastNotNull"
-                ],
-                "operation": "aggregate"
-              },
-              "Network": {
-                "aggregations": [
-                  "lastNotNull"
-                ],
-                "operation": "aggregate"
-              },
-              "Status": {
+              "Net": {
                 "aggregations": [
                   "lastNotNull"
                 ],
@@ -640,7 +640,31 @@
                 ],
                 "operation": "aggregate"
               },
-              "Uptime": {
+              "Temp": {
+                "aggregations": [
+                  "lastNotNull"
+                ],
+                "operation": "aggregate"
+              },
+              "load1": {
+                "aggregations": [
+                  "lastNotNull"
+                ],
+                "operation": "aggregate"
+              },
+              "load15": {
+                "aggregations": [
+                  "lastNotNull"
+                ],
+                "operation": "aggregate"
+              },
+              "load5": {
+                "aggregations": [
+                  "lastNotNull"
+                ],
+                "operation": "aggregate"
+              },
+              "●": {
                 "aggregations": [
                   "lastNotNull"
                 ],
@@ -650,36 +674,118 @@
           }
         },
         {
+          "id": "calculateField",
+          "options": {
+            "alias": "Load Avg",
+            "binary": {
+              "left": "load1 (lastNotNull)",
+              "operator": "+",
+              "reducer": "sum",
+              "right": "0"
+            },
+            "mode": "binary",
+            "reduce": {
+              "reducer": "sum"
+            },
+            "replaceFields": false
+          }
+        },
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "GPU",
+            "binary": {
+              "left": "load1 (lastNotNull)",
+              "operator": "*",
+              "reducer": "sum",
+              "right": "0"
+            },
+            "mode": "binary",
+            "reduce": {
+              "reducer": "sum"
+            },
+            "replaceFields": false
+          }
+        },
+        {
           "id": "organize",
           "options": {
             "excludeByName": {
-              "Instance": true
+              "load1 (lastNotNull)": true,
+              "load15 (lastNotNull)": true,
+              "load5 (lastNotNull)": true
             },
             "includeByName": {},
             "indexByName": {
-              "1m": 7,
-              "15m": 9,
-              "5m": 8,
-              "CPU %": 3,
-              "Disk %": 5,
-              "Instance": 0,
-              "Memory %": 4,
-              "Network": 10,
-              "Status": 2,
-              "System": 1,
-              "Uptime": 6
+              "CPU (lastNotNull)": 2,
+              "Disk (lastNotNull)": 4,
+              "GPU": 5,
+              "Load Avg": 6,
+              "Memory (lastNotNull)": 3,
+              "Net (lastNotNull)": 7,
+              "System (lastNotNull)": 0,
+              "Temp (lastNotNull)": 8,
+              "load1 (lastNotNull)": 9,
+              "load15 (lastNotNull)": 11,
+              "load5 (lastNotNull)": 10,
+              "● (lastNotNull)": 1
             },
             "renameByName": {
-              "1m (lastNotNull)": "1m",
-              "15m (lastNotNull)": "15m",
-              "5m (lastNotNull)": "5m",
-              "CPU % (lastNotNull)": "CPU %",
-              "Disk % (lastNotNull)": "Disk %",
-              "Memory % (lastNotNull)": "Memory %",
-              "Network (lastNotNull)": "Network",
-              "Status (lastNotNull)": "Status",
+              "CPU (lastNotNull)": "CPU",
+              "Disk (lastNotNull)": "Disk",
+              "Memory (lastNotNull)": "Memory",
+              "Net (lastNotNull)": "Net",
               "System (lastNotNull)": "System",
-              "Uptime (lastNotNull)": "Uptime"
+              "Temp (lastNotNull)": "Temp",
+              "● (lastNotNull)": "●"
+            }
+          }
+        },
+        {
+          "id": "rowsToFields",
+          "options": {
+            "mappings": [
+              {
+                "fieldName": "System",
+                "handlerKey": "__name"
+              },
+              {
+                "fieldName": "load1 (lastNotNull)",
+                "handlerKey": "__ignore"
+              },
+              {
+                "fieldName": "load5 (lastNotNull)",
+                "handlerKey": "__ignore"
+              },
+              {
+                "fieldName": "load15 (lastNotNull)",
+                "handlerKey": "__ignore"
+              }
+            ]
+          }
+        },
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {
+              "Name": 0,
+              "observability CPU": 2,
+              "observability Disk": 4,
+              "observability GPU": 5,
+              "observability Load Avg": 6,
+              "observability Memory": 3,
+              "observability Net": 7,
+              "observability Temp": 8,
+              "observability ●": 1
+            },
+            "renameByName": {
+              "Name": "System"
             }
           }
         }
@@ -750,7 +856,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 14
+        "y": 12
       },
       "id": 2,
       "options": {
@@ -850,7 +956,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 14
+        "y": 12
       },
       "id": 3,
       "options": {
@@ -949,7 +1055,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 22
+        "y": 20
       },
       "id": 4,
       "options": {
@@ -1048,7 +1154,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 22
+        "y": 20
       },
       "id": 5,
       "options": {
@@ -1137,6 +1243,6 @@
   "timezone": "browser",
   "title": "Systems Overview",
   "uid": "systems-overview",
-  "version": 1,
+  "version": 2,
   "weekStart": ""
 }
