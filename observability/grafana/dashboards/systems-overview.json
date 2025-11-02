@@ -45,10 +45,6 @@
             },
             "properties": [
               {
-                "id": "custom.width",
-                "value": 120
-              },
-              {
                 "id": "displayName",
                 "value": "System"
               }
@@ -106,10 +102,6 @@
               {
                 "id": "min",
                 "value": 0
-              },
-              {
-                "id": "custom.width",
-                "value": 160
               }
             ]
           },
@@ -165,10 +157,6 @@
               {
                 "id": "min",
                 "value": 0
-              },
-              {
-                "id": "custom.width",
-                "value": 160
               }
             ]
           },
@@ -224,10 +212,6 @@
               {
                 "id": "min",
                 "value": 0
-              },
-              {
-                "id": "custom.width",
-                "value": 160
               }
             ]
           },
@@ -252,10 +236,6 @@
               {
                 "id": "noValue",
                 "value": "0.00%"
-              },
-              {
-                "id": "custom.width",
-                "value": 90
               }
             ]
           },
@@ -272,10 +252,6 @@
               {
                 "id": "decimals",
                 "value": 2
-              },
-              {
-                "id": "custom.width",
-                "value": 110
               }
             ]
           },
@@ -296,10 +272,6 @@
               {
                 "id": "decimals",
                 "value": 0
-              },
-              {
-                "id": "custom.width",
-                "value": 100
               }
             ]
           },
@@ -350,10 +322,6 @@
                 "value": {
                   "type": "color-text"
                 }
-              },
-              {
-                "id": "custom.width",
-                "value": 80
               }
             ]
           }
@@ -417,7 +385,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "(1 - (node_filesystem_avail_bytes{mountpoint=\"/\",fstype!=\"rootfs\"} / node_filesystem_size_bytes{mountpoint=\"/\",fstype!=\"rootfs\"})) * 100",
+          "expr": "(1 - (node_filesystem_avail_bytes{mountpoint=\"/\"} / node_filesystem_size_bytes{mountpoint=\"/\"})) * 100",
           "format": "table",
           "hide": false,
           "instant": true,
