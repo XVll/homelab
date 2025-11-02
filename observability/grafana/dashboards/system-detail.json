@@ -147,7 +147,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "max(node_uname_info{host=\"$host\",host_ip!=\"\"})",
+          "expr": "node_uname_info{host=\"$host\",host_ip!=\"\"}",
           "hide": false,
           "legendFormat": "IP: {{host_ip}} | OS: {{os}}",
           "range": true,
