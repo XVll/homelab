@@ -145,7 +145,8 @@ scrape_configs:
         - 10.10.10.116  # Synology NAS IP
     metrics_path: /snmp
     params:
-      module: [synology]
+      auth: [homelab_v2]
+      module: [if_mib]  # Use built-in if_mib module
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
