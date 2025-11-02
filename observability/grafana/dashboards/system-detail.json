@@ -47,6 +47,50 @@
           {
             "matcher": {
               "id": "byName",
+              "options": "IP"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "regex",
+                    "options": {
+                      "pattern": ".*address=\"([^\"]+)\".*",
+                      "result": {
+                        "text": "$1"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "OS"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "regex",
+                    "options": {
+                      "pattern": ".*sysname=\"([^\"]+)\".*release=\"([^\"]+)\".*",
+                      "result": {
+                        "text": "$1 $2"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
               "options": "Uptime"
             },
             "properties": [
@@ -91,8 +135,8 @@
         ]
       },
       "gridPos": {
-        "h": 8,
-        "w": 3,
+        "h": 3,
+        "w": 24,
         "x": 0,
         "y": 0
       },
@@ -121,9 +165,10 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "node_network_info{host=\"$host\",device!~\"lo|docker.*|veth.*\"}",
-          "legendFormat": "IP: {{address}}",
-          "range": true,
+          "expr": "max(node_network_info{host=\"$host\",device!~\"lo|docker.*|veth.*\"}) by (address)",
+          "instant": true,
+          "legendFormat": "IP",
+          "range": false,
           "refId": "IP"
         },
         {
@@ -144,10 +189,11 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "node_uname_info{host=\"$host\"}",
+          "expr": "max(node_uname_info{host=\"$host\"}) by (sysname, release)",
           "hide": false,
-          "legendFormat": "OS: {{sysname}} {{release}}",
-          "range": true,
+          "instant": true,
+          "legendFormat": "OS",
+          "range": false,
           "refId": "OS"
         },
         {
@@ -187,7 +233,7 @@
           "refId": "DISK"
         }
       ],
-      "title": "Host Information: $host",
+      "title": "",
       "type": "stat"
     },
     {
@@ -251,9 +297,9 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 10,
-        "x": 3,
-        "y": 0
+        "w": 12,
+        "x": 0,
+        "y": 3
       },
       "id": 1,
       "options": {
@@ -349,9 +395,9 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 11,
-        "x": 13,
-        "y": 0
+        "w": 12,
+        "x": 12,
+        "y": 3
       },
       "id": 2,
       "options": {
@@ -474,9 +520,9 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 10,
-        "x": 3,
-        "y": 8
+        "w": 12,
+        "x": 0,
+        "y": 11
       },
       "id": 3,
       "options": {
@@ -582,9 +628,9 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 11,
-        "x": 13,
-        "y": 8
+        "w": 12,
+        "x": 12,
+        "y": 11
       },
       "id": 4,
       "options": {
@@ -707,9 +753,9 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 10,
-        "x": 3,
-        "y": 16
+        "w": 12,
+        "x": 0,
+        "y": 19
       },
       "id": 5,
       "options": {
@@ -815,9 +861,9 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 11,
-        "x": 13,
-        "y": 16
+        "w": 12,
+        "x": 12,
+        "y": 19
       },
       "id": 6,
       "options": {
@@ -923,9 +969,9 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 10,
-        "x": 3,
-        "y": 24
+        "w": 12,
+        "x": 0,
+        "y": 27
       },
       "id": 7,
       "options": {
@@ -1031,9 +1077,9 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 11,
-        "x": 13,
-        "y": 24
+        "w": 12,
+        "x": 12,
+        "y": 27
       },
       "id": 8,
       "options": {
@@ -1127,9 +1173,9 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 10,
-        "x": 3,
-        "y": 32
+        "w": 12,
+        "x": 0,
+        "y": 35
       },
       "id": 9,
       "options": {
@@ -1260,9 +1306,9 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 10,
-        "x": 3,
-        "y": 40
+        "w": 12,
+        "x": 0,
+        "y": 43
       },
       "id": 11,
       "options": {
@@ -1368,9 +1414,9 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 11,
-        "x": 13,
-        "y": 40
+        "w": 12,
+        "x": 12,
+        "y": 43
       },
       "id": 12,
       "options": {
