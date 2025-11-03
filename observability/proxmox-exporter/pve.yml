@@ -1,6 +1,7 @@
 default:
   user: "{PVE_USER}"
-  password: "{PVE_PASSWORD}"
+  token_name: "prometheus"
+  token_value: "{PVE_TOKEN}"
   verify_ssl: false
   # Proxmox VE host
   targets:
