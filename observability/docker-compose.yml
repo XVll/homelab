@@ -241,9 +241,9 @@ services:
       - PVE_PASSWORD=${PROXMOX_PASSWORD}
       - PVE_VERIFY_SSL=false
     command:
-      - 'pve.yml'
+      - '--config.file=/etc/pve.yml'
     volumes:
-      - ./proxmox-exporter/pve.yml:/etc/prometheus/pve.yml:ro
+      - ./proxmox-exporter/pve.yml:/etc/pve.yml:ro
     networks:
       - obs_net
     healthcheck:
