@@ -237,6 +237,7 @@ services:
     ports:
       - "10.10.10.112:9221:9221"
     environment:
+      - PVE_HOST=10.10.10.20
       - PVE_USER=${PROXMOX_USER}
       - PVE_TOKEN_NAME=prometheus
       - PVE_TOKEN_VALUE=${PROXMOX_TOKEN}
