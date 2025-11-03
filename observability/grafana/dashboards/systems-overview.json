@@ -13,11 +13,18 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "Proxmox VE Hypervisor - Physical Host (10.10.10.20)",
+      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "thresholds"
+          },
+          "custom": {
+            "align": "left",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
@@ -26,34 +33,28 @@
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 70
-              },
-              {
-                "color": "red",
-                "value": 90
               }
             ]
-          },
-          "unit": "percent",
-          "decimals": 1
+          }
         },
         "overrides": [
           {
             "matcher": {
               "id": "byName",
-              "options": "Status"
+              "options": "Value #Status"
             },
             "properties": [
               {
-                "id": "unit",
-                "value": "short"
+                "id": "displayName",
+                "value": "\u25cf"
               },
               {
-                "id": "decimals",
-                "value": 0
+                "id": "custom.width",
+                "value": 60
+              },
+              {
+                "id": "custom.align",
+                "value": "center"
               },
               {
                 "id": "mappings",
@@ -72,69 +73,492 @@
                     }
                   }
                 ]
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "Disk I/O"
+              "options": "host"
             },
             "properties": [
               {
-                "id": "unit",
-                "value": "Bps"
+                "id": "displayName",
+                "value": "System"
+              },
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "View ${__value.text} details",
+                    "url": "/d/system-detail?var-host=${__value.text}"
+                  }
+                ]
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "Network"
+              "options": "Value #CPU"
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "CPU"
+              },
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "decimals",
+                "value": 1
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "gauge",
+                  "valueDisplayMode": "text"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 60
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "max",
+                "value": 100
+              },
+              {
+                "id": "min",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value #Memory"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Memory"
+              },
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "decimals",
+                "value": 1
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "gauge",
+                  "valueDisplayMode": "text"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 70
+                    },
+                    {
+                      "color": "red",
+                      "value": 85
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "max",
+                "value": 100
+              },
+              {
+                "id": "min",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value #Disk"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Disk"
+              },
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "decimals",
+                "value": 1
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "gauge",
+                  "valueDisplayMode": "text"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 70
+                    },
+                    {
+                      "color": "red",
+                      "value": 85
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "max",
+                "value": 100
+              },
+              {
+                "id": "min",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value #GPU"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "GPU"
+              },
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "noValue",
+                "value": "0.00%"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value #Load1"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "1m"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "custom.width",
+                "value": 80
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 2
+                    },
+                    {
+                      "color": "red",
+                      "value": 4
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value #Load5"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "5m"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "custom.width",
+                "value": 80
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 2
+                    },
+                    {
+                      "color": "red",
+                      "value": 4
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value #Load15"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "15m"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "custom.width",
+                "value": 80
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 2
+                    },
+                    {
+                      "color": "red",
+                      "value": 4
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value #Net"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Net"
+              },
+              {
                 "id": "unit",
                 "value": "Bps"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value #DiskIO"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Disk I/O"
+              },
+              {
+                "id": "unit",
+                "value": "Bps"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value #Temp"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Temp"
+              },
+              {
+                "id": "unit",
+                "value": "celsius"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "noValue",
+                "value": "-"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 60
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
               }
             ]
           }
         ]
       },
       "gridPos": {
-        "h": 3,
+        "h": 12,
         "w": 24,
         "x": 0,
         "y": 0
       },
       "id": 1,
       "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "values": false,
-          "calcs": [
-            "lastNotNull"
+        "cellHeight": "xs",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
           ],
-          "fields": ""
+          "show": false
         },
-        "showPercentChange": false,
-        "text": {},
-        "textMode": "value_and_name",
-        "wideLayout": true
+        "showHeader": true,
+        "sortBy": []
       },
-      "pluginVersion": "11.4.0",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "pve_up{id=\"node/pve\"}",
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "avg by (host) (up{job=\"integrations/unix\"})\nor\n(avg by (host) (up{job=\"homeassistant\"} * on() group_left(host) label_replace(up{job=\"homeassistant\"}, \"host\", \"ha-vm\", \"\", \"\")))\nor\n(avg by (host) (pve_up{name=\"synology\"} * on() group_left(host) label_replace(pve_up{name=\"synology\"}, \"host\", \"synology-vm\", \"\", \"\")))",
           "format": "table",
           "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
           "refId": "Status"
         },
         {
@@ -142,9 +566,13 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "pve_cpu_usage_ratio{id=\"node/pve\"} * 100",
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "(100 - (avg by (host) (irate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100))\nor\n(avg by (host) (pve_cpu_usage_ratio{name=\"ha\"} * 100 * on() group_left(host) label_replace(pve_up{name=\"ha\"}, \"host\", \"ha-vm\", \"\", \"\")))\nor\n(avg by (host) (pve_cpu_usage_ratio{name=\"synology\"} * 100 * on() group_left(host) label_replace(pve_up{name=\"synology\"}, \"host\", \"synology-vm\", \"\", \"\")))",
           "format": "table",
           "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
           "refId": "CPU"
         },
         {
@@ -152,9 +580,14 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "(pve_memory_usage_bytes{id=\"node/pve\"} / pve_memory_size_bytes{id=\"node/pve\"}) * 100",
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "((1 - (avg by (host) (node_memory_MemAvailable_bytes) / avg by (host) (node_memory_MemTotal_bytes))) * 100)\nor\n(avg by (host) ((pve_memory_usage_bytes{name=\"ha\"} / pve_memory_size_bytes{name=\"ha\"} * 100) * on() group_left(host) label_replace(pve_up{name=\"ha\"}, \"host\", \"ha-vm\", \"\", \"\")))\nor\n(avg by (host) ((pve_memory_usage_bytes{name=\"synology\"} / pve_memory_size_bytes{name=\"synology\"} * 100) * on() group_left(host) label_replace(pve_up{name=\"synology\"}, \"host\", \"synology-vm\", \"\", \"\")))",
           "format": "table",
+          "hide": false,
           "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
           "refId": "Memory"
         },
         {
@@ -162,23 +595,123 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "rate(pve_disk_read_bytes{id=\"node/pve\"}[5m]) + rate(pve_disk_write_bytes{id=\"node/pve\"}[5m])",
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "((1 - (avg by (host) (node_filesystem_avail_bytes{mountpoint=\"/host/root\"}) / avg by (host) (node_filesystem_size_bytes{mountpoint=\"/host/root\"}))) * 100)\nor\n(avg by (host) (homeassistant_sensor_unit_percent{entity=\"sensor.system_monitor_disk_usage\"} * on() group_left(host) label_replace(up{job=\"homeassistant\"}, \"host\", \"ha-vm\", \"\", \"\")))\nor\n(avg by (host) ((1 - homeassistant_sensor_data_size_mb{entity=\"sensor.synology_volume_1_volume_used\"} / homeassistant_sensor_data_size_mb{entity=\"sensor.synology_volume_1_total_size\"}) * 100 * on() group_left(host) label_replace(pve_up{name=\"synology\"}, \"host\", \"synology-vm\", \"\", \"\")))",
           "format": "table",
+          "hide": false,
           "instant": true,
-          "refId": "DiskIO"
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "Disk"
         },
         {
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "rate(pve_network_receive_bytes{id=\"node/pve\"}[5m]) + rate(pve_network_transmit_bytes{id=\"node/pve\"}[5m])",
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "0 * avg by (host) (node_load1)",
           "format": "table",
+          "hide": false,
           "instant": true,
-          "refId": "Network"
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "GPU"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "avg by (host) (node_load1)\nor\n(avg by (host) (homeassistant_sensor_state{entity=\"sensor.system_monitor_load_1_min\"} * on() group_left(host) label_replace(up{job=\"homeassistant\"}, \"host\", \"ha-vm\", \"\", \"\")))",
+          "format": "table",
+          "hide": false,
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "Load1"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "avg by (host) (node_load5)\nor\n(avg by (host) (homeassistant_sensor_state{entity=\"sensor.system_monitor_load_5_min\"} * on() group_left(host) label_replace(up{job=\"homeassistant\"}, \"host\", \"ha-vm\", \"\", \"\")))",
+          "format": "table",
+          "hide": false,
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "Load5"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "avg by (host) (node_load15)\nor\n(avg by (host) (homeassistant_sensor_state{entity=\"sensor.system_monitor_load_15_min\"} * on() group_left(host) label_replace(up{job=\"homeassistant\"}, \"host\", \"ha-vm\", \"\", \"\")))",
+          "format": "table",
+          "hide": false,
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "Load15"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "(sum by (host) (rate(node_network_receive_bytes_total{device!~\"lo|docker.*|veth.*|br-.*\"}[5m])) + sum by (host) (rate(node_network_transmit_bytes_total{device!~\"lo|docker.*|veth.*|br-.*\"}[5m])))\nor\n(sum by (host) ((rate(pve_network_receive_bytes{name=\"ha\"}[5m]) + rate(pve_network_transmit_bytes{name=\"ha\"}[5m])) * on() group_left(host) label_replace(pve_up{name=\"ha\"}, \"host\", \"ha-vm\", \"\", \"\")))\nor\n(sum by (host) ((rate(pve_network_receive_bytes{name=\"synology\"}[5m]) + rate(pve_network_transmit_bytes{name=\"synology\"}[5m])) * on() group_left(host) label_replace(pve_up{name=\"synology\"}, \"host\", \"synology-vm\", \"\", \"\")))",
+          "format": "table",
+          "hide": false,
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "Net"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "avg by (host) (node_hwmon_temp_celsius)",
+          "format": "table",
+          "hide": false,
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "Temp"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "(sum by (host) (rate(node_disk_read_bytes_total[5m])) + sum by (host) (rate(node_disk_written_bytes_total[5m])))\nor\n(sum by (host) ((rate(pve_disk_read_bytes{name=\"ha\"}[5m]) + rate(pve_disk_write_bytes{name=\"ha\"}[5m])) * on() group_left(host) label_replace(pve_up{name=\"ha\"}, \"host\", \"ha-vm\", \"\", \"\")))\nor\n(sum by (host) ((rate(pve_disk_read_bytes{name=\"synology\"}[5m]) + rate(pve_disk_write_bytes{name=\"synology\"}[5m])) * on() group_left(host) label_replace(pve_up{name=\"synology\"}, \"host\", \"synology-vm\", \"\", \"\")))",
+          "format": "table",
+          "hide": false,
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "DiskIO"
         }
       ],
-      "title": "\ud83d\udda5\ufe0f Proxmox VE Host",
+      "title": "All Systems",
       "transformations": [
         {
           "id": "merge",
@@ -190,797 +723,314 @@
             "excludeByName": {
               "Time": true,
               "__name__": true,
-              "id": true,
+              "cluster": true,
+              "device": true,
+              "fstype": true,
               "instance": true,
               "job": true,
-              "node": true
+              "mountpoint": true
             },
+            "includeByName": {},
             "indexByName": {
-              "Value #Status": 0,
-              "Value #CPU": 1,
-              "Value #Memory": 2,
-              "Value #DiskIO": 3,
-              "Value #Network": 4
+              "Time": 0,
+              "Value #Status": 1,
+              "host": 2,
+              "Value #CPU": 3,
+              "Value #Memory": 4,
+              "Value #Disk": 5,
+              "Value #DiskIO": 6,
+              "Value #GPU": 7,
+              "Value #Load1": 8,
+              "Value #Load5": 9,
+              "Value #Load15": 10,
+              "Value #Net": 11,
+              "Value #Temp": 12
             },
-            "renameByName": {
-              "Value #Status": "Status",
-              "Value #CPU": "CPU",
-              "Value #Memory": "Memory",
-              "Value #DiskIO": "Disk I/O",
-              "Value #Network": "Network"
-            }
+            "renameByName": {}
           }
         }
       ],
-      "type": "stat",
-      "links": [
-        {
-          "title": "View Proxmox Host Details",
-          "url": "/d/proxmox-detail"
-        }
-      ]
+      "type": "table"
     },
     {
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "Traefik, AdGuard, Authentik (10.10.10.110)",
+      "description": "CPU usage over time for all systems",
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "tooltip": false,
+              "viz": false,
+              "legend": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
           },
           "mappings": [],
+          "max": 100,
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 70
-              },
-              {
-                "color": "red",
-                "value": 90
               }
             ]
           },
-          "unit": "percent",
-          "decimals": 1
+          "unit": "percent"
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Status"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "short"
-              },
-              {
-                "id": "decimals",
-                "value": 0
-              },
-              {
-                "id": "mappings",
-                "value": [
-                  {
-                    "type": "value",
-                    "options": {
-                      "1": {
-                        "text": "\u25cf",
-                        "color": "green"
-                      },
-                      "0": {
-                        "text": "\u25cf",
-                        "color": "red"
-                      }
-                    }
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Disk I/O"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "Bps"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Network"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "Bps"
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
-        "h": 2,
-        "w": 24,
+        "h": 8,
+        "w": 12,
         "x": 0,
-        "y": 3
+        "y": 18
       },
       "id": 2,
       "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "values": false,
+        "legend": {
           "calcs": [
-            "lastNotNull"
+            "last",
+            "max"
           ],
-          "fields": ""
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
         },
-        "showPercentChange": false,
-        "text": {},
-        "textMode": "value_and_name",
-        "wideLayout": true
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
       },
-      "pluginVersion": "11.4.0",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "pve_up{name=\"edge\"}",
-          "format": "table",
-          "instant": true,
-          "refId": "Status"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "pve_cpu_usage_ratio{name=\"edge\"} * 100",
-          "format": "table",
-          "instant": true,
-          "refId": "CPU"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "(pve_memory_usage_bytes{name=\"edge\"} / pve_memory_size_bytes{name=\"edge\"}) * 100",
-          "format": "table",
-          "instant": true,
-          "refId": "Memory"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "rate(pve_disk_read_bytes{name=\"edge\"}[5m]) + rate(pve_disk_write_bytes{name=\"edge\"}[5m])",
-          "format": "table",
-          "instant": true,
-          "refId": "DiskIO"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "rate(pve_network_receive_bytes{name=\"edge\"}[5m]) + rate(pve_network_transmit_bytes{name=\"edge\"}[5m])",
-          "format": "table",
-          "instant": true,
-          "refId": "Network"
+          "editorMode": "code",
+          "expr": "100 - (avg by (host) (irate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
+          "instant": false,
+          "legendFormat": "{{host}}",
+          "range": true,
+          "refId": "A"
         }
       ],
-      "title": "edge-vm",
-      "transformations": [
-        {
-          "id": "merge",
-          "options": {}
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "Time": true,
-              "__name__": true,
-              "id": true,
-              "instance": true,
-              "job": true,
-              "name": true,
-              "node": true,
-              "type": true,
-              "template": true
-            },
-            "indexByName": {
-              "Value #Status": 0,
-              "Value #CPU": 1,
-              "Value #Memory": 2,
-              "Value #DiskIO": 3,
-              "Value #Network": 4
-            },
-            "renameByName": {
-              "Value #Status": "Status",
-              "Value #CPU": "CPU",
-              "Value #Memory": "Memory",
-              "Value #DiskIO": "Disk I/O",
-              "Value #Network": "Network"
-            }
-          }
-        }
-      ],
-      "type": "stat",
-      "links": [
-        {
-          "title": "View details",
-          "url": "/d/system-detail?var-host=edge-vm"
-        }
-      ]
+      "title": "CPU Usage",
+      "type": "timeseries"
     },
     {
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "MongoDB, PostgreSQL, Redis, MinIO (10.10.10.111)",
+      "description": "Memory usage over time for all systems",
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "tooltip": false,
+              "viz": false,
+              "legend": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
           },
           "mappings": [],
+          "max": 100,
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 70
-              },
-              {
-                "color": "red",
-                "value": 90
               }
             ]
           },
-          "unit": "percent",
-          "decimals": 1
+          "unit": "percent"
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Status"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "short"
-              },
-              {
-                "id": "decimals",
-                "value": 0
-              },
-              {
-                "id": "mappings",
-                "value": [
-                  {
-                    "type": "value",
-                    "options": {
-                      "1": {
-                        "text": "\u25cf",
-                        "color": "green"
-                      },
-                      "0": {
-                        "text": "\u25cf",
-                        "color": "red"
-                      }
-                    }
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Disk I/O"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "Bps"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Network"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "Bps"
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 5
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 18
       },
       "id": 3,
       "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "values": false,
+        "legend": {
           "calcs": [
-            "lastNotNull"
+            "last",
+            "max"
           ],
-          "fields": ""
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
         },
-        "showPercentChange": false,
-        "text": {},
-        "textMode": "value_and_name",
-        "wideLayout": true
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
       },
-      "pluginVersion": "11.4.0",
+      "pluginVersion": "11.3.1",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "pve_up{name=\"db\"}",
-          "format": "table",
-          "instant": true,
-          "refId": "Status"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "pve_cpu_usage_ratio{name=\"db\"} * 100",
-          "format": "table",
-          "instant": true,
-          "refId": "CPU"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "(pve_memory_usage_bytes{name=\"db\"} / pve_memory_size_bytes{name=\"db\"}) * 100",
-          "format": "table",
-          "instant": true,
-          "refId": "Memory"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "rate(pve_disk_read_bytes{name=\"db\"}[5m]) + rate(pve_disk_write_bytes{name=\"db\"}[5m])",
-          "format": "table",
-          "instant": true,
-          "refId": "DiskIO"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "rate(pve_network_receive_bytes{name=\"db\"}[5m]) + rate(pve_network_transmit_bytes{name=\"db\"}[5m])",
-          "format": "table",
-          "instant": true,
-          "refId": "Network"
+          "editorMode": "code",
+          "expr": "(1 - (avg by (host) (node_memory_MemAvailable_bytes) / avg by (host) (node_memory_MemTotal_bytes))) * 100",
+          "instant": false,
+          "legendFormat": "{{host}}",
+          "range": true,
+          "refId": "A"
         }
       ],
-      "title": "db-vm",
-      "transformations": [
-        {
-          "id": "merge",
-          "options": {}
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "Time": true,
-              "__name__": true,
-              "id": true,
-              "instance": true,
-              "job": true,
-              "name": true,
-              "node": true,
-              "type": true,
-              "template": true
-            },
-            "indexByName": {
-              "Value #Status": 0,
-              "Value #CPU": 1,
-              "Value #Memory": 2,
-              "Value #DiskIO": 3,
-              "Value #Network": 4
-            },
-            "renameByName": {
-              "Value #Status": "Status",
-              "Value #CPU": "CPU",
-              "Value #Memory": "Memory",
-              "Value #DiskIO": "Disk I/O",
-              "Value #Network": "Network"
-            }
-          }
-        }
-      ],
-      "type": "stat",
-      "links": [
-        {
-          "title": "View details",
-          "url": "/d/system-detail?var-host=db-vm"
-        }
-      ]
+      "title": "Memory Usage",
+      "type": "timeseries"
     },
     {
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "Prometheus, Grafana, Loki (10.10.10.112)",
+      "description": "Disk I/O throughput over time",
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "mode": "palette-classic"
           },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 70
-              },
-              {
-                "color": "red",
-                "value": 90
-              }
-            ]
-          },
-          "unit": "percent",
-          "decimals": 1
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Status"
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "tooltip": false,
+              "viz": false,
+              "legend": false
             },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "short"
-              },
-              {
-                "id": "decimals",
-                "value": 0
-              },
-              {
-                "id": "mappings",
-                "value": [
-                  {
-                    "type": "value",
-                    "options": {
-                      "1": {
-                        "text": "\u25cf",
-                        "color": "green"
-                      },
-                      "0": {
-                        "text": "\u25cf",
-                        "color": "red"
-                      }
-                    }
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Disk I/O"
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
             },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "Bps"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Network"
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
             },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "Bps"
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 7
-      },
-      "id": 4,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "values": false,
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": ""
-        },
-        "showPercentChange": false,
-        "text": {},
-        "textMode": "value_and_name",
-        "wideLayout": true
-      },
-      "pluginVersion": "11.4.0",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "pve_up{name=\"observability\"}",
-          "format": "table",
-          "instant": true,
-          "refId": "Status"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "pve_cpu_usage_ratio{name=\"observability\"} * 100",
-          "format": "table",
-          "instant": true,
-          "refId": "CPU"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "(pve_memory_usage_bytes{name=\"observability\"} / pve_memory_size_bytes{name=\"observability\"}) * 100",
-          "format": "table",
-          "instant": true,
-          "refId": "Memory"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "rate(pve_disk_read_bytes{name=\"observability\"}[5m]) + rate(pve_disk_write_bytes{name=\"observability\"}[5m])",
-          "format": "table",
-          "instant": true,
-          "refId": "DiskIO"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "rate(pve_network_receive_bytes{name=\"observability\"}[5m]) + rate(pve_network_transmit_bytes{name=\"observability\"}[5m])",
-          "format": "table",
-          "instant": true,
-          "refId": "Network"
-        }
-      ],
-      "title": "observability-vm",
-      "transformations": [
-        {
-          "id": "merge",
-          "options": {}
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "Time": true,
-              "__name__": true,
-              "id": true,
-              "instance": true,
-              "job": true,
-              "name": true,
-              "node": true,
-              "type": true,
-              "template": true
-            },
-            "indexByName": {
-              "Value #Status": 0,
-              "Value #CPU": 1,
-              "Value #Memory": 2,
-              "Value #DiskIO": 3,
-              "Value #Network": 4
-            },
-            "renameByName": {
-              "Value #Status": "Status",
-              "Value #CPU": "CPU",
-              "Value #Memory": "Memory",
-              "Value #DiskIO": "Disk I/O",
-              "Value #Network": "Network"
+            "thresholdsStyle": {
+              "mode": "off"
             }
-          }
-        }
-      ],
-      "type": "stat",
-      "links": [
-        {
-          "title": "View details",
-          "url": "/d/system-detail?var-host=observability-vm"
-        }
-      ]
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "description": "Plex, Sonarr, Radarr (10.10.10.113)",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
           },
           "mappings": [],
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 70
-              },
-              {
-                "color": "red",
-                "value": 90
               }
             ]
           },
-          "unit": "percent",
-          "decimals": 1
+          "unit": "Bps"
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Status"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "short"
-              },
-              {
-                "id": "decimals",
-                "value": 0
-              },
-              {
-                "id": "mappings",
-                "value": [
-                  {
-                    "type": "value",
-                    "options": {
-                      "1": {
-                        "text": "\u25cf",
-                        "color": "green"
-                      },
-                      "0": {
-                        "text": "\u25cf",
-                        "color": "red"
-                      }
-                    }
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Disk I/O"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "Bps"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Network"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "Bps"
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 9
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 18
       },
       "id": 5,
       "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "values": false,
+        "legend": {
           "calcs": [
-            "lastNotNull"
+            "last",
+            "max"
           ],
-          "fields": ""
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
         },
-        "showPercentChange": false,
-        "text": {},
-        "textMode": "value_and_name",
-        "wideLayout": true
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
       },
       "pluginVersion": "11.4.0",
       "targets": [
@@ -989,159 +1039,218 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "pve_up{name=\"media\"}",
-          "format": "table",
-          "instant": true,
-          "refId": "Status"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "pve_cpu_usage_ratio{name=\"media\"} * 100",
-          "format": "table",
-          "instant": true,
-          "refId": "CPU"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "(pve_memory_usage_bytes{name=\"media\"} / pve_memory_size_bytes{name=\"media\"}) * 100",
-          "format": "table",
-          "instant": true,
-          "refId": "Memory"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "rate(pve_disk_read_bytes{name=\"media\"}[5m]) + rate(pve_disk_write_bytes{name=\"media\"}[5m])",
-          "format": "table",
-          "instant": true,
-          "refId": "DiskIO"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "rate(pve_network_receive_bytes{name=\"media\"}[5m]) + rate(pve_network_transmit_bytes{name=\"media\"}[5m])",
-          "format": "table",
-          "instant": true,
-          "refId": "Network"
+          "editorMode": "code",
+          "expr": "sum by (host) (rate(node_disk_read_bytes_total[5m])) + sum by (host) (rate(node_disk_written_bytes_total[5m]))",
+          "instant": false,
+          "legendFormat": "{{host}}",
+          "range": true,
+          "refId": "A"
         }
       ],
-      "title": "media-vm",
-      "transformations": [
-        {
-          "id": "merge",
-          "options": {}
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "Time": true,
-              "__name__": true,
-              "id": true,
-              "instance": true,
-              "job": true,
-              "name": true,
-              "node": true,
-              "type": true,
-              "template": true
-            },
-            "indexByName": {
-              "Value #Status": 0,
-              "Value #CPU": 1,
-              "Value #Memory": 2,
-              "Value #DiskIO": 3,
-              "Value #Network": 4
-            },
-            "renameByName": {
-              "Value #Status": "Status",
-              "Value #CPU": "CPU",
-              "Value #Memory": "Memory",
-              "Value #DiskIO": "Disk I/O",
-              "Value #Network": "Network"
-            }
-          }
-        }
-      ],
-      "type": "stat",
-      "links": [
-        {
-          "title": "View details",
-          "url": "/d/system-detail?var-host=media-vm"
-        }
-      ]
+      "title": "Disk I/O",
+      "type": "timeseries"
     },
     {
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "Gitea, Docker Registry (10.10.10.114)",
+      "description": "Network throughput (TX + RX) for all systems",
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "tooltip": false,
+              "viz": false,
+              "legend": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
           },
           "mappings": [],
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 70
-              },
-              {
-                "color": "red",
-                "value": 90
               }
             ]
           },
-          "unit": "percent",
-          "decimals": 1
+          "unit": "Bps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 18
+      },
+      "id": 4,
+      "options": {
+        "legend": {
+          "calcs": [
+            "last",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.3.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum by (host) (rate(node_network_receive_bytes_total{device!~\"lo|docker.*|veth.*|br-.*\"}[5m])) + sum by (host) (rate(node_network_transmit_bytes_total{device!~\"lo|docker.*|veth.*|br-.*\"}[5m]))",
+          "instant": false,
+          "legendFormat": "{{host}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Network Throughput",
+      "type": "timeseries"
+    },
+    {
+      "id": 10,
+      "title": "Synology NAS",
+      "type": "table",
+      "gridPos": {
+        "x": 0,
+        "y": 12,
+        "w": 24,
+        "h": 3
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "Status",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "systemStatus{instance=\"10.10.10.100\"}",
+          "format": "table",
+          "instant": true
+        },
+        {
+          "refId": "System",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "systemStatus{instance=\"10.10.10.100\"}",
+          "format": "table",
+          "instant": true
+        },
+        {
+          "refId": "Health",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "min(diskHealthStatus{instance=\"10.10.10.100\"})",
+          "format": "table",
+          "instant": true
+        },
+        {
+          "refId": "Temperature",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "max(diskTemperature{instance=\"10.10.10.100\"})",
+          "format": "table",
+          "instant": true
+        },
+        {
+          "refId": "RAID",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "min(raidStatus{instance=\"10.10.10.100\"})",
+          "format": "table",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          }
         },
         "overrides": [
           {
             "matcher": {
               "id": "byName",
-              "options": "Status"
+              "options": "Value #Status"
             },
             "properties": [
               {
-                "id": "unit",
-                "value": "short"
-              },
-              {
-                "id": "decimals",
-                "value": 0
+                "id": "displayName",
+                "value": "Status"
               },
               {
                 "id": "mappings",
                 "value": [
                   {
-                    "type": "value",
                     "options": {
-                      "1": {
-                        "text": "\u25cf",
-                        "color": "green"
-                      },
                       "0": {
-                        "text": "\u25cf",
-                        "color": "red"
+                        "color": "red",
+                        "text": "\u25cf Offline"
+                      },
+                      "1": {
+                        "color": "green",
+                        "text": "\u25cf Online"
                       }
-                    }
+                    },
+                    "type": "value"
                   }
                 ]
               }
@@ -1150,213 +1259,32 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Disk I/O"
+              "options": "Value #System"
             },
             "properties": [
               {
-                "id": "unit",
-                "value": "Bps"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Network"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "Bps"
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 11
-      },
-      "id": 6,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "values": false,
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": ""
-        },
-        "showPercentChange": false,
-        "text": {},
-        "textMode": "value_and_name",
-        "wideLayout": true
-      },
-      "pluginVersion": "11.4.0",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "pve_up{name=\"dev\"}",
-          "format": "table",
-          "instant": true,
-          "refId": "Status"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "pve_cpu_usage_ratio{name=\"dev\"} * 100",
-          "format": "table",
-          "instant": true,
-          "refId": "CPU"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "(pve_memory_usage_bytes{name=\"dev\"} / pve_memory_size_bytes{name=\"dev\"}) * 100",
-          "format": "table",
-          "instant": true,
-          "refId": "Memory"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "rate(pve_disk_read_bytes{name=\"dev\"}[5m]) + rate(pve_disk_write_bytes{name=\"dev\"}[5m])",
-          "format": "table",
-          "instant": true,
-          "refId": "DiskIO"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "rate(pve_network_receive_bytes{name=\"dev\"}[5m]) + rate(pve_network_transmit_bytes{name=\"dev\"}[5m])",
-          "format": "table",
-          "instant": true,
-          "refId": "Network"
-        }
-      ],
-      "title": "dev-vm",
-      "transformations": [
-        {
-          "id": "merge",
-          "options": {}
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "Time": true,
-              "__name__": true,
-              "id": true,
-              "instance": true,
-              "job": true,
-              "name": true,
-              "node": true,
-              "type": true,
-              "template": true
-            },
-            "indexByName": {
-              "Value #Status": 0,
-              "Value #CPU": 1,
-              "Value #Memory": 2,
-              "Value #DiskIO": 3,
-              "Value #Network": 4
-            },
-            "renameByName": {
-              "Value #Status": "Status",
-              "Value #CPU": "CPU",
-              "Value #Memory": "Memory",
-              "Value #DiskIO": "Disk I/O",
-              "Value #Network": "Network"
-            }
-          }
-        }
-      ],
-      "type": "stat",
-      "links": [
-        {
-          "title": "View details",
-          "url": "/d/system-detail?var-host=dev-vm"
-        }
-      ]
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "description": "Coolify (10.10.10.101)",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 70
-              },
-              {
-                "color": "red",
-                "value": 90
-              }
-            ]
-          },
-          "unit": "percent",
-          "decimals": 1
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Status"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "short"
-              },
-              {
-                "id": "decimals",
-                "value": 0
+                "id": "displayName",
+                "value": "System"
               },
               {
                 "id": "mappings",
                 "value": [
                   {
-                    "type": "value",
                     "options": {
                       "1": {
-                        "text": "\u25cf",
-                        "color": "green"
-                      },
-                      "0": {
-                        "text": "\u25cf",
-                        "color": "red"
+                        "text": "Synology NAS"
                       }
-                    }
+                    },
+                    "type": "value"
+                  }
+                ]
+              },
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "",
+                    "url": "/d/synology-detail"
                   }
                 ]
               }
@@ -1365,213 +1293,24 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Disk I/O"
+              "options": "Value #Health"
             },
             "properties": [
               {
-                "id": "unit",
-                "value": "Bps"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Network"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "Bps"
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 13
-      },
-      "id": 7,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "values": false,
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": ""
-        },
-        "showPercentChange": false,
-        "text": {},
-        "textMode": "value_and_name",
-        "wideLayout": true
-      },
-      "pluginVersion": "11.4.0",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "pve_up{name=\"deploy\"}",
-          "format": "table",
-          "instant": true,
-          "refId": "Status"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "pve_cpu_usage_ratio{name=\"deploy\"} * 100",
-          "format": "table",
-          "instant": true,
-          "refId": "CPU"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "(pve_memory_usage_bytes{name=\"deploy\"} / pve_memory_size_bytes{name=\"deploy\"}) * 100",
-          "format": "table",
-          "instant": true,
-          "refId": "Memory"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "rate(pve_disk_read_bytes{name=\"deploy\"}[5m]) + rate(pve_disk_write_bytes{name=\"deploy\"}[5m])",
-          "format": "table",
-          "instant": true,
-          "refId": "DiskIO"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "rate(pve_network_receive_bytes{name=\"deploy\"}[5m]) + rate(pve_network_transmit_bytes{name=\"deploy\"}[5m])",
-          "format": "table",
-          "instant": true,
-          "refId": "Network"
-        }
-      ],
-      "title": "deploy-vm",
-      "transformations": [
-        {
-          "id": "merge",
-          "options": {}
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "Time": true,
-              "__name__": true,
-              "id": true,
-              "instance": true,
-              "job": true,
-              "name": true,
-              "node": true,
-              "type": true,
-              "template": true
-            },
-            "indexByName": {
-              "Value #Status": 0,
-              "Value #CPU": 1,
-              "Value #Memory": 2,
-              "Value #DiskIO": 3,
-              "Value #Network": 4
-            },
-            "renameByName": {
-              "Value #Status": "Status",
-              "Value #CPU": "CPU",
-              "Value #Memory": "Memory",
-              "Value #DiskIO": "Disk I/O",
-              "Value #Network": "Network"
-            }
-          }
-        }
-      ],
-      "type": "stat",
-      "links": [
-        {
-          "title": "View details",
-          "url": "/d/system-detail?var-host=deploy-vm"
-        }
-      ]
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "description": "NAS Storage (10.10.10.100)",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 70
-              },
-              {
-                "color": "red",
-                "value": 90
-              }
-            ]
-          },
-          "unit": "percent",
-          "decimals": 1
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Status"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "short"
-              },
-              {
-                "id": "decimals",
-                "value": 0
+                "id": "displayName",
+                "value": "Disk Health"
               },
               {
                 "id": "mappings",
                 "value": [
                   {
-                    "type": "value",
                     "options": {
                       "1": {
-                        "text": "\u25cf",
-                        "color": "green"
-                      },
-                      "0": {
-                        "text": "\u25cf",
-                        "color": "red"
+                        "color": "green",
+                        "text": "Healthy"
                       }
-                    }
+                    },
+                    "type": "value"
                   }
                 ]
               }
@@ -1580,322 +1319,67 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Disk I/O"
+              "options": "Value #Temperature"
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Max Disk Temp"
+              },
+              {
                 "id": "unit",
-                "value": "Bps"
+                "value": "celsius"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 40
+                    },
+                    {
+                      "color": "red",
+                      "value": 50
+                    }
+                  ]
+                }
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "Network"
+              "options": "Value #RAID"
             },
             "properties": [
               {
-                "id": "unit",
-                "value": "Bps"
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 15
-      },
-      "id": 8,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "values": false,
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": ""
-        },
-        "showPercentChange": false,
-        "text": {},
-        "textMode": "value_and_name",
-        "wideLayout": true
-      },
-      "pluginVersion": "11.4.0",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "pve_up{name=\"synology\"}",
-          "format": "table",
-          "instant": true,
-          "refId": "Status"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "pve_cpu_usage_ratio{name=\"synology\"} * 100",
-          "format": "table",
-          "instant": true,
-          "refId": "CPU"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "(pve_memory_usage_bytes{name=\"synology\"} / pve_memory_size_bytes{name=\"synology\"}) * 100",
-          "format": "table",
-          "instant": true,
-          "refId": "Memory"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "rate(pve_disk_read_bytes{name=\"synology\"}[5m]) + rate(pve_disk_write_bytes{name=\"synology\"}[5m])",
-          "format": "table",
-          "instant": true,
-          "refId": "DiskIO"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "rate(pve_network_receive_bytes{name=\"synology\"}[5m]) + rate(pve_network_transmit_bytes{name=\"synology\"}[5m])",
-          "format": "table",
-          "instant": true,
-          "refId": "Network"
-        }
-      ],
-      "title": "synology-vm",
-      "transformations": [
-        {
-          "id": "merge",
-          "options": {}
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "Time": true,
-              "__name__": true,
-              "id": true,
-              "instance": true,
-              "job": true,
-              "name": true,
-              "node": true,
-              "type": true,
-              "template": true
-            },
-            "indexByName": {
-              "Value #Status": 0,
-              "Value #CPU": 1,
-              "Value #Memory": 2,
-              "Value #DiskIO": 3,
-              "Value #Network": 4
-            },
-            "renameByName": {
-              "Value #Status": "Status",
-              "Value #CPU": "CPU",
-              "Value #Memory": "Memory",
-              "Value #DiskIO": "Disk I/O",
-              "Value #Network": "Network"
-            }
-          }
-        }
-      ],
-      "type": "stat",
-      "links": [
-        {
-          "title": "View details",
-          "url": "/d/synology-detail"
-        }
-      ]
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "description": "Home Assistant (10.10.10.116)",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 70
-              },
-              {
-                "color": "red",
-                "value": 90
-              }
-            ]
-          },
-          "unit": "percent",
-          "decimals": 1
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Status"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "short"
-              },
-              {
-                "id": "decimals",
-                "value": 0
+                "id": "displayName",
+                "value": "RAID Status"
               },
               {
                 "id": "mappings",
                 "value": [
                   {
-                    "type": "value",
                     "options": {
                       "1": {
-                        "text": "\u25cf",
-                        "color": "green"
-                      },
-                      "0": {
-                        "text": "\u25cf",
-                        "color": "red"
+                        "color": "green",
+                        "text": "Normal"
                       }
-                    }
+                    },
+                    "type": "value"
                   }
                 ]
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Disk I/O"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "Bps"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Network"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "Bps"
               }
             ]
           }
         ]
       },
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 17
-      },
-      "id": 9,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "values": false,
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": ""
-        },
-        "showPercentChange": false,
-        "text": {},
-        "textMode": "value_and_name",
-        "wideLayout": true
-      },
-      "pluginVersion": "11.4.0",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "pve_up{name=\"ha\"}",
-          "format": "table",
-          "instant": true,
-          "refId": "Status"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "pve_cpu_usage_ratio{name=\"ha\"} * 100",
-          "format": "table",
-          "instant": true,
-          "refId": "CPU"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "(pve_memory_usage_bytes{name=\"ha\"} / pve_memory_size_bytes{name=\"ha\"}) * 100",
-          "format": "table",
-          "instant": true,
-          "refId": "Memory"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "rate(pve_disk_read_bytes{name=\"ha\"}[5m]) + rate(pve_disk_write_bytes{name=\"ha\"}[5m])",
-          "format": "table",
-          "instant": true,
-          "refId": "DiskIO"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "rate(pve_network_receive_bytes{name=\"ha\"}[5m]) + rate(pve_network_transmit_bytes{name=\"ha\"}[5m])",
-          "format": "table",
-          "instant": true,
-          "refId": "Network"
-        }
-      ],
-      "title": "ha-vm",
       "transformations": [
         {
           "id": "merge",
@@ -1907,38 +1391,20 @@
             "excludeByName": {
               "Time": true,
               "__name__": true,
-              "id": true,
               "instance": true,
-              "job": true,
-              "name": true,
-              "node": true,
-              "type": true,
-              "template": true
+              "job": true
             },
-            "indexByName": {
-              "Value #Status": 0,
-              "Value #CPU": 1,
-              "Value #Memory": 2,
-              "Value #DiskIO": 3,
-              "Value #Network": 4
-            },
-            "renameByName": {
-              "Value #Status": "Status",
-              "Value #CPU": "CPU",
-              "Value #Memory": "Memory",
-              "Value #DiskIO": "Disk I/O",
-              "Value #Network": "Network"
-            }
+            "renameByName": {}
           }
         }
       ],
-      "type": "stat",
-      "links": [
-        {
-          "title": "View details",
-          "url": "/d/homeassistant-detail"
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false
         }
-      ]
+      }
     }
   ],
   "refresh": "10s",
@@ -1952,12 +1418,21 @@
     "list": []
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-1h",
     "to": "now"
   },
-  "timepicker": {},
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m"
+    ]
+  },
   "timezone": "browser",
   "title": "Systems Overview",
   "uid": "systems-overview",
-  "version": 0
+  "version": 3,
+  "weekStart": ""
 }
