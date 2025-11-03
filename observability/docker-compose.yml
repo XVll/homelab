@@ -236,12 +236,10 @@ services:
     restart: unless-stopped
     ports:
       - "10.10.10.112:9221:9221"
-    environment:
-      - PVE_HOST=10.10.10.20
-      - PVE_USER=${PROXMOX_USER}
-      - PVE_TOKEN_NAME=prometheus
-      - PVE_TOKEN_VALUE=${PROXMOX_TOKEN}
-      - PVE_VERIFY_SSL=false
+    command:
+      - '--config.file=/etc/pve.yml'
+    volumes:
+      - ./proxmox-exporter/pve.yml:/etc/pve.yml:ro
     networks:
       - obs_net
     healthcheck:

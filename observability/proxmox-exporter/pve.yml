@@ -1,8 +1,5 @@
 default:
-  user: "{PVE_USER}"
-  token_name: "prometheus"
-  token_value: "{PVE_TOKEN}"
+  user: monitor@pve
+  token_name: prometheus
+  token_value: 59b1017f-7576-454d-bff2-61463f7f0c17
   verify_ssl: false
-  # Proxmox VE host
-  targets:
-    - 10.10.10.20
