@@ -554,7 +554,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "avg by (host) (up{job=\"integrations/unix\"})",
+          "expr": "avg by (host) (up{job=\"integrations/unix\"}) or (up{job=\"homeassistant\"} * on() group_left() label_replace(up{job=\"homeassistant\"}, \"host\", \"ha-vm\", \"\", \"\"))",
           "format": "table",
           "instant": true,
           "legendFormat": "__auto",
@@ -568,7 +568,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "100 - (avg by (host) (irate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
+          "expr": "(100 - (avg by (host) (irate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100))\nor\n(homeassistant_sensor_unit_percent{entity=\"sensor.system_monitor_processor_use\"} * on() group_left() label_replace(up{job=\"homeassistant\"}, \"host\", \"ha-vm\", \"\", \"\"))",
           "format": "table",
           "instant": true,
           "legendFormat": "__auto",
@@ -582,7 +582,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "(1 - (avg by (host) (node_memory_MemAvailable_bytes) / avg by (host) (node_memory_MemTotal_bytes))) * 100",
+          "expr": "((1 - (avg by (host) (node_memory_MemAvailable_bytes) / avg by (host) (node_memory_MemTotal_bytes))) * 100)\nor\n(homeassistant_sensor_unit_percent{entity=\"sensor.system_monitor_memory_usage\"} * on() group_left() label_replace(up{job=\"homeassistant\"}, \"host\", \"ha-vm\", \"\", \"\"))",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -597,7 +597,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "(1 - (avg by (host) (node_filesystem_avail_bytes{mountpoint=\"/host/root\"}) / avg by (host) (node_filesystem_size_bytes{mountpoint=\"/host/root\"}))) * 100",
+          "expr": "((1 - (avg by (host) (node_filesystem_avail_bytes{mountpoint=\"/host/root\"}) / avg by (host) (node_filesystem_size_bytes{mountpoint=\"/host/root\"}))) * 100)\nor\n(homeassistant_sensor_unit_percent{entity=\"sensor.system_monitor_disk_usage\"} * on() group_left() label_replace(up{job=\"homeassistant\"}, \"host\", \"ha-vm\", \"\", \"\"))",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -627,7 +627,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "avg by (host) (node_load1)",
+          "expr": "avg by (host) (node_load1)\nor\n(homeassistant_sensor_state{entity=\"sensor.system_monitor_load_1_min\"} * on() group_left() label_replace(up{job=\"homeassistant\"}, \"host\", \"ha-vm\", \"\", \"\"))",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -642,7 +642,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "avg by (host) (node_load5)",
+          "expr": "avg by (host) (node_load5)\nor\n(homeassistant_sensor_state{entity=\"sensor.system_monitor_load_5_min\"} * on() group_left() label_replace(up{job=\"homeassistant\"}, \"host\", \"ha-vm\", \"\", \"\"))",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -657,7 +657,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "avg by (host) (node_load15)",
+          "expr": "avg by (host) (node_load15)\nor\n(homeassistant_sensor_state{entity=\"sensor.system_monitor_load_15_min\"} * on() group_left() label_replace(up{job=\"homeassistant\"}, \"host\", \"ha-vm\", \"\", \"\"))",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -672,7 +672,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum by (host) (rate(node_network_receive_bytes_total{device!~\"lo|docker.*|veth.*|br-.*\"}[5m])) + sum by (host) (rate(node_network_transmit_bytes_total{device!~\"lo|docker.*|veth.*|br-.*\"}[5m]))",
+          "expr": "(sum by (host) (rate(node_network_receive_bytes_total{device!~\"lo|docker.*|veth.*|br-.*\"}[5m])) + sum by (host) (rate(node_network_transmit_bytes_total{device!~\"lo|docker.*|veth.*|br-.*\"}[5m])))\nor\n((homeassistant_sensor_data_rate_mb_per_s{entity=\"sensor.system_monitor_network_throughput_in_enp6s18\"} + homeassistant_sensor_data_rate_mb_per_s{entity=\"sensor.system_monitor_network_throughput_out_enp6s18\"}) * 1000000 * on() group_left() label_replace(up{job=\"homeassistant\"}, \"host\", \"ha-vm\", \"\", \"\"))",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -702,7 +702,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum by (host) (rate(node_disk_read_bytes_total[5m])) + sum by (host) (rate(node_disk_written_bytes_total[5m]))",
+          "expr": "(sum by (host) (rate(node_disk_read_bytes_total[5m])) + sum by (host) (rate(node_disk_written_bytes_total[5m])))\nor\n(0 * on() group_left() label_replace(up{job=\"homeassistant\"}, \"host\", \"ha-vm\", \"\", \"\"))",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -1393,335 +1393,6 @@
               "__name__": true,
               "instance": true,
               "job": true
-            },
-            "renameByName": {}
-          }
-        }
-      ],
-      "options": {
-        "showHeader": true,
-        "cellHeight": "sm",
-        "footer": {
-          "show": false
-        }
-      }
-    },
-    {
-      "id": 11,
-      "title": "Home Assistant",
-      "type": "table",
-      "gridPos": {
-        "x": 0,
-        "y": 15,
-        "w": 24,
-        "h": 3
-      },
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "targets": [
-        {
-          "refId": "Status",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "up{job=\"homeassistant\"}",
-          "format": "table",
-          "instant": true
-        },
-        {
-          "refId": "System",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "up{job=\"homeassistant\"}",
-          "format": "table",
-          "instant": true
-        },
-        {
-          "refId": "CPU",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "homeassistant_sensor_unit_percent{entity=\"sensor.system_monitor_processor_use\"}",
-          "format": "table",
-          "instant": true
-        },
-        {
-          "refId": "Memory",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "homeassistant_sensor_unit_percent{entity=\"sensor.system_monitor_memory_usage\"}",
-          "format": "table",
-          "instant": true
-        },
-        {
-          "refId": "Disk",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "homeassistant_sensor_unit_percent{entity=\"sensor.system_monitor_disk_usage\"}",
-          "format": "table",
-          "instant": true
-        },
-        {
-          "refId": "Entities",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "sum(homeassistant_entity_available{job=\"homeassistant\"})",
-          "format": "table",
-          "instant": true
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "custom": {
-            "align": "auto",
-            "cellOptions": {
-              "type": "auto"
-            },
-            "inspect": false
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Value #Status"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "Status"
-              },
-              {
-                "id": "mappings",
-                "value": [
-                  {
-                    "options": {
-                      "0": {
-                        "color": "red",
-                        "text": "\u25cf Offline"
-                      },
-                      "1": {
-                        "color": "green",
-                        "text": "\u25cf Online"
-                      }
-                    },
-                    "type": "value"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Value #System"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "System"
-              },
-              {
-                "id": "mappings",
-                "value": [
-                  {
-                    "options": {
-                      "1": {
-                        "text": "Home Assistant"
-                      }
-                    },
-                    "type": "value"
-                  }
-                ]
-              },
-              {
-                "id": "links",
-                "value": [
-                  {
-                    "title": "",
-                    "url": "/d/homeassistant-detail"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Value #CPU"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "CPU"
-              },
-              {
-                "id": "unit",
-                "value": "percent"
-              },
-              {
-                "id": "custom.cellOptions",
-                "value": {
-                  "type": "gauge",
-                  "mode": "gradient"
-                }
-              },
-              {
-                "id": "thresholds",
-                "value": {
-                  "mode": "absolute",
-                  "steps": [
-                    {
-                      "color": "green",
-                      "value": null
-                    },
-                    {
-                      "color": "yellow",
-                      "value": 70
-                    },
-                    {
-                      "color": "red",
-                      "value": 90
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Value #Memory"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "Memory"
-              },
-              {
-                "id": "unit",
-                "value": "percent"
-              },
-              {
-                "id": "custom.cellOptions",
-                "value": {
-                  "type": "gauge",
-                  "mode": "gradient"
-                }
-              },
-              {
-                "id": "thresholds",
-                "value": {
-                  "mode": "absolute",
-                  "steps": [
-                    {
-                      "color": "green",
-                      "value": null
-                    },
-                    {
-                      "color": "yellow",
-                      "value": 70
-                    },
-                    {
-                      "color": "red",
-                      "value": 90
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Value #Disk"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "Disk"
-              },
-              {
-                "id": "unit",
-                "value": "percent"
-              },
-              {
-                "id": "custom.cellOptions",
-                "value": {
-                  "type": "gauge",
-                  "mode": "gradient"
-                }
-              },
-              {
-                "id": "thresholds",
-                "value": {
-                  "mode": "absolute",
-                  "steps": [
-                    {
-                      "color": "green",
-                      "value": null
-                    },
-                    {
-                      "color": "yellow",
-                      "value": 70
-                    },
-                    {
-                      "color": "red",
-                      "value": 90
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Value #Entities"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "Entities"
-              },
-              {
-                "id": "unit",
-                "value": "short"
-              }
-            ]
-          }
-        ]
-      },
-      "transformations": [
-        {
-          "id": "merge",
-          "options": {}
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "Time": true,
-              "__name__": true,
-              "instance": true,
-              "job": true,
-              "domain": true,
-              "entity": true,
-              "friendly_name": true,
-              "service": true,
-              "vm": true
             },
             "renameByName": {}
           }
