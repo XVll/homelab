@@ -224,6 +224,40 @@ services:
         max-file: "3"
 
   # ============================================================================
+  # PROXMOX EXPORTER - VM Metrics from Hypervisor
+  # ============================================================================
+  # Exports VM-level metrics from Proxmox VE API
+  # Provides hypervisor perspective for all VMs including Synology and HA
+  # Access: http://10.10.10.112:9221/metrics
+
+  proxmox-exporter:
+    image: prompve/prometheus-pve-exporter:latest
+    container_name: proxmox-exporter
+    restart: unless-stopped
+    ports:
+      - "10.10.10.112:9221:9221"
+    environment:
+      - PVE_USER=${PROXMOX_USER}
+      - PVE_PASSWORD=${PROXMOX_PASSWORD}
+      - PVE_VERIFY_SSL=false
+    command:
+      - 'pve.yml'
+    volumes:
+      - ./proxmox-exporter/pve.yml:/etc/prometheus/pve.yml:ro
+    networks:
+      - obs_net
+    healthcheck:
+      test: ["CMD", "wget", "--tries=1", "--spider", "http://localhost:9221/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ============================================================================
   # 7. HOMEPAGE - Unified Dashboard & Service Directory
   # ============================================================================
   # Deploy last - provides unified view of all infrastructure

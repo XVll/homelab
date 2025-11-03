@@ -1,0 +1,7 @@
+default:
+  user: "{PVE_USER}"
+  password: "{PVE_PASSWORD}"
+  verify_ssl: false
+  # Proxmox VE host
+  targets:
+    - 10.10.10.1
