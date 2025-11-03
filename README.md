@@ -535,6 +535,31 @@ sudo mount -a
 cat /etc/fstab | grep docker-vm
 ```
 
+### NAS Mount Issues (Media VM)
+```bash
+# Check if NAS is mounted
+mount | grep 10.10.10.100
+df -h /mnt/nas/media
+
+# Mount NAS if not mounted
+sudo mount /mnt/nas/media
+
+# Verify mount persists after reboot (should show in fstab)
+cat /etc/fstab | grep nas
+
+# Check what services can see the NAS
+docker exec sabnzbd ls -lah /media/
+
+# If downloads went to local disk (check Grafana - disk full warning):
+# 1. Unmount NAS temporarily: sudo umount /mnt/nas/media
+# 2. Check local files: sudo ls -lah /mnt/nas/media/
+# 3. Remove local files: sudo rm -rf /mnt/nas/media/downloads/*
+# 4. Remount NAS: sudo mount /mnt/nas/media
+# 5. Restart media services: docker restart sabnzbd sonarr radarr
+```
+
+**Prometheus Alert:** `NASNotMounted` alert will fire if NAS unmounts (checks filesystem size < 1TB)
+
 ### 1Password Issues
 ```bash
 # Verify token
@@ -634,7 +659,10 @@ sudo chown -R fx:fx /opt/homelab
 **🟡 MEDIUM PRIORITY:**
 1. **SSL Migration** - Route more services via Traefik (AdGuard, Portainer)
 2. **Synology Monitoring** - SNMP configured but needs Grafana dashboard
-3. **Media Stack** - Deploy and configure all services
+
+**✅ COMPLETED:**
+1. **NAS Mount Monitoring** - Prometheus alert configured for media VM NAS mount
+2. **Media Stack** - All services deployed (Plex, SABnzbd, Sonarr, Radarr, etc.)
 
 **🟢 LOW PRIORITY:**
 1. **Cloudflare Tunnels** - Migrate from direct DNS (blocked by email migration)
