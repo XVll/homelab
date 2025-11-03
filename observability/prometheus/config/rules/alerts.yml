@@ -111,3 +111,13 @@ groups:
         annotations:
           summary: "High network errors on {{ $labels.instance }}"
           description: "Network interface {{ $labels.device }} is experiencing high error rates."
+
+      # NAS not mounted on media VM
+      - alert: NASNotMounted
+        expr: node_filesystem_size_bytes{instance="10.10.10.113:9100",mountpoint="/mnt/nas/media"} < 1000000000000
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "NAS not mounted on media VM"
+          description: "The NAS mount at /mnt/nas/media on media VM (10.10.10.113) is not properly mounted. This will cause downloads to fill the local disk!"
