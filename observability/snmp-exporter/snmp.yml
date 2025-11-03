@@ -41635,6 +41635,7 @@ modules:
       datetime_pattern: '%b %d %Y'
   synology:
     walk:
+    # Synology-specific MIBs
     - 1.3.6.1.4.1.6574.1
     - 1.3.6.1.4.1.6574.101
     - 1.3.6.1.4.1.6574.102
@@ -41644,6 +41645,11 @@ modules:
     - 1.3.6.1.4.1.6574.4
     - 1.3.6.1.4.1.6574.5
     - 1.3.6.1.4.1.6574.6
+    # Standard NET-SNMP MIBs for system metrics
+    - 1.3.6.1.4.1.2021.11      # UCD-SNMP-MIB: CPU stats
+    - 1.3.6.1.4.1.2021.10.1.5  # UCD-SNMP-MIB: Load averages
+    - 1.3.6.1.4.1.2021.4       # UCD-SNMP-MIB: Memory
+    - 1.3.6.1.2.1.31.1.1.1     # IF-MIB: High-capacity interface counters
     metrics:
     - name: systemStatus
       oid: 1.3.6.1.4.1.6574.1.1
