@@ -4,4 +4,4 @@ default:
   verify_ssl: false
   # Proxmox VE host
   targets:
-    - 10.10.10.1
+    - 10.10.10.20
