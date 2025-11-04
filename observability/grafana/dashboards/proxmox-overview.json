@@ -362,11 +362,11 @@
               },
               {
                 "id": "custom.displayMode",
-                "value": "gradient-gauge"
+                "value": "lcd-gauge"
               },
               {
                 "id": "custom.width",
-                "value": 200
+                "value": 150
               },
               {
                 "id": "decimals",
@@ -379,13 +379,6 @@
               {
                 "id": "max",
                 "value": 1
-              },
-              {
-                "id": "custom.cellOptions",
-                "value": {
-                  "type": "sparkline",
-                  "mode": "gradient"
-                }
               },
               {
                 "id": "color",
