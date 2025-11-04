@@ -1753,13 +1753,13 @@
           "fields": ""
         },
         "orientation": "horizontal",
-        "displayMode": "gradient",
-        "minVizHeight": 10,
-        "minVizWidth": 0,
-        "showUnfilled": true,
+        "textMode": "value",
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
         "text": {
           "titleSize": 14,
-          "valueSize": 20
+          "valueSize": 24
         }
       },
       "pluginVersion": "11.4.0",
@@ -1770,13 +1770,14 @@
             "uid": "prometheus"
           },
           "expr": "pve_cpu_usage_ratio{instance=\"$instance\"} / pve_cpu_usage_limit and on(id) pve_node_info",
-          "instant": true,
+          "instant": false,
           "legendFormat": "CPU",
-          "refId": "A"
+          "refId": "A",
+          "range": true
         }
       ],
       "title": "CPU",
-      "type": "bargauge"
+      "type": "stat"
     },
     {
       "datasource": {
@@ -1829,13 +1830,13 @@
           "fields": ""
         },
         "orientation": "horizontal",
-        "displayMode": "gradient",
-        "minVizHeight": 10,
-        "minVizWidth": 0,
-        "showUnfilled": true,
+        "textMode": "value",
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
         "text": {
           "titleSize": 14,
-          "valueSize": 20
+          "valueSize": 24
         }
       },
       "pluginVersion": "11.4.0",
@@ -1846,13 +1847,14 @@
             "uid": "prometheus"
           },
           "expr": "pve_memory_usage_bytes{instance=\"$instance\"} / pve_memory_size_bytes and on(id) pve_node_info",
-          "instant": true,
+          "instant": false,
           "legendFormat": "Memory",
-          "refId": "A"
+          "refId": "A",
+          "range": true
         }
       ],
       "title": "Memory",
-      "type": "bargauge"
+      "type": "stat"
     },
     {
       "datasource": {
