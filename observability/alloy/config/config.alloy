@@ -137,7 +137,7 @@ prometheus.scrape "homeassistant" {
   scrape_interval = "60s"
 
   authorization {
-    credentials = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI3Y2I1MjgyYWQzMGE0MGIyOTJiZDlmNzA5NTNkMWNiYyIsImlhdCI6MTc2MjEyNDc0MSwiZXhwIjoyMDc3NDg0NzQxfQ.iLKy3vV02-VNluyMMsBFY-jDRUJDIB8gFWIqvt-4bUw"
+    credentials = env("HOMEASSISTANT_TOKEN")
   }
 
   forward_to = [prometheus.remote_write.prometheus.receiver]
