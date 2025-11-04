@@ -1017,17 +1017,19 @@
       "links": [],
       "maxDataPoints": 100,
       "options": {
-        "orientation": "horizontal",
         "reduceOptions": {
+          "values": false,
           "calcs": [
             "lastNotNull"
           ],
-          "fields": "",
-          "values": false
+          "fields": ""
         },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true,
-        "text": {}
+        "orientation": "auto",
+        "textMode": "value_and_name",
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "showPercentChange": false
       },
       "pluginVersion": "9.3.2",
       "targets": [
@@ -1040,11 +1042,13 @@
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "",
-          "refId": "A"
+          "refId": "A",
+          "range": true,
+          "instant": false
         }
       ],
       "title": "Current CPU",
-      "type": "gauge"
+      "type": "stat"
     },
     {
       "datasource": {
@@ -1312,17 +1316,19 @@
       "links": [],
       "maxDataPoints": 100,
       "options": {
-        "orientation": "horizontal",
         "reduceOptions": {
+          "values": false,
           "calcs": [
             "lastNotNull"
           ],
-          "fields": "",
-          "values": false
+          "fields": ""
         },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true,
-        "text": {}
+        "orientation": "auto",
+        "textMode": "value_and_name",
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "showPercentChange": false
       },
       "pluginVersion": "9.3.2",
       "targets": [
@@ -1335,11 +1341,13 @@
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "",
-          "refId": "A"
+          "refId": "A",
+          "range": true,
+          "instant": false
         }
       ],
       "title": "Current memory",
-      "type": "gauge"
+      "type": "stat"
     },
     {
       "datasource": {
