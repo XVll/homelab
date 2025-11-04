@@ -111,6 +111,30 @@ prometheus.scrape "proxmox" {
 }
 
 // ============================================================================
+// HOME ASSISTANT: Automation Platform Metrics
+// ============================================================================
+
+prometheus.scrape "homeassistant" {
+  targets = [{
+    __address__ = "10.10.10.116:8123",
+    job         = "homeassistant",
+    instance    = "homeassistant",
+    vm          = "ha",
+    service     = "automation",
+  }]
+
+  metrics_path    = "/api/prometheus"
+  scheme          = "http"
+  scrape_interval = "60s"
+
+  authorization {
+    credentials = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI3Y2I1MjgyYWQzMGE0MGIyOTJiZDlmNzA5NTNkMWNiYyIsImlhdCI6MTc2MjEyNDc0MSwiZXhwIjoyMDc3NDg0NzQxfQ.iLKy3vV02-VNluyMMsBFY-jDRUJDIB8gFWIqvt-4bUw"
+  }
+
+  forward_to = [prometheus.remote_write.prometheus.receiver]
+}
+
+// ============================================================================
 // METRICS: Prometheus Remote Write
 // ============================================================================
 
