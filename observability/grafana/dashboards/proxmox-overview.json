@@ -362,11 +362,11 @@
               },
               {
                 "id": "custom.displayMode",
-                "value": "lcd-gauge"
+                "value": "gradient-gauge"
               },
               {
                 "id": "custom.width",
-                "value": 150
+                "value": 200
               },
               {
                 "id": "decimals",
@@ -379,6 +379,13 @@
               {
                 "id": "max",
                 "value": 1
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "sparkline",
+                  "mode": "gradient"
+                }
               },
               {
                 "id": "color",
@@ -871,7 +878,8 @@
             },
             "thresholdsStyle": {
               "mode": "area"
-            }
+            },
+            "axisGridShow": false
           },
           "mappings": [],
           "min": 0,
@@ -1165,7 +1173,8 @@
             },
             "thresholdsStyle": {
               "mode": "area"
-            }
+            },
+            "axisGridShow": false
           },
           "mappings": [],
           "min": 0,
@@ -1531,7 +1540,8 @@
             },
             "thresholdsStyle": {
               "mode": "area"
-            }
+            },
+            "axisGridShow": false
           },
           "decimals": 1,
           "links": [],
@@ -1635,7 +1645,8 @@
             },
             "thresholdsStyle": {
               "mode": "area"
-            }
+            },
+            "axisGridShow": false
           },
           "decimals": 1,
           "links": [],
@@ -1918,7 +1929,8 @@
             },
             "thresholdsStyle": {
               "mode": "area"
-            }
+            },
+            "axisGridShow": false
           },
           "decimals": 1,
           "links": [],
@@ -2028,7 +2040,8 @@
             },
             "thresholdsStyle": {
               "mode": "off"
-            }
+            },
+            "axisGridShow": false
           },
           "decimals": 0,
           "links": [],
@@ -2158,7 +2171,8 @@
             },
             "thresholdsStyle": {
               "mode": "off"
-            }
+            },
+            "axisGridShow": false
           },
           "decimals": 0,
           "links": [],
