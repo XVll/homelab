@@ -1018,7 +1018,7 @@
       "links": [],
       "maxDataPoints": 100,
       "options": {
-        "orientation": "horizontal",
+        "orientation": "auto",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -1028,7 +1028,9 @@
         },
         "showThresholdLabels": false,
         "showThresholdMarkers": true,
-        "text": {}
+        "text": {
+          "valueSize": 32
+        }
       },
       "pluginVersion": "9.3.2",
       "targets": [
@@ -1316,7 +1318,7 @@
       "links": [],
       "maxDataPoints": 100,
       "options": {
-        "orientation": "horizontal",
+        "orientation": "auto",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -1326,7 +1328,9 @@
         },
         "showThresholdLabels": false,
         "showThresholdMarkers": true,
-        "text": {}
+        "text": {
+          "valueSize": 32
+        }
       },
       "pluginVersion": "9.3.2",
       "targets": [
