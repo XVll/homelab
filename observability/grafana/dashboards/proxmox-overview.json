@@ -118,12 +118,12 @@
                       "0": {
                         "color": "red",
                         "index": 1,
-                        "text": "stopped"
+                        "text": ""
                       },
                       "1": {
                         "color": "green",
                         "index": 0,
-                        "text": "running"
+                        "text": ""
                       }
                     },
                     "type": "value"
@@ -132,11 +132,11 @@
               },
               {
                 "id": "custom.displayMode",
-                "value": "color-background"
+                "value": "color-background-solid"
               },
               {
                 "id": "custom.width",
-                "value": 60
+                "value": 50
               }
             ]
           },
@@ -443,6 +443,18 @@
                 "value": 110
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Name"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 150
+              }
+            ]
           }
         ]
       },
@@ -643,24 +655,36 @@
               "Time 5": true,
               "Time 6": true,
               "Time 7": true,
-              "Value #id, name and type": true
+              "Time 8": true,
+              "Time 9": true,
+              "Time 10": true,
+              "Value #id, name and type": true,
+              "id": true,
+              "type": true
             },
-            "indexByName": {},
+            "indexByName": {
+              "Value #status": 0,
+              "name": 1,
+              "Value #vcpus": 2,
+              "Value #memsize": 3,
+              "Value #disksize": 4,
+              "Value #cpu_usage": 5,
+              "Value #memusg_percent": 6,
+              "Value #diskusg_percent": 7,
+              "Value #disk_io": 8,
+              "Value #network_io": 9
+            },
             "renameByName": {
-              "Time 5": "",
               "Value #disksize": "Disk",
-              "Value #diskusg_percent": "Disk usage (%)",
-              "Value #id, name and type": "",
+              "Value #diskusg_percent": "Disk Usage",
               "Value #memsize": "Memory",
-              "Value #memusg_percent": "Memory usage (%)",
+              "Value #memusg_percent": "Memory Usage",
               "Value #status": "Status",
               "Value #vcpus": "vCPUs",
-              "id": "ID",
-              "name": "Name",
-              "type": "Type",
               "Value #cpu_usage": "CPU Usage",
               "Value #disk_io": "Disk I/O",
-              "Value #network_io": "Network I/O"
+              "Value #network_io": "Network I/O",
+              "name": "Name"
             }
           }
         }
