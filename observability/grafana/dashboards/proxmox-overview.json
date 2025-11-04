@@ -894,7 +894,8 @@
             ]
           },
           "unit": "percentunit",
-          "decimals": 1
+          "decimals": 1,
+          "max": 1
         },
         "overrides": []
       },
@@ -928,27 +929,11 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "editorMode": "code",
-          "expr": "pve_cpu_usage_ratio{instance=\"$instance\"} and on(id) pve_node_info",
-          "legendFormat": "__auto",
+          "expr": "pve_cpu_usage_ratio{instance=\"$instance\"} / pve_cpu_usage_limit and on(id) pve_node_info",
           "range": true,
-          "refId": "usage",
-          "instant": false
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "exemplar": false,
-          "expr": "pve_cpu_usage_limit{instance=\"$instance\"} and on(id) pve_node_info",
-          "format": "table",
-          "hide": false,
           "instant": false,
-          "legendFormat": "__auto",
-          "range": true,
-          "refId": "total"
+          "legendFormat": "CPU %",
+          "refId": "A"
         }
       ],
       "title": "CPU",
@@ -1237,7 +1222,8 @@
             ]
           },
           "unit": "percentunit",
-          "decimals": 1
+          "decimals": 1,
+          "max": 1
         },
         "overrides": []
       },
@@ -1271,27 +1257,11 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "editorMode": "code",
-          "expr": "pve_memory_usage_bytes{instance=\"$instance\"} and on(id) pve_node_info",
-          "legendFormat": "__auto",
+          "expr": "pve_memory_usage_bytes{instance=\"$instance\"} / pve_memory_size_bytes and on(id) pve_node_info",
           "range": true,
-          "refId": "usage",
-          "instant": false
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "exemplar": false,
-          "expr": "pve_memory_size_bytes{instance=\"$instance\"} and on(id) pve_node_info",
-          "format": "table",
-          "hide": false,
           "instant": false,
-          "legendFormat": "__auto",
-          "range": true,
-          "refId": "total"
+          "legendFormat": "Memory %",
+          "refId": "A"
         }
       ],
       "title": "Memory",
