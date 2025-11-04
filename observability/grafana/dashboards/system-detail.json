@@ -17,7 +17,7 @@
       "title": "\u2190 Back to Overview",
       "tooltip": "",
       "type": "link",
-      "url": "/d/systems-overview"
+      "url": "/d/overview"
     }
   ],
   "panels": [
@@ -147,9 +147,9 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "node_uname_info{host=\"$host\",host_ip!=\"\"}",
+          "expr": "node_uname_info{instance=\"$instance\"}",
           "hide": false,
-          "legendFormat": "IP: {{host_ip}} | OS: {{os}}",
+          "legendFormat": "IP: {{nodename}} | OS: {{os}}",
           "range": true,
           "refId": "INFO"
         },
@@ -159,7 +159,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "max(time() - node_boot_time_seconds{host=\"$host\"})",
+          "expr": "max(time() - node_boot_time_seconds{instance=\"$instance\"})",
           "hide": false,
           "legendFormat": "Uptime",
           "range": true,
@@ -171,7 +171,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "count(node_cpu_seconds_total{mode=\"idle\",host=\"$host\"} offset 1m)",
+          "expr": "count(node_cpu_seconds_total{mode=\"idle\",instance=\"$instance\"} offset 1m)",
           "hide": false,
           "legendFormat": "CPU Cores",
           "range": true,
@@ -183,7 +183,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "max(node_memory_MemTotal_bytes{host=\"$host\"})",
+          "expr": "max(node_memory_MemTotal_bytes{instance=\"$instance\"})",
           "hide": false,
           "legendFormat": "Total RAM",
           "range": true,
@@ -195,7 +195,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "max(node_filesystem_size_bytes{mountpoint=\"/host/root\",host=\"$host\"})",
+          "expr": "max(node_filesystem_size_bytes{mountpoint=\"/host/root\",instance=\"$instance\"})",
           "hide": false,
           "legendFormat": "Total Disk",
           "range": true,
@@ -294,7 +294,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "100 - (avg(irate(node_cpu_seconds_total{mode=\"idle\",host=\"$host\"}[5m])) * 100)",
+          "expr": "100 - (avg(irate(node_cpu_seconds_total{mode=\"idle\",instance=\"$instance\"}[30s])) * 100)",
           "legendFormat": "CPU Usage",
           "range": true,
           "refId": "A"
@@ -391,7 +391,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum by (name) (rate(container_cpu_usage_seconds_total{name!=\"\",id=~\"/system.slice/docker.*\",host=\"$host\"}[5m])) * 100",
+          "expr": "sum by (name) (rate(container_cpu_usage_seconds_total{name!=\"\",id=~\"/system.slice/docker.*\",instance=\"$instance\"}[30s])) * 100",
           "legendFormat": "{{name}}",
           "range": true,
           "refId": "A"
@@ -517,7 +517,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "node_memory_MemTotal_bytes{host=\"$host\"} - node_memory_MemAvailable_bytes{host=\"$host\"}",
+          "expr": "node_memory_MemTotal_bytes{instance=\"$instance\"} - node_memory_MemAvailable_bytes{instance=\"$instance\"}",
           "legendFormat": "Used",
           "range": true,
           "refId": "A"
@@ -528,7 +528,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "node_memory_MemTotal_bytes{host=\"$host\"}",
+          "expr": "node_memory_MemTotal_bytes{instance=\"$instance\"}",
           "hide": false,
           "legendFormat": "Total",
           "range": true,
@@ -624,7 +624,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "container_memory_usage_bytes{name!=\"\",id=~\"/system.slice/docker.*\",host=\"$host\"}",
+          "expr": "container_memory_usage_bytes{name!=\"\",id=~\"/system.slice/docker.*\",instance=\"$instance\"}",
           "legendFormat": "{{name}}",
           "range": true,
           "refId": "A"
@@ -750,7 +750,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "node_filesystem_size_bytes{mountpoint=\"/host/root\",host=\"$host\"} - node_filesystem_avail_bytes{mountpoint=\"/host/root\",host=\"$host\"}",
+          "expr": "node_filesystem_size_bytes{mountpoint=\"/host/root\",instance=\"$instance\"} - node_filesystem_avail_bytes{mountpoint=\"/host/root\",instance=\"$instance\"}",
           "legendFormat": "Used",
           "range": true,
           "refId": "A"
@@ -761,7 +761,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "node_filesystem_size_bytes{mountpoint=\"/host/root\",host=\"$host\"}",
+          "expr": "node_filesystem_size_bytes{mountpoint=\"/host/root\",instance=\"$instance\"}",
           "hide": false,
           "legendFormat": "Total",
           "range": true,
@@ -857,7 +857,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "container_fs_usage_bytes{name!=\"\",id=~\"/system.slice/docker.*\",host=\"$host\"}",
+          "expr": "container_fs_usage_bytes{name!=\"\",id=~\"/system.slice/docker.*\",instance=\"$instance\"}",
           "legendFormat": "{{name}}",
           "range": true,
           "refId": "A"
@@ -966,7 +966,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "rate(node_disk_read_bytes_total{host=\"$host\"}[5m])",
+          "expr": "rate(node_disk_read_bytes_total{instance=\"$instance\"}[30s])",
           "legendFormat": "Read",
           "range": true,
           "refId": "A"
@@ -977,7 +977,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "rate(node_disk_written_bytes_total{host=\"$host\"}[5m])",
+          "expr": "rate(node_disk_written_bytes_total{instance=\"$instance\"}[30s])",
           "hide": false,
           "legendFormat": "Write",
           "range": true,
@@ -1073,7 +1073,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum by (name) (rate(container_fs_reads_bytes_total{name!=\"\",id=~\"/system.slice/docker.*\",host=\"$host\"}[5m]) + rate(container_fs_writes_bytes_total{name!=\"\",id=~\"/system.slice/docker.*\",host=\"$host\"}[5m]))",
+          "expr": "sum by (name) (rate(container_fs_reads_bytes_total{name!=\"\",id=~\"/system.slice/docker.*\",instance=\"$instance\"}[30s]) + rate(container_fs_writes_bytes_total{name!=\"\",id=~\"/system.slice/docker.*\",instance=\"$instance\"}[30s]))",
           "legendFormat": "{{name}}",
           "range": true,
           "refId": "A"
@@ -1170,7 +1170,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "node_load1{host=\"$host\"}",
+          "expr": "node_load1{instance=\"$instance\"}",
           "legendFormat": "1 minute",
           "range": true,
           "refId": "A"
@@ -1181,7 +1181,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "node_load5{host=\"$host\"}",
+          "expr": "node_load5{instance=\"$instance\"}",
           "hide": false,
           "legendFormat": "5 minutes",
           "range": true,
@@ -1193,7 +1193,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "node_load15{host=\"$host\"}",
+          "expr": "node_load15{instance=\"$instance\"}",
           "hide": false,
           "legendFormat": "15 minutes",
           "range": true,
@@ -1303,7 +1303,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "rate(node_network_receive_bytes_total{host=\"$host\",device!~\"lo|docker.*|veth.*\"}[5m])",
+          "expr": "rate(node_network_receive_bytes_total{instance=\"$instance\",device!~\"lo|docker.*|veth.*\"}[30s])",
           "legendFormat": "{{device}} Receive",
           "range": true,
           "refId": "A"
@@ -1314,7 +1314,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "rate(node_network_transmit_bytes_total{host=\"$host\",device!~\"lo|docker.*|veth.*\"}[5m])",
+          "expr": "rate(node_network_transmit_bytes_total{instance=\"$instance\",device!~\"lo|docker.*|veth.*\"}[30s])",
           "hide": false,
           "legendFormat": "{{device}} Transmit",
           "range": true,
@@ -1410,7 +1410,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "rate(container_network_receive_bytes_total{id=\"/\",host=\"$host\"}[5m])",
+          "expr": "rate(container_network_receive_bytes_total{id=\"/\",instance=\"$instance\"}[30s])",
           "legendFormat": "Receive",
           "range": true,
           "refId": "A"
@@ -1421,7 +1421,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "rate(container_network_transmit_bytes_total{id=\"/\",host=\"$host\"}[5m])",
+          "expr": "rate(container_network_transmit_bytes_total{id=\"/\",instance=\"$instance\"}[30s])",
           "hide": false,
           "legendFormat": "Transmit",
           "range": true,

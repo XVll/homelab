@@ -428,6 +428,15 @@
               {
                 "id": "custom.width",
                 "value": 180
+              },
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "View ${__value.text} details",
+                    "url": "/d/system-detail/system-detail?var-instance=${__value.text}"
+                  }
+                ]
               }
             ]
           },
