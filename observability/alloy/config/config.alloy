@@ -135,6 +135,46 @@ prometheus.scrape "homeassistant" {
 }
 
 // ============================================================================
+// APPLICATIONS: Service /metrics Endpoints
+// ============================================================================
+
+prometheus.scrape "apps" {
+  targets = [
+    {
+      __address__ = "10.10.10.110:8082",
+      job         = "traefik",
+      instance    = "traefik",
+      vm          = "edge",
+      service     = "proxy",
+    },
+    {
+      __address__ = "grafana:3000",
+      job         = "grafana",
+      instance    = "grafana",
+      vm          = "observability",
+      service     = "observability",
+    },
+    {
+      __address__ = "loki:3100",
+      job         = "loki",
+      instance    = "loki",
+      vm          = "observability",
+      service     = "observability",
+    },
+    {
+      __address__ = "prometheus:9090",
+      job         = "prometheus",
+      instance    = "prometheus",
+      vm          = "observability",
+      service     = "observability",
+    },
+  ]
+
+  scrape_interval = "15s"
+  forward_to = [prometheus.remote_write.prometheus.receiver]
+}
+
+// ============================================================================
 // METRICS: Prometheus Remote Write
 // ============================================================================
 
