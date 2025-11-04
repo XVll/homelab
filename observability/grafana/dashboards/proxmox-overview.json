@@ -1002,7 +1002,8 @@
               }
             ]
           },
-          "unit": "percentunit"
+          "unit": "percentunit",
+          "displayName": ""
         },
         "overrides": []
       },
@@ -1025,11 +1026,14 @@
           "fields": ""
         },
         "orientation": "auto",
-        "textMode": "value_and_name",
-        "colorMode": "value",
+        "textMode": "value",
+        "colorMode": "background",
         "graphMode": "area",
-        "justifyMode": "auto",
-        "showPercentChange": false
+        "justifyMode": "center",
+        "showPercentChange": false,
+        "text": {
+          "valueSize": 60
+        }
       },
       "pluginVersion": "9.3.2",
       "targets": [
@@ -1302,7 +1306,8 @@
               }
             ]
           },
-          "unit": "percentunit"
+          "unit": "percentunit",
+          "displayName": ""
         },
         "overrides": []
       },
@@ -1324,11 +1329,14 @@
           "fields": ""
         },
         "orientation": "auto",
-        "textMode": "value_and_name",
-        "colorMode": "value",
+        "textMode": "value",
+        "colorMode": "background",
         "graphMode": "area",
-        "justifyMode": "auto",
-        "showPercentChange": false
+        "justifyMode": "center",
+        "showPercentChange": false,
+        "text": {
+          "valueSize": 60
+        }
       },
       "pluginVersion": "9.3.2",
       "targets": [
