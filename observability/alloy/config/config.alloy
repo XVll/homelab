@@ -75,24 +75,23 @@ prometheus.scrape "docker_metrics" {
 }
 
 // ============================================================================
-// SNMP: Synology NAS Monitoring
+// SNMP: Synology NAS Monitoring via Standalone SNMP Exporter
 // ============================================================================
-
-prometheus.exporter.snmp "synology" {
-  config_file = "/etc/alloy/snmp.yml"
-
-  target "synology" {
-    address = "10.10.10.100"
-    module  = "synology"
-    auth    = "homelab_v2"
-  }
-}
+// Scrapes from standalone Prometheus SNMP exporter container
+// SNMP exporter handles SNMP queries and exposes metrics on /snmp endpoint
 
 prometheus.scrape "snmp_synology" {
-  targets    = prometheus.exporter.snmp.synology.targets
-  forward_to = [prometheus.remote_write.prometheus.receiver]
+  targets = [{
+    __address__ = "snmp-exporter:9116",
+    __param_target = "10.10.10.100",
+    __param_module = "synology",
+  }]
+
+  metrics_path = "/snmp"
   scrape_interval = "60s"
   job_name = "snmp"
+
+  forward_to = [prometheus.remote_write.prometheus.receiver]
 }
 
 // ============================================================================
