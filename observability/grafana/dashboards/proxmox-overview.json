@@ -1018,22 +1018,17 @@
       "links": [],
       "maxDataPoints": 100,
       "options": {
+        "orientation": "horizontal",
         "reduceOptions": {
-          "values": false,
           "calcs": [
             "lastNotNull"
           ],
-          "fields": ""
+          "fields": "",
+          "values": false
         },
-        "orientation": "auto",
-        "textMode": "value",
-        "colorMode": "background",
-        "graphMode": "area",
-        "justifyMode": "center",
-        "showPercentChange": false,
-        "text": {
-          "valueSize": 60
-        }
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
       },
       "pluginVersion": "9.3.2",
       "targets": [
@@ -1047,12 +1042,12 @@
           "intervalFactor": 1,
           "legendFormat": "",
           "refId": "A",
-          "range": true,
+          "range": false,
           "instant": false
         }
       ],
       "title": "Current CPU",
-      "type": "stat"
+      "type": "gauge"
     },
     {
       "datasource": {
@@ -1321,22 +1316,17 @@
       "links": [],
       "maxDataPoints": 100,
       "options": {
+        "orientation": "horizontal",
         "reduceOptions": {
-          "values": false,
           "calcs": [
             "lastNotNull"
           ],
-          "fields": ""
+          "fields": "",
+          "values": false
         },
-        "orientation": "auto",
-        "textMode": "value",
-        "colorMode": "background",
-        "graphMode": "area",
-        "justifyMode": "center",
-        "showPercentChange": false,
-        "text": {
-          "valueSize": 60
-        }
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
       },
       "pluginVersion": "9.3.2",
       "targets": [
@@ -1350,12 +1340,12 @@
           "intervalFactor": 1,
           "legendFormat": "",
           "refId": "A",
-          "range": true,
+          "range": false,
           "instant": false
         }
       ],
       "title": "Current memory",
-      "type": "stat"
+      "type": "gauge"
     },
     {
       "datasource": {
