@@ -549,21 +549,6 @@
                 "value": 1
               },
               {
-                "id": "mappings",
-                "value": [
-                  {
-                    "options": {
-                      "match": "null+zero",
-                      "result": {
-                        "text": "N/A",
-                        "color": "semi-dark-gray"
-                      }
-                    },
-                    "type": "special"
-                  }
-                ]
-              },
-              {
                 "id": "color",
                 "value": {
                   "mode": "thresholds"
@@ -716,7 +701,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum by (id) (pve_disk_usage_bytes{instance=\"$instance\"} / pve_disk_size_bytes and on (id, instance) pve_guest_info{template!=\"1\"})",
+          "expr": "(\n  (node_filesystem_size_bytes{mountpoint=\"/host/root\",fstype=\"ext4\"}\n   - node_filesystem_avail_bytes{mountpoint=\"/host/root\",fstype=\"ext4\"})\n  / node_filesystem_size_bytes{mountpoint=\"/host/root\",fstype=\"ext4\"}\n) * on(instance) group_left(id)\n  label_replace(\n    label_replace(\n      label_replace(\n        label_replace(\n          label_replace(\n            label_replace(\n              label_replace(\n                pve_guest_info{template!=\"1\"},\n                \"instance\", \"edge-vm\", \"name\", \"edge\"\n              ),\n              \"instance\", \"db-vm\", \"name\", \"db\"\n            ),\n            \"instance\", \"media-vm\", \"name\", \"media\"\n          ),\n          \"instance\", \"dev-vm\", \"name\", \"dev\"\n        ),\n        \"instance\", \"deploy-vm\", \"name\", \"deploy\"\n      ),\n      \"instance\", \"observability-vm\", \"name\", \"observability\"\n    ),\n    \"instance\", \"synology\", \"name\", \"synology\"\n  )",
           "format": "table",
           "hide": false,
           "instant": true,
