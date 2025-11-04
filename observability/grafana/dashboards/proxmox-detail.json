@@ -1981,8 +1981,8 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Proxmox Overview",
-  "uid": "proxmox-overview",
+  "title": "Proxmox Detail",
+  "uid": "proxmox-detail",
   "version": 1,
   "weekStart": ""
 }
