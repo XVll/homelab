@@ -549,6 +549,21 @@
                 "value": 1
               },
               {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "match": "null",
+                      "result": {
+                        "text": "N/A",
+                        "color": "text"
+                      }
+                    },
+                    "type": "special"
+                  }
+                ]
+              },
+              {
                 "id": "color",
                 "value": {
                   "mode": "thresholds"
@@ -701,7 +716,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "(\n  (node_filesystem_size_bytes{mountpoint=\"/host/root\",fstype=\"ext4\"}\n   - node_filesystem_avail_bytes{mountpoint=\"/host/root\",fstype=\"ext4\"})\n  / node_filesystem_size_bytes{mountpoint=\"/host/root\",fstype=\"ext4\"}\n) * on(instance) group_left(id)\n  label_replace(\n    label_replace(\n      label_replace(\n        label_replace(\n          label_replace(\n            label_replace(\n              label_replace(\n                pve_guest_info{template!=\"1\"},\n                \"instance\", \"edge-vm\", \"name\", \"edge\"\n              ),\n              \"instance\", \"db-vm\", \"name\", \"db\"\n            ),\n            \"instance\", \"media-vm\", \"name\", \"media\"\n          ),\n          \"instance\", \"dev-vm\", \"name\", \"dev\"\n        ),\n        \"instance\", \"deploy-vm\", \"name\", \"deploy\"\n      ),\n      \"instance\", \"observability-vm\", \"name\", \"observability\"\n    ),\n    \"instance\", \"synology\", \"name\", \"synology\"\n  )",
+          "expr": "pve_guest_info{template!=\"1\"}\n  * on(id) group_left()\n    (\n      (node_filesystem_size_bytes{mountpoint=\"/host/root\",fstype=\"ext4\"}\n       - node_filesystem_avail_bytes{mountpoint=\"/host/root\",fstype=\"ext4\"})\n      / node_filesystem_size_bytes{mountpoint=\"/host/root\",fstype=\"ext4\"}\n    ) * on(instance) group_right()\n      label_replace(\n        label_replace(\n          label_replace(\n            label_replace(\n              label_replace(\n                label_replace(\n                  pve_guest_info{template!=\"1\"},\n                  \"instance\", \"edge-vm\", \"name\", \"edge\"\n                ),\n                \"instance\", \"db-vm\", \"name\", \"db\"\n              ),\n              \"instance\", \"media-vm\", \"name\", \"media\"\n            ),\n            \"instance\", \"dev-vm\", \"name\", \"dev\"\n          ),\n          \"instance\", \"deploy-vm\", \"name\", \"deploy\"\n        ),\n        \"instance\", \"observability-vm\", \"name\", \"observability\"\n      )\nor\npve_guest_info{template!=\"1\",name=~\"synology|ha\"} * 0",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -780,7 +795,14 @@
               "Time 10": true,
               "Value #id, name and type": true,
               "id": true,
-              "type": true
+              "type": true,
+              "cluster": true,
+              "device": true,
+              "tier": true,
+              "environment": true,
+              "job": true,
+              "fstype": true,
+              "mountpoint": true
             },
             "indexByName": {
               "Value #status": 0,
