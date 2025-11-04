@@ -92,6 +92,25 @@ prometheus.scrape "snmp_synology" {
 }
 
 // ============================================================================
+// PROXMOX: VM Metrics from Hypervisor
+// ============================================================================
+
+prometheus.scrape "proxmox" {
+  targets = [{
+    __address__ = "proxmox-exporter:9221",
+    job         = "proxmox",
+  }]
+
+  metrics_path = "/pve"
+  params = {
+    module = ["default"],
+  }
+
+  scrape_interval = "60s"
+  forward_to = [prometheus.remote_write.prometheus.receiver]
+}
+
+// ============================================================================
 // METRICS: Prometheus Remote Write
 // ============================================================================
 
