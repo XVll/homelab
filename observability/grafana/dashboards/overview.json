@@ -676,7 +676,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum by (id) (\n  label_replace(\n    (1 - avg by (instance) (irate(node_cpu_seconds_total{mode=\"idle\"}[5m]))),\n    \"name\", \"$1\", \"instance\", \"(.*)\"\n  )\n  * on(name) group_left(id)\n    pve_guest_info{template!=\"1\",name!~\"ha|synology\"}\n)",
+          "expr": "sum by (id) (\n  label_replace(\n    (1 - avg by (instance) (irate(node_cpu_seconds_total{mode=\"idle\"}[30s]))),\n    \"name\", \"$1\", \"instance\", \"(.*)\"\n  )\n  * on(name) group_left(id)\n    pve_guest_info{template!=\"1\",name!~\"ha|synology\"}\n)",
           "format": "table",
           "instant": true,
           "legendFormat": "",
@@ -718,7 +718,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum by (id) (\n  label_replace(\n    (sum by (instance) (rate(node_network_receive_bytes_total{device!~\"lo|docker.*|veth.*|br-.*\"}[5m]))\n      + sum by (instance) (rate(node_network_transmit_bytes_total{device!~\"lo|docker.*|veth.*|br-.*\"}[5m]))),\n    \"name\", \"$1\", \"instance\", \"(.*)\"\n  )\n  * on(name) group_left(id)\n    pve_guest_info{template!=\"1\",name!~\"ha|synology\"}\n)",
+          "expr": "sum by (id) (\n  label_replace(\n    (sum by (instance) (rate(node_network_receive_bytes_total{device!~\"lo|docker.*|veth.*|br-.*\"}[30s]))\n      + sum by (instance) (rate(node_network_transmit_bytes_total{device!~\"lo|docker.*|veth.*|br-.*\"}[30s]))),\n    \"name\", \"$1\", \"instance\", \"(.*)\"\n  )\n  * on(name) group_left(id)\n    pve_guest_info{template!=\"1\",name!~\"ha|synology\"}\n)",
           "format": "table",
           "instant": true,
           "legendFormat": "",
@@ -732,7 +732,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum by (id) (\n  label_replace(\n    (sum by (instance) (rate(node_disk_read_bytes_total[5m]))\n      + sum by (instance) (rate(node_disk_written_bytes_total[5m]))),\n    \"name\", \"$1\", \"instance\", \"(.*)\"\n  )\n  * on(name) group_left(id)\n    pve_guest_info{template!=\"1\",name!~\"ha|synology\"}\n)",
+          "expr": "sum by (id) (\n  label_replace(\n    (sum by (instance) (rate(node_disk_read_bytes_total[30s]))\n      + sum by (instance) (rate(node_disk_written_bytes_total[30s]))),\n    \"name\", \"$1\", \"instance\", \"(.*)\"\n  )\n  * on(name) group_left(id)\n    pve_guest_info{template!=\"1\",name!~\"ha|synology\"}\n)",
           "format": "table",
           "instant": true,
           "legendFormat": "",
@@ -1544,7 +1544,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "1 - avg by (instance) (irate(node_cpu_seconds_total{mode=\"idle\"}[5m]))",
+          "expr": "1 - avg by (instance) (irate(node_cpu_seconds_total{mode=\"idle\"}[30s]))",
           "legendFormat": "{{instance}}",
           "refId": "A"
         }
@@ -1775,7 +1775,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum by (instance) (rate(node_disk_read_bytes_total[5m])) + sum by (instance) (rate(node_disk_written_bytes_total[5m]))",
+          "expr": "sum by (instance) (rate(node_disk_read_bytes_total[30s])) + sum by (instance) (rate(node_disk_written_bytes_total[30s]))",
           "legendFormat": "{{instance}}",
           "refId": "A"
         }
@@ -1897,7 +1897,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum by (instance) (rate(node_network_receive_bytes_total{device!~\"lo|docker.*|veth.*|br-.*\"}[5m])) + sum by (instance) (rate(node_network_transmit_bytes_total{device!~\"lo|docker.*|veth.*|br-.*\"}[5m]))",
+          "expr": "sum by (instance) (rate(node_network_receive_bytes_total{device!~\"lo|docker.*|veth.*|br-.*\"}[30s])) + sum by (instance) (rate(node_network_transmit_bytes_total{device!~\"lo|docker.*|veth.*|br-.*\"}[30s]))",
           "legendFormat": "{{instance}}",
           "refId": "A"
         }
