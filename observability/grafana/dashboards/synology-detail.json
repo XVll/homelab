@@ -344,7 +344,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "rate(pve_network_receive_bytes{name=\"synology\"}[5m])",
+          "expr": "rate(pve_network_receive_bytes{name=\"synology\"}[1m])",
           "refId": "A",
           "legendFormat": "RX"
         },
@@ -353,7 +353,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "rate(pve_network_transmit_bytes{name=\"synology\"}[5m])",
+          "expr": "rate(pve_network_transmit_bytes{name=\"synology\"}[1m])",
           "refId": "B",
           "legendFormat": "TX"
         }
@@ -448,7 +448,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "rate(pve_disk_read_bytes{name=\"synology\"}[5m])",
+          "expr": "rate(pve_disk_read_bytes{name=\"synology\"}[1m])",
           "refId": "A",
           "legendFormat": "Read"
         },
@@ -457,7 +457,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "rate(pve_disk_write_bytes{name=\"synology\"}[5m])",
+          "expr": "rate(pve_disk_write_bytes{name=\"synology\"}[1m])",
           "refId": "B",
           "legendFormat": "Write"
         }
