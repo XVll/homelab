@@ -159,6 +159,8 @@ services:
       - /etc/alloy/config.alloy
       - --server.http.listen-addr=0.0.0.0:12345
       - --storage.path=/var/lib/alloy/data
+      - --server.http.enable-pprof=true  # Enable profiling/debugging
+      - --log.level=debug  # Verbose logging (change to 'info' later)
     ports:
       - "10.10.10.112:12345:12345"  # Alloy web UI
       # OTLP ports (uncomment when enabling OpenTelemetry receiver in config.alloy)
@@ -195,34 +197,6 @@ services:
         max-size: "10m"
         max-file: "3"
 
-  # ============================================================================
-  # 6. SNMP EXPORTER - SNMP to Prometheus Metrics
-  # ============================================================================
-  # Monitors Synology NAS and other SNMP-enabled devices
-  # No agent needed on target devices - uses SNMP protocol
-
-  snmp-exporter:
-    image: prom/snmp-exporter:latest
-    container_name: snmp-exporter
-    restart: unless-stopped
-    ports:
-      - "10.10.10.112:9116:9116"
-    volumes:
-      - ./snmp-exporter/snmp.yml:/etc/snmp_exporter/snmp.yml:ro
-    command:
-      - '--config.file=/etc/snmp_exporter/snmp.yml'
-    networks:
-      - obs_net
-    healthcheck:
-      test: ["CMD", "wget", "--tries=1", "--spider", "http://localhost:9116/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
 
   # ============================================================================
   # PROXMOX EXPORTER - VM Metrics from Hypervisor
