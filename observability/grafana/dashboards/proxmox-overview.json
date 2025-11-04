@@ -549,6 +549,21 @@
                 "value": 1
               },
               {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "match": "null+zero",
+                      "result": {
+                        "text": "N/A",
+                        "color": "semi-dark-gray"
+                      }
+                    },
+                    "type": "special"
+                  }
+                ]
+              },
+              {
                 "id": "color",
                 "value": {
                   "mode": "thresholds"
