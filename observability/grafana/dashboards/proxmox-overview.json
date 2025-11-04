@@ -1738,12 +1738,12 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 3,
+        "h": 4,
         "w": 6,
         "x": 18,
         "y": 0
       },
-      "id": 102,
+      "id": 110,
       "options": {
         "reduceOptions": {
           "values": false,
@@ -1753,11 +1753,12 @@
           "fields": ""
         },
         "orientation": "horizontal",
-        "textMode": "value",
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "center",
+        "displayMode": "gradient",
+        "minVizHeight": 10,
+        "minVizWidth": 0,
+        "showUnfilled": true,
         "text": {
+          "titleSize": 14,
           "valueSize": 20
         }
       },
@@ -1769,13 +1770,13 @@
             "uid": "prometheus"
           },
           "expr": "pve_cpu_usage_ratio{instance=\"$instance\"} / pve_cpu_usage_limit and on(id) pve_node_info",
-          "range": true,
+          "instant": true,
           "legendFormat": "CPU",
           "refId": "A"
         }
       ],
       "title": "CPU",
-      "type": "stat"
+      "type": "bargauge"
     },
     {
       "datasource": {
@@ -1813,12 +1814,12 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 3,
+        "h": 4,
         "w": 6,
         "x": 18,
-        "y": 3
+        "y": 4
       },
-      "id": 103,
+      "id": 111,
       "options": {
         "reduceOptions": {
           "values": false,
@@ -1828,11 +1829,12 @@
           "fields": ""
         },
         "orientation": "horizontal",
-        "textMode": "value",
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "center",
+        "displayMode": "gradient",
+        "minVizHeight": 10,
+        "minVizWidth": 0,
+        "showUnfilled": true,
         "text": {
+          "titleSize": 14,
           "valueSize": 20
         }
       },
@@ -1844,20 +1846,19 @@
             "uid": "prometheus"
           },
           "expr": "pve_memory_usage_bytes{instance=\"$instance\"} / pve_memory_size_bytes and on(id) pve_node_info",
-          "range": true,
+          "instant": true,
           "legendFormat": "Memory",
           "refId": "A"
         }
       ],
       "title": "Memory",
-      "type": "stat"
+      "type": "bargauge"
     },
     {
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "Current resource usage",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1889,12 +1890,12 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 15,
+        "h": 8,
         "w": 6,
         "x": 18,
-        "y": 6
+        "y": 8
       },
-      "id": 101,
+      "id": 112,
       "options": {
         "reduceOptions": {
           "values": false,
@@ -1920,33 +1921,13 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "pve_cpu_usage_ratio{instance=\"$instance\"} / pve_cpu_usage_limit and on(id) pve_node_info",
-          "instant": true,
-          "legendFormat": "CPU",
-          "refId": "CPU"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "pve_memory_usage_bytes{instance=\"$instance\"} / pve_memory_size_bytes and on(id) pve_node_info",
-          "instant": true,
-          "legendFormat": "Memory",
-          "refId": "Memory"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
           "expr": "pve_disk_usage_bytes{instance=\"$instance\", id=~\"storage/.+\"} / pve_disk_size_bytes * on (id, instance) group_left(storage) pve_storage_info",
           "instant": true,
           "legendFormat": "{{storage}}",
-          "refId": "Storage"
+          "refId": "A"
         }
       ],
-      "title": "Current Usage",
+      "title": "Storage",
       "type": "bargauge"
     }
   ],
