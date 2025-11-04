@@ -85,6 +85,7 @@ prometheus.scrape "snmp_synology" {
     __address__ = "snmp-exporter:9116",
     __param_target = "10.10.10.100",
     __param_module = "synology",
+    __param_auth = "homelab_v2",
   }]
 
   metrics_path = "/snmp"
