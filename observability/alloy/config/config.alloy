@@ -107,11 +107,11 @@ prometheus.scrape "proxmox" {
   metrics_path = "/pve"
   params = {
     module = ["default"],
+    target = ["10.10.10.20"],
   }
 
   scrape_interval = "60s"
   forward_to = [prometheus.remote_write.prometheus.receiver]
-  job_name = "proxmox"
 }
 
 // ============================================================================
