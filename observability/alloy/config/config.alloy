@@ -17,8 +17,6 @@ livedebugging {
 // ============================================================================
 
 prometheus.exporter.unix "system" {
-  // Collects CPU, memory, disk, network metrics
-  // Enable all collectors for comprehensive system monitoring
   enable_collectors = [
     "cpu",
     "cpufreq",
@@ -35,11 +33,11 @@ prometheus.exporter.unix "system" {
   ]
 }
 
-// Scrape system metrics from unix exporter
 prometheus.scrape "system_metrics" {
   targets    = prometheus.exporter.unix.system.targets
   forward_to = [prometheus.remote_write.prometheus.receiver]
   scrape_interval = "15s"
+  job_name = "node"
 
   clustering {
     enabled = false
@@ -56,7 +54,6 @@ prometheus.exporter.cadvisor "docker" {
   docker_only = false
   store_container_labels = true
 
-  // Enable all metric types including network
   enabled_metrics = [
     "cpu",
     "memory",
@@ -64,16 +61,13 @@ prometheus.exporter.cadvisor "docker" {
     "disk",
     "diskIO",
   ]
-
-  // Collect container-level metrics
-  // Includes CPU, memory, network, disk I/O per container
 }
 
-// Scrape Docker container metrics from cAdvisor exporter
 prometheus.scrape "docker_metrics" {
   targets    = prometheus.exporter.cadvisor.docker.targets
   forward_to = [prometheus.remote_write.prometheus.receiver]
   scrape_interval = "15s"
+  job_name = "cadvisor"
 
   clustering {
     enabled = false
@@ -98,6 +92,7 @@ prometheus.scrape "snmp_synology" {
   targets    = prometheus.exporter.snmp.synology.targets
   forward_to = [prometheus.remote_write.prometheus.receiver]
   scrape_interval = "60s"
+  job_name = "snmp"
 }
 
 // ============================================================================
@@ -107,7 +102,6 @@ prometheus.scrape "snmp_synology" {
 prometheus.scrape "proxmox" {
   targets = [{
     __address__ = "proxmox-exporter:9221",
-    job         = "proxmox",
   }]
 
   metrics_path = "/pve"
@@ -117,6 +111,7 @@ prometheus.scrape "proxmox" {
 
   scrape_interval = "60s"
   forward_to = [prometheus.remote_write.prometheus.receiver]
+  job_name = "proxmox"
 }
 
 // ============================================================================
@@ -126,15 +121,12 @@ prometheus.scrape "proxmox" {
 prometheus.scrape "homeassistant" {
   targets = [{
     __address__ = "10.10.10.116:8123",
-    job         = "homeassistant",
-    instance    = "homeassistant",
-    vm          = "ha",
-    service     = "automation",
   }]
 
   metrics_path    = "/api/prometheus"
   scheme          = "http"
   scrape_interval = "60s"
+  job_name = "homeassistant"
 
   authorization {
     credentials = env("HOMEASSISTANT_TOKEN")
@@ -151,31 +143,19 @@ prometheus.scrape "apps" {
   targets = [
     {
       __address__ = "10.10.10.110:8082",
-      job         = "traefik",
-      instance    = "traefik",
-      vm          = "edge",
-      service     = "proxy",
+      tier        = "edge",
     },
     {
       __address__ = "grafana:3000",
-      job         = "grafana",
-      instance    = "grafana",
-      vm          = "observability",
-      service     = "observability",
+      tier        = "observability",
     },
     {
       __address__ = "loki:3100",
-      job         = "loki",
-      instance    = "loki",
-      vm          = "observability",
-      service     = "observability",
+      tier        = "observability",
     },
     {
       __address__ = "prometheus:9090",
-      job         = "prometheus",
-      instance    = "prometheus",
-      vm          = "observability",
-      service     = "observability",
+      tier        = "observability",
     },
   ]
 
@@ -191,19 +171,16 @@ prometheus.remote_write "prometheus" {
   endpoint {
     url = "http://prometheus:9090/api/v1/write"
 
-    // Optional: Add metadata
     headers = {
-      "X-Source" = "alloy",
+      "X-Scope-OrgID" = "homelab",
     }
   }
 
-  // External labels added to all metrics
   external_labels = {
-    cluster = "homelab",
-    host = "observability-vm",
-    host_ip = "10.10.10.112",
-    collector = "alloy",
-    source = "alloy",
+    cluster     = "homelab",
+    environment = "production",
+    instance    = "observability-vm",
+    tier        = "observability",
   }
 }
 
@@ -224,41 +201,34 @@ loki.source.docker "containers" {
   targets    = discovery.docker.containers.targets
   forward_to = [loki.process.add_labels.receiver]
 
-  // Relabeling to extract useful labels
   relabel_rules = discovery.relabel.docker_labels.rules
 }
 
-// Relabeling rules for Docker containers
 discovery.relabel "docker_labels" {
   targets = discovery.docker.containers.targets
 
-  // Extract container name
   rule {
     source_labels = ["__meta_docker_container_name"]
     regex         = "/(.*)"
     target_label  = "container"
   }
 
-  // Extract container ID (short)
   rule {
     source_labels = ["__meta_docker_container_id"]
     regex         = "(.{12}).*"
     target_label  = "container_id"
   }
 
-  // Extract image name
   rule {
     source_labels = ["__meta_docker_container_image"]
     target_label  = "image"
   }
 
-  // Extract compose project
   rule {
     source_labels = ["__meta_docker_container_label_com_docker_compose_project"]
     target_label  = "compose_project"
   }
 
-  // Extract compose service
   rule {
     source_labels = ["__meta_docker_container_label_com_docker_compose_service"]
     target_label  = "compose_service"
@@ -272,18 +242,17 @@ discovery.relabel "docker_labels" {
 loki.process "add_labels" {
   forward_to = [loki.write.loki.receiver]
 
-  // Parse Docker logs
   stage.docker {}
 
-  // Add static labels
   stage.static_labels {
     values = {
-      host = "observability-vm",
-      cluster = "homelab",
+      instance    = "observability-vm",
+      cluster     = "homelab",
+      environment = "production",
+      tier        = "observability",
     }
   }
 
-  // Extract log level (error, warn, info, debug)
   stage.regex {
     expression = "(?i)level=(?P<level>\\w+)"
   }
@@ -296,28 +265,6 @@ loki.process "add_labels" {
 }
 
 // ============================================================================
-// LOGS: System Logs Collection (optional - /var/log)
-// ============================================================================
-// Disabled: Container doesn't have access to host system logs
-// To enable: ensure /var/log volume mount includes these files
-//
-// loki.source.file "system_logs" {
-//   targets = [
-//     {
-//       __path__ = "/var/log/syslog",
-//       job      = "syslog",
-//       host     = "observability-vm",
-//     },
-//     {
-//       __path__ = "/var/log/auth.log",
-//       job      = "auth",
-//       host     = "observability-vm",
-//     },
-//   ]
-//   forward_to = [loki.write.loki.receiver]
-// }
-
-// ============================================================================
 // LOGS: Loki Write Endpoint
 // ============================================================================
 
@@ -326,37 +273,8 @@ loki.write "loki" {
     url = "http://loki:3100/loki/api/v1/push"
   }
 
-  // External labels added to all logs
   external_labels = {
-    cluster = "homelab",
+    cluster     = "homelab",
+    environment = "production",
   }
 }
-
-// ============================================================================
-// OPTIONAL: OpenTelemetry Receiver (for app instrumentation)
-// ============================================================================
-// Uncomment when you want to instrument your web apps with OpenTelemetry
-// Requires otelcol.exporter to convert OTLP to Prometheus/Loki formats
-//
-// otelcol.receiver.otlp "default" {
-//   grpc {
-//     endpoint = "0.0.0.0:4317"
-//   }
-//
-//   http {
-//     endpoint = "0.0.0.0:4318"
-//   }
-//
-//   output {
-//     metrics = [otelcol.exporter.prometheus.default.input]
-//     logs    = [otelcol.exporter.loki.default.input]
-//   }
-// }
-//
-// otelcol.exporter.prometheus "default" {
-//   forward_to = [prometheus.remote_write.prometheus.receiver]
-// }
-//
-// otelcol.exporter.loki "default" {
-//   forward_to = [loki.write.loki.receiver]
-// }
