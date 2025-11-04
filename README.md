@@ -689,6 +689,29 @@ sudo chown -R fx:fx /opt/homelab
 
 ### Recent Changes
 
+**2025-11-05 - Synology & Home Assistant Monitoring:** ✅ Complete
+- Synology NAS monitoring via Alloy built-in SNMP exporter (150 metrics)
+  - CPU: ssCpuIdle, ssCpuUser, ssCpuSystem
+  - Memory: memTotalReal, memAvailReal, memBuffer, memCached
+  - Load: laLoadInt (1/5/15 minute averages)
+  - Network: ifHCInOctets, ifHCOutOctets (64-bit counters)
+  - Disk: hrStorageSize, hrStorageUsed, diskTemperature, diskStatus, diskHealthStatus
+  - RAID: raidStatus, diskSMARTAttr* metrics
+  - Labels: instance="observability", job="integrations/snmp/synology"
+- Home Assistant Prometheus integration enabled (54 metrics)
+  - Entity states, sensors, automations, devices
+  - Labels: instance="10.10.10.116:8123", job="homeassistant"
+  - Long-lived access token stored in 1Password
+- Dashboard improvements:
+  - All dashboards: Rate intervals changed from [30s] to [1m] for smoother graphs
+  - Systems Overview: Added clickable VM names → navigate to System Detail
+  - System Detail: Fixed queries to use instance label, removed host_ip references
+  - Fixed back navigation link in System Detail dashboard
+
+**Next Steps:**
+- Add Synology row to Systems Overview dashboard (metrics ready, needs UI work)
+- Home Assistant displays entity metrics (no system metrics available from HA OS)
+
 **2025-11-04 - Monitoring Infrastructure Migration:** ✅ Complete
 - Migrated from standalone exporters to Grafana Alloy on all VMs
 - Prometheus now operates as pure remote_write receiver (no direct scraping)
@@ -697,18 +720,12 @@ sudo chown -R fx:fx /opt/homelab
 - Centralized metric collection through Alloy:
   - Node metrics (CPU, memory, disk, network) from all 6 VMs
   - Container metrics (cAdvisor) from all 6 VMs
-  - SNMP metrics from Synology NAS
-  - Proxmox VM/container metrics
-  - Home Assistant sensor metrics
-  - Application metrics (Traefik, Grafana, Loki, Prometheus)
-- All Docker container logs centralized through Loki
-- Removed redundant snmp-exporter container
-- Secrets moved to 1Password (Home Assistant token)
+  - All Docker container logs centralized through Loki
 
 ### Critical Action Items
 
 **🔴 HIGH PRIORITY:**
-1. **Grafana Dashboards** - Update existing dashboards to use new label structure (instance instead of host)
+1. **Grafana Dashboards** - Add Synology to Systems Overview (metrics ready, needs manual UI work)
 2. **Backup Strategy** - No VM backups configured (Proxmox Backup Server or vzdump)
 3. **Authentication** - Authentik deployed but no applications configured
 4. **Resource Limits** - No CPU/memory limits on containers
@@ -716,12 +733,15 @@ sudo chown -R fx:fx /opt/homelab
 
 **🟡 MEDIUM PRIORITY:**
 1. **SSL Migration** - Route more services via Traefik (AdGuard, Portainer)
-2. **Synology Monitoring** - SNMP configured but needs detailed Grafana dashboard
+2. **Synology Dashboards** - Create detailed Grafana dashboard using 150 available SNMP metrics
 
 **✅ COMPLETED:**
-1. **Monitoring Migration** - Alloy deployed across all VMs, standardized labels, centralized collection
-2. **NAS Mount Monitoring** - Prometheus alert configured for media VM NAS mount
-3. **Media Stack** - All services deployed (Plex, SABnzbd, Sonarr, Radarr, etc.)
+1. **Dashboard Updates** - All dashboards updated to use new label structure (instance), fixed queries
+2. **Synology SNMP Monitoring** - 150 metrics via Alloy (CPU, memory, load, network, disk, RAID)
+3. **Home Assistant Integration** - 54 entity metrics via Prometheus integration
+4. **Monitoring Migration** - Alloy deployed across all VMs, standardized labels, centralized collection
+5. **NAS Mount Monitoring** - Prometheus alert configured for media VM NAS mount
+6. **Media Stack** - All services deployed (Plex, SABnzbd, Sonarr, Radarr, etc.)
 
 **🟢 LOW PRIORITY:**
 1. **Cloudflare Tunnels** - Migrate from direct DNS (blocked by email migration)
@@ -787,4 +807,4 @@ Repository is **public** (allows VMs to pull without auth)
 
 ---
 
-**Last Updated:** 2025-11-04
+**Last Updated:** 2025-11-05
