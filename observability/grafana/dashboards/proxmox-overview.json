@@ -118,12 +118,12 @@
                       "0": {
                         "color": "red",
                         "index": 1,
-                        "text": ""
+                        "text": "\ud83d\udd34"
                       },
                       "1": {
                         "color": "green",
                         "index": 0,
-                        "text": ""
+                        "text": "\ud83d\udfe2"
                       }
                     },
                     "type": "value"
@@ -132,11 +132,15 @@
               },
               {
                 "id": "custom.displayMode",
-                "value": "color-background-solid"
+                "value": "color-text"
               },
               {
                 "id": "custom.width",
                 "value": 50
+              },
+              {
+                "id": "custom.align",
+                "value": "center"
               }
             ]
           },
@@ -358,7 +362,7 @@
               },
               {
                 "id": "custom.displayMode",
-                "value": "gradient-gauge"
+                "value": "lcd-gauge"
               },
               {
                 "id": "custom.width",
@@ -468,7 +472,7 @@
               },
               {
                 "id": "custom.displayMode",
-                "value": "gradient-gauge"
+                "value": "lcd-gauge"
               },
               {
                 "id": "custom.width",
@@ -526,7 +530,7 @@
               },
               {
                 "id": "custom.displayMode",
-                "value": "gradient-gauge"
+                "value": "lcd-gauge"
               },
               {
                 "id": "custom.width",
@@ -607,7 +611,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum by (id, name, type) (pve_guest_info{instance=\"$instance\"})",
+          "expr": "sum by (id, name, type) (pve_guest_info{template!=\"1\"}{instance=\"$instance\"})",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -622,7 +626,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum by (id) (pve_up{instance=\"$instance\"} and on (id, instance) pve_guest_info)",
+          "expr": "sum by (id) (pve_up{instance=\"$instance\"} and on (id, instance) pve_guest_info{template!=\"1\"})",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -637,7 +641,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum by (id) (pve_cpu_usage_limit{instance=\"$instance\"} and on (id, instance) pve_guest_info)",
+          "expr": "sum by (id) (pve_cpu_usage_limit{instance=\"$instance\"} and on (id, instance) pve_guest_info{template!=\"1\"})",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -652,7 +656,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum by (id) (pve_memory_size_bytes{instance=\"$instance\"} and on (id, instance) pve_guest_info)",
+          "expr": "sum by (id) (pve_memory_size_bytes{instance=\"$instance\"} and on (id, instance) pve_guest_info{template!=\"1\"})",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -682,7 +686,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum by (id) (pve_disk_size_bytes{instance=\"$instance\"} and on (id, instance) pve_guest_info)",
+          "expr": "sum by (id) (pve_disk_size_bytes{instance=\"$instance\"} and on (id, instance) pve_guest_info{template!=\"1\"})",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -697,7 +701,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum by (id) (pve_disk_usage_bytes{instance=\"$instance\"} / pve_disk_size_bytes and on (id, instance) pve_guest_info{type=\"lxc\"})",
+          "expr": "sum by (id) (pve_disk_usage_bytes{instance=\"$instance\"} / pve_disk_size_bytes and on (id, instance) pve_guest_info{template!=\"1\"}{type=\"lxc\"})",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -712,7 +716,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum by (id) ((pve_cpu_usage_ratio{instance=\"$instance\"} / pve_cpu_usage_limit) and on (id, instance) pve_guest_info and on(id) pve_up==1)",
+          "expr": "sum by (id) ((pve_cpu_usage_ratio{instance=\"$instance\"} / pve_cpu_usage_limit) and on (id, instance) pve_guest_info{template!=\"1\"} and on(id) pve_up==1)",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -727,7 +731,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum by (id) ((rate(pve_disk_write_bytes{instance=\"$instance\"}[5m]) + rate(pve_disk_read_bytes{instance=\"$instance\"}[5m])) and on (id, instance) pve_guest_info and on(id) pve_up==1)",
+          "expr": "sum by (id) ((rate(pve_disk_write_bytes{instance=\"$instance\"}[5m]) + rate(pve_disk_read_bytes{instance=\"$instance\"}[5m])) and on (id, instance) pve_guest_info{template!=\"1\"} and on(id) pve_up==1)",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -742,7 +746,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum by (id) ((rate(pve_network_receive_bytes{instance=\"$instance\"}[5m]) + rate(pve_network_transmit_bytes{instance=\"$instance\"}[5m])) and on (id, instance) pve_guest_info and on(id) pve_up==1)",
+          "expr": "sum by (id) ((rate(pve_network_receive_bytes{instance=\"$instance\"}[5m]) + rate(pve_network_transmit_bytes{instance=\"$instance\"}[5m])) and on (id, instance) pve_guest_info{template!=\"1\"} and on(id) pve_up==1)",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -795,7 +799,7 @@
               "Value #diskusg_percent": "Disk Usage",
               "Value #memsize": "Memory",
               "Value #memusg_percent": "Memory Usage",
-              "Value #status": "Status",
+              "Value #status": "",
               "Value #vcpus": "vCPUs",
               "Value #cpu_usage": "CPU Usage",
               "Value #disk_io": "Disk I/O",
