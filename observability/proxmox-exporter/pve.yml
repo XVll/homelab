@@ -1,4 +1,6 @@
 default:
+  host: 10.10.10.20
+  port: 8006
   user: monitor@pve
   token_name: prometheus
   token_value: 59b1017f-7576-454d-bff2-61463f7f0c17
