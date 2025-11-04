@@ -88,7 +88,7 @@ prometheus.remote_write "prometheus" {
   external_labels = {
     cluster     = "homelab",
     environment = "production",
-    instance    = "dev-vm",
+    instance    = "dev",
     tier        = "development",
   }
 }
@@ -164,7 +164,7 @@ loki.process "add_labels" {
   // Standardized static labels
   stage.static_labels {
     values = {
-      instance    = "dev-vm",
+      instance    = "dev",
       cluster     = "homelab",
       environment = "production",
       tier        = "development",

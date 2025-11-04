@@ -128,7 +128,7 @@ All metrics collected by Alloy get these external_labels:
 ```alloy
 external_labels = {
   cluster = "homelab"
-  host = "vm-name"           // e.g., "edge-vm", "db-vm"
+  host = "vm-name"           // e.g., "edge", "db"
   host_ip = "10.10.10.xxx"   // e.g., "10.10.10.110"
   collector = "alloy"
   source = "alloy"           // vs "proxmox" for pve_* metrics
@@ -662,7 +662,7 @@ This allows clear differentiation between:
    traefik_entrypoint_requests_total
 
    # VM metrics (via Alloy on observability VM)
-   node_cpu_seconds_total{host="observability-vm"}
+   node_cpu_seconds_total{host="observability"}
    ```
 
 4. Check Grafana dashboards:
@@ -768,7 +768,7 @@ ssh fx@10.10.10.112 'docker exec prometheus kill -HUP 1'
 
      external_labels = {
        cluster = "homelab",
-       host = "edge-vm",
+       host = "edge",
        host_ip = "10.10.10.110",
        collector = "alloy",
        source = "alloy",
@@ -837,7 +837,7 @@ ssh fx@10.10.10.112 'docker exec prometheus kill -HUP 1'
 
      stage.static_labels {
        values = {
-         host = "edge-vm",
+         host = "edge",
          cluster = "homelab",
        }
      }
@@ -897,7 +897,7 @@ ssh fx@10.10.10.112 'docker exec prometheus kill -HUP 1'
      networks:
        - edge_net  # Use existing network name from edge compose
      environment:
-       - HOSTNAME=edge-vm
+       - HOSTNAME=edge
      healthcheck:
        test: ["CMD-SHELL", "alloy tools pprof health http://localhost:12345 || exit 1"]
        interval: 30s
@@ -946,19 +946,19 @@ ssh fx@10.10.10.112 'docker exec prometheus kill -HUP 1'
 4. Check Prometheus:
    ```promql
    # Edge VM host metrics
-   node_cpu_seconds_total{host="edge-vm"}
-   node_memory_MemTotal_bytes{host="edge-vm"}
+   node_cpu_seconds_total{host="edge"}
+   node_memory_MemTotal_bytes{host="edge"}
 
    # Edge VM containers
-   container_cpu_usage_seconds_total{host="edge-vm"}
+   container_cpu_usage_seconds_total{host="edge"}
 
    # Check specific containers
-   container_memory_usage_bytes{host="edge-vm",name=~"traefik|adguard|authentik"}
+   container_memory_usage_bytes{host="edge",name=~"traefik|adguard|authentik"}
    ```
 
 5. Check Loki:
    - Grafana → Explore → Loki
-   - Query: `{host="edge-vm"}`
+   - Query: `{host="edge"}`
    - Should see container logs
 
 **Success Criteria:**
@@ -987,10 +987,10 @@ ssh fx@10.10.10.112 'docker exec prometheus kill -HUP 1'
 
    # Edit db/alloy/config/config.alloy
    # Change external_labels:
-   #   host = "db-vm"
+   #   host = "db"
    #   host_ip = "10.10.10.111"
    # Change loki.process static_labels:
-   #   host = "db-vm"
+   #   host = "db"
    ```
 
 3. **Add Alloy to db docker-compose.yml:**
@@ -1025,15 +1025,15 @@ ssh fx@10.10.10.112 'docker exec prometheus kill -HUP 1'
 3. Check Prometheus:
    ```promql
    # DB VM host metrics
-   node_cpu_seconds_total{host="db-vm"}
+   node_cpu_seconds_total{host="db"}
 
    # DB VM containers
-   container_memory_usage_bytes{host="db-vm",name=~"postgres|mongodb|redis|minio|mosquitto"}
+   container_memory_usage_bytes{host="db",name=~"postgres|mongodb|redis|minio|mosquitto"}
    ```
 
 4. Check Loki:
    ```
-   {host="db-vm"}
+   {host="db"}
    ```
 
 **Success Criteria:**
@@ -1057,7 +1057,7 @@ ssh fx@10.10.10.112 'docker exec prometheus kill -HUP 1'
    - Drill-down links: `/d/system-detail?var-host=${__value.text}`
 
 2. **VM Detail Dashboard (Generic template for Debian VMs):**
-   - Variable: `$host` (edge-vm, db-vm, observability-vm, etc.)
+   - Variable: `$host` (edge, db, observability, etc.)
    - Host metrics section:
      - CPU: `rate(node_cpu_seconds_total{host="$host",mode!="idle"}[5m])`
      - Memory: `node_memory_MemTotal_bytes{host="$host"} - node_memory_MemAvailable_bytes{host="$host"}`
@@ -1305,7 +1305,7 @@ curl 'http://10.10.10.112:9090/api/v1/query?query=up'
 
 **Check Loki logs:**
 ```bash
-curl 'http://10.10.10.112:3100/loki/api/v1/query?query={host="edge-vm"}'
+curl 'http://10.10.10.112:3100/loki/api/v1/query?query={host="edge"}'
 ```
 
 ---

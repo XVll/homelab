@@ -60,7 +60,7 @@ services:
     networks:
       - edge_net
     environment:
-      - HOSTNAME=edge-vm
+      - HOSTNAME=edge
     healthcheck:
       test: ["CMD-SHELL", "alloy tools pprof health http://localhost:12345 || exit 1"]
       interval: 30s

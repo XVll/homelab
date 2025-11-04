@@ -182,7 +182,7 @@ services:
       - prometheus
       - loki
     environment:
-      - HOSTNAME=observability-vm
+      - HOSTNAME=observability
       - HOMEASSISTANT_TOKEN=${HOMEASSISTANT_TOKEN}
     healthcheck:
       test: ["CMD-SHELL", "alloy tools pprof health http://localhost:12345 || exit 1"]

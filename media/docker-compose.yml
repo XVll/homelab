@@ -73,7 +73,7 @@ services:
     networks:
       - media_net
     environment:
-      - HOSTNAME=media-vm
+      - HOSTNAME=media
     healthcheck:
       test: ["CMD-SHELL", "alloy tools pprof health http://localhost:12345 || exit 1"]
       interval: 30s

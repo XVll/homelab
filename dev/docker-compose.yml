@@ -61,7 +61,7 @@ services:
     networks:
       - dev_net
     environment:
-      - HOSTNAME=dev-vm
+      - HOSTNAME=dev
     healthcheck:
       test: ["CMD-SHELL", "alloy tools pprof health http://localhost:12345 || exit 1"]
       interval: 30s

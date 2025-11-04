@@ -59,7 +59,7 @@ services:
     networks:
       - deploy_net
     environment:
-      - HOSTNAME=deploy-vm
+      - HOSTNAME=deploy
     healthcheck:
       test: ["CMD-SHELL", "alloy tools pprof health http://localhost:12345 || exit 1"]
       interval: 30s

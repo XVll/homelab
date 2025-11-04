@@ -1444,8 +1444,8 @@
       {
         "current": {
           "selected": false,
-          "text": "observability-vm",
-          "value": "observability-vm"
+          "text": "observability",
+          "value": "observability"
         },
         "datasource": {
           "type": "prometheus",
