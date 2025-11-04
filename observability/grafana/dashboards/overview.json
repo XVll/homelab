@@ -24,7 +24,7 @@
       }
     ]
   },
-  "description": "Unified system overview using real usage metrics from Alloy",
+  "description": "VM Overview - Proxmox allocations with real usage from Alloy",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
@@ -572,7 +572,7 @@
       },
       "gridPos": {
         "h": 11,
-        "w": 24,
+        "w": 20,
         "x": 0,
         "y": 0
       },
@@ -606,12 +606,12 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "up{job=\"integrations/unix\"}\nor\n(pve_up * on(id) group_left(name) pve_guest_info{name=~\"ha|synology\"})",
+          "expr": "sum by (id, name, type) (pve_guest_info{instance=\"$instance\",template!=\"1\",name!~\"ha|synology\"})",
           "format": "table",
           "instant": true,
-          "legendFormat": "__auto",
+          "legendFormat": "",
           "range": false,
-          "refId": "Status"
+          "refId": "name"
         },
         {
           "datasource": {
@@ -620,12 +620,12 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "(100 - (avg by (instance) (irate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100))\nor\n(avg by (name) ((pve_cpu_usage_ratio / pve_cpu_usage_limit) * 100 * on(id) group_left(name) pve_guest_info{name=~\"ha|synology\"}))",
+          "expr": "sum by (id) (\n  label_replace(\n    label_replace(\n      label_replace(\n        label_replace(\n          label_replace(\n            label_replace(\n              (up{job=\"integrations/unix\"}),\n              \"temp_name\", \"edge\", \"instance\", \"edge-vm\"\n            ),\n            \"temp_name\", \"db\", \"instance\", \"db-vm\"\n          ),\n          \"temp_name\", \"media\", \"instance\", \"media-vm\"\n        ),\n        \"temp_name\", \"dev\", \"instance\", \"dev-vm\"\n      ),\n      \"temp_name\", \"deploy\", \"instance\", \"deploy-vm\"\n    ),\n    \"temp_name\", \"observability\", \"instance\", \"observability-vm\"\n  )\n  * on(temp_name) group_left(id)\n    label_replace(pve_guest_info{template!=\"1\",name!~\"ha|synology\"}, \"temp_name\", \"$1\", \"name\", \"(.*)\")\n)",
           "format": "table",
           "instant": true,
-          "legendFormat": "__auto",
+          "legendFormat": "",
           "range": false,
-          "refId": "CPU"
+          "refId": "status"
         },
         {
           "datasource": {
@@ -634,12 +634,12 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "((1 - (avg by (instance) (node_memory_MemAvailable_bytes) / avg by (instance) (node_memory_MemTotal_bytes))) * 100)\nor\n(avg by (name) ((pve_memory_usage_bytes / pve_memory_size_bytes) * 100 * on(id) group_left(name) pve_guest_info{name=~\"ha|synology\"}))",
+          "expr": "sum by (id) (pve_cpu_usage_limit{instance=\"$instance\"} and on (id, instance) pve_guest_info{template!=\"1\",name!~\"ha|synology\"})",
           "format": "table",
           "instant": true,
-          "legendFormat": "__auto",
+          "legendFormat": "",
           "range": false,
-          "refId": "Memory"
+          "refId": "vcpus"
         },
         {
           "datasource": {
@@ -648,12 +648,12 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "((1 - (avg by (instance) (node_filesystem_avail_bytes{mountpoint=\"/host/root\",fstype=\"ext4\"}) / avg by (instance) (node_filesystem_size_bytes{mountpoint=\"/host/root\",fstype=\"ext4\"}))) * 100)",
+          "expr": "sum by (id) (pve_memory_size_bytes{instance=\"$instance\"} and on (id, instance) pve_guest_info{template!=\"1\",name!~\"ha|synology\"})",
           "format": "table",
           "instant": true,
-          "legendFormat": "__auto",
+          "legendFormat": "",
           "range": false,
-          "refId": "Disk"
+          "refId": "memsize"
         },
         {
           "datasource": {
@@ -662,12 +662,12 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "avg by (instance) (node_load1)",
+          "expr": "sum by (id) (pve_disk_size_bytes{instance=\"$instance\"} and on (id, instance) pve_guest_info{template!=\"1\",name!~\"ha|synology\"})",
           "format": "table",
           "instant": true,
-          "legendFormat": "__auto",
+          "legendFormat": "",
           "range": false,
-          "refId": "Load1"
+          "refId": "disksize"
         },
         {
           "datasource": {
@@ -676,12 +676,12 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "avg by (instance) (node_load5)",
+          "expr": "sum by (id) (\n  label_replace(\n    label_replace(\n      label_replace(\n        label_replace(\n          label_replace(\n            label_replace(\n              (100 - (avg by (instance) (irate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)),\n              \"temp_name\", \"edge\", \"instance\", \"edge-vm\"\n            ),\n            \"temp_name\", \"db\", \"instance\", \"db-vm\"\n          ),\n          \"temp_name\", \"media\", \"instance\", \"media-vm\"\n        ),\n        \"temp_name\", \"dev\", \"instance\", \"dev-vm\"\n      ),\n      \"temp_name\", \"deploy\", \"instance\", \"deploy-vm\"\n    ),\n    \"temp_name\", \"observability\", \"instance\", \"observability-vm\"\n  )\n  * on(temp_name) group_left(id)\n    label_replace(pve_guest_info{template!=\"1\",name!~\"ha|synology\"}, \"temp_name\", \"$1\", \"name\", \"(.*)\")\n)",
           "format": "table",
           "instant": true,
-          "legendFormat": "__auto",
+          "legendFormat": "",
           "range": false,
-          "refId": "Load5"
+          "refId": "cpu_usage"
         },
         {
           "datasource": {
@@ -690,12 +690,12 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "avg by (instance) (node_load15)",
+          "expr": "sum by (id) (\n  label_replace(\n    label_replace(\n      label_replace(\n        label_replace(\n          label_replace(\n            label_replace(\n              ((1 - (avg by (instance) (node_memory_MemAvailable_bytes) / avg by (instance) (node_memory_MemTotal_bytes)))),\n              \"temp_name\", \"edge\", \"instance\", \"edge-vm\"\n            ),\n            \"temp_name\", \"db\", \"instance\", \"db-vm\"\n          ),\n          \"temp_name\", \"media\", \"instance\", \"media-vm\"\n        ),\n        \"temp_name\", \"dev\", \"instance\", \"dev-vm\"\n      ),\n      \"temp_name\", \"deploy\", \"instance\", \"deploy-vm\"\n    ),\n    \"temp_name\", \"observability\", \"instance\", \"observability-vm\"\n  )\n  * on(temp_name) group_left(id)\n    label_replace(pve_guest_info{template!=\"1\",name!~\"ha|synology\"}, \"temp_name\", \"$1\", \"name\", \"(.*)\")\n)",
           "format": "table",
           "instant": true,
-          "legendFormat": "__auto",
+          "legendFormat": "",
           "range": false,
-          "refId": "Load15"
+          "refId": "mem_usage"
         },
         {
           "datasource": {
@@ -704,12 +704,12 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "(sum by (instance) (rate(node_network_receive_bytes_total{device!~\"lo|docker.*|veth.*|br-.*\"}[5m])) + sum by (instance) (rate(node_network_transmit_bytes_total{device!~\"lo|docker.*|veth.*|br-.*\"}[5m])))\nor\n(sum by (name) ((rate(pve_network_receive_bytes[5m]) + rate(pve_network_transmit_bytes[5m])) * on(id) group_left(name) pve_guest_info{name=~\"ha|synology\"}))",
+          "expr": "sum by (id) (\n  label_replace(\n    label_replace(\n      label_replace(\n        label_replace(\n          label_replace(\n            label_replace(\n              ((node_filesystem_size_bytes{mountpoint=\"/host/root\",fstype=\"ext4\"}\n         - node_filesystem_avail_bytes{mountpoint=\"/host/root\",fstype=\"ext4\"})\n        / node_filesystem_size_bytes{mountpoint=\"/host/root\",fstype=\"ext4\"}),\n              \"temp_name\", \"edge\", \"instance\", \"edge-vm\"\n            ),\n            \"temp_name\", \"db\", \"instance\", \"db-vm\"\n          ),\n          \"temp_name\", \"media\", \"instance\", \"media-vm\"\n        ),\n        \"temp_name\", \"dev\", \"instance\", \"dev-vm\"\n      ),\n      \"temp_name\", \"deploy\", \"instance\", \"deploy-vm\"\n    ),\n    \"temp_name\", \"observability\", \"instance\", \"observability-vm\"\n  )\n  * on(temp_name) group_left(id)\n    label_replace(pve_guest_info{template!=\"1\",name!~\"ha|synology\"}, \"temp_name\", \"$1\", \"name\", \"(.*)\")\n)",
           "format": "table",
           "instant": true,
-          "legendFormat": "__auto",
+          "legendFormat": "",
           "range": false,
-          "refId": "Net"
+          "refId": "disk_usage"
         },
         {
           "datasource": {
@@ -718,12 +718,12 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "(sum by (instance) (rate(node_disk_read_bytes_total[5m])) + sum by (instance) (rate(node_disk_written_bytes_total[5m])))\nor\n(sum by (name) ((rate(pve_disk_read_bytes[5m]) + rate(pve_disk_write_bytes[5m])) * on(id) group_left(name) pve_guest_info{name=~\"ha|synology\"}))",
+          "expr": "sum by (id) (\n  label_replace(\n    label_replace(\n      label_replace(\n        label_replace(\n          label_replace(\n            label_replace(\n              (sum by (instance) (rate(node_network_receive_bytes_total{device!~\"lo|docker.*|veth.*|br-.*\"}[5m]))\n        + sum by (instance) (rate(node_network_transmit_bytes_total{device!~\"lo|docker.*|veth.*|br-.*\"}[5m]))),\n              \"temp_name\", \"edge\", \"instance\", \"edge-vm\"\n            ),\n            \"temp_name\", \"db\", \"instance\", \"db-vm\"\n          ),\n          \"temp_name\", \"media\", \"instance\", \"media-vm\"\n        ),\n        \"temp_name\", \"dev\", \"instance\", \"dev-vm\"\n      ),\n      \"temp_name\", \"deploy\", \"instance\", \"deploy-vm\"\n    ),\n    \"temp_name\", \"observability\", \"instance\", \"observability-vm\"\n  )\n  * on(temp_name) group_left(id)\n    label_replace(pve_guest_info{template!=\"1\",name!~\"ha|synology\"}, \"temp_name\", \"$1\", \"name\", \"(.*)\")\n)",
           "format": "table",
           "instant": true,
-          "legendFormat": "__auto",
+          "legendFormat": "",
           "range": false,
-          "refId": "DiskIO"
+          "refId": "network_io"
         },
         {
           "datasource": {
@@ -732,65 +732,67 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "avg by (instance) (node_hwmon_temp_celsius)",
+          "expr": "sum by (id) (\n  label_replace(\n    label_replace(\n      label_replace(\n        label_replace(\n          label_replace(\n            label_replace(\n              (sum by (instance) (rate(node_disk_read_bytes_total[5m]))\n        + sum by (instance) (rate(node_disk_written_bytes_total[5m]))),\n              \"temp_name\", \"edge\", \"instance\", \"edge-vm\"\n            ),\n            \"temp_name\", \"db\", \"instance\", \"db-vm\"\n          ),\n          \"temp_name\", \"media\", \"instance\", \"media-vm\"\n        ),\n        \"temp_name\", \"dev\", \"instance\", \"dev-vm\"\n      ),\n      \"temp_name\", \"deploy\", \"instance\", \"deploy-vm\"\n    ),\n    \"temp_name\", \"observability\", \"instance\", \"observability-vm\"\n  )\n  * on(temp_name) group_left(id)\n    label_replace(pve_guest_info{template!=\"1\",name!~\"ha|synology\"}, \"temp_name\", \"$1\", \"name\", \"(.*)\")\n)",
           "format": "table",
           "instant": true,
-          "legendFormat": "__auto",
+          "legendFormat": "",
           "range": false,
-          "refId": "Temp"
+          "refId": "disk_io"
         }
       ],
       "title": "All Systems",
       "transformations": [
         {
-          "id": "merge",
-          "options": {}
+          "id": "joinByField",
+          "options": {
+            "byField": "id",
+            "mode": "outer"
+          }
         },
         {
           "id": "organize",
           "options": {
             "excludeByName": {
-              "Time": true,
-              "__name__": true,
-              "cluster": true,
-              "device": true,
-              "fstype": true,
-              "job": true,
-              "mountpoint": true,
-              "mode": true,
+              "Time 1": true,
+              "Time 2": true,
+              "Time 3": true,
+              "Time 4": true,
+              "Time 5": true,
+              "Time 6": true,
+              "Time 7": true,
+              "Time 8": true,
+              "Time 9": true,
+              "Time 10": true,
+              "Value #name": true,
               "id": true,
               "type": true,
-              "tier": true,
-              "environment": true
+              "cluster": true,
+              "environment": true,
+              "tier": true
             },
-            "includeByName": {},
             "indexByName": {
-              "Value #Status": 0,
-              "instance": 1,
+              "Value #status": 0,
               "name": 1,
-              "Value #CPU": 2,
-              "Value #Memory": 3,
-              "Value #Disk": 4,
-              "Value #Load1": 5,
-              "Value #Load5": 6,
-              "Value #Load15": 7,
-              "Value #Net": 8,
-              "Value #DiskIO": 9,
-              "Value #Temp": 10
+              "Value #vcpus": 2,
+              "Value #memsize": 3,
+              "Value #disksize": 4,
+              "Value #cpu_usage": 5,
+              "Value #mem_usage": 6,
+              "Value #disk_usage": 7,
+              "Value #network_io": 8,
+              "Value #disk_io": 9
             },
             "renameByName": {
-              "Value #Status": "Status",
-              "instance": "System",
-              "name": "System",
-              "Value #CPU": "CPU",
-              "Value #Memory": "Memory",
-              "Value #Disk": "Disk",
-              "Value #Load1": "1m",
-              "Value #Load5": "5m",
-              "Value #Load15": "15m",
-              "Value #Net": "Net",
-              "Value #DiskIO": "Disk I/O",
-              "Value #Temp": "Temp"
+              "Value #status": "Status",
+              "name": "Name",
+              "Value #vcpus": "vCPUs",
+              "Value #memsize": "Memory",
+              "Value #disksize": "Disk",
+              "Value #cpu_usage": "CPU Usage",
+              "Value #mem_usage": "Memory Usage",
+              "Value #disk_usage": "Disk Usage",
+              "Value #network_io": "Network I/O",
+              "Value #disk_io": "Disk I/O"
             }
           }
         }
@@ -1262,6 +1264,190 @@
           "color": {
             "mode": "thresholds"
           },
+          "decimals": 1,
+          "mappings": [],
+          "max": 1,
+          "min": 0,
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "yellow",
+                "value": 50
+              },
+              {
+                "color": "red",
+                "value": 90
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 20,
+        "y": 0
+      },
+      "id": 110,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "horizontal",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "text": {
+          "titleSize": 10,
+          "valueSize": 12
+        },
+        "textMode": "value_and_name",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "pve_cpu_usage_ratio{instance=\"$instance\"} / pve_cpu_usage_limit and on(id) pve_node_info",
+          "instant": false,
+          "legendFormat": "Cpu",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "pve_memory_usage_bytes{instance=\"$instance\"} / pve_memory_size_bytes and on(id) pve_node_info",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "Memory",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 1,
+          "mappings": [],
+          "max": 1,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 0.7
+              },
+              {
+                "color": "red",
+                "value": 0.9
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 4,
+        "x": 20,
+        "y": 4
+      },
+      "id": 112,
+      "options": {
+        "displayMode": "lcd",
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "maxVizHeight": 300,
+        "minVizHeight": 10,
+        "minVizWidth": 0,
+        "namePlacement": "top",
+        "orientation": "vertical",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "text": {
+          "titleSize": 10,
+          "valueSize": 12
+        },
+        "valueMode": "color"
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "pve_disk_usage_bytes{instance=\"$instance\", id=~\"storage/.+\"} / pve_disk_size_bytes * on (id, instance) group_left(storage) pve_storage_info",
+          "instant": true,
+          "legendFormat": "{{storage}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Storage",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
           "custom": {
             "axisBorderShow": false,
             "axisCenteredZero": false,
@@ -1358,11 +1544,8 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "editorMode": "code",
           "expr": "100 - (avg by (instance) (irate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
-          "instant": false,
           "legendFormat": "{{instance}}",
-          "range": true,
           "refId": "A"
         }
       ],
@@ -1440,7 +1623,7 @@
               }
             ]
           },
-          "unit": "percent"
+          "unit": "percentunit"
         },
         "overrides": []
       },
@@ -1476,11 +1659,8 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "editorMode": "code",
-          "expr": "(1 - (avg by (instance) (node_memory_MemAvailable_bytes) / avg by (instance) (node_memory_MemTotal_bytes))) * 100",
-          "instant": false,
+          "expr": "(1 - (avg by (instance) (node_memory_MemAvailable_bytes) / avg by (instance) (node_memory_MemTotal_bytes)))",
           "legendFormat": "{{instance}}",
-          "range": true,
           "refId": "A"
         }
       ],
@@ -1595,11 +1775,8 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "editorMode": "code",
           "expr": "sum by (instance) (rate(node_disk_read_bytes_total[5m])) + sum by (instance) (rate(node_disk_written_bytes_total[5m]))",
-          "instant": false,
           "legendFormat": "{{instance}}",
-          "range": true,
           "refId": "A"
         }
       ],
@@ -1720,11 +1897,8 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "editorMode": "code",
           "expr": "sum by (instance) (rate(node_network_receive_bytes_total{device!~\"lo|docker.*|veth.*|br-.*\"}[5m])) + sum by (instance) (rate(node_network_transmit_bytes_total{device!~\"lo|docker.*|veth.*|br-.*\"}[5m]))",
-          "instant": false,
           "legendFormat": "{{instance}}",
-          "range": true,
           "refId": "A"
         }
       ],
@@ -1740,7 +1914,30 @@
     "Prometheus"
   ],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "current": {
+          "text": "proxmox-exporter:9221",
+          "value": "proxmox-exporter:9221"
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "definition": "label_values(pve_node_info, instance)",
+        "includeAll": false,
+        "name": "instance",
+        "options": [],
+        "query": {
+          "query": "label_values(pve_node_info, instance)",
+          "refId": "Prometheus-instance-Variable-Query"
+        },
+        "refresh": 2,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
+      }
+    ]
   },
   "time": {
     "from": "now-1h",
