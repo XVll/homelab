@@ -166,6 +166,7 @@ services:
       # - "10.10.10.112:4318:4318"    # OTLP HTTP (for app instrumentation)
     volumes:
       - ./alloy/config/config.alloy:/etc/alloy/config.alloy:ro
+      - ./alloy/config/snmp.yml:/etc/alloy/snmp.yml:ro  # SNMP config for Synology
       - /var/run/docker.sock:/var/run/docker.sock:ro  # Docker metrics + logs
       - /:/host/root:ro  # System metrics (CPU, disk, etc.)
       - /sys:/host/sys:ro  # System metrics
@@ -189,37 +190,6 @@ services:
       timeout: 10s
       retries: 3
       start_period: 20s
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
-
-  # ============================================================================
-  # SNMP EXPORTER - Synology NAS Monitoring
-  # ============================================================================
-  # Standalone Prometheus SNMP exporter for Synology NAS
-  # Alloy scrapes from this exporter's /snmp endpoint
-  # Access: http://10.10.10.112:9116/metrics
-
-  snmp-exporter:
-    image: prom/snmp-exporter:latest
-    container_name: snmp-exporter
-    restart: unless-stopped
-    ports:
-      - "10.10.10.112:9116:9116"
-    volumes:
-      - ./snmp-exporter/config/snmp.yml:/etc/snmp_exporter/snmp.yml:ro
-    command:
-      - '--config.file=/etc/snmp_exporter/snmp.yml'
-    networks:
-      - obs_net
-    healthcheck:
-      test: ["CMD", "wget", "--spider", "--quiet", "http://localhost:9116/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
     logging:
       driver: "json-file"
       options:
