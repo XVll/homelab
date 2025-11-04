@@ -892,7 +892,9 @@
                 "value": 90
               }
             ]
-          }
+          },
+          "unit": "percentunit",
+          "decimals": 1
         },
         "overrides": []
       },
@@ -917,7 +919,7 @@
         "graphMode": "area",
         "justifyMode": "center",
         "text": {
-          "valueSize": 20
+          "valueSize": 24
         }
       },
       "targets": [
@@ -1011,10 +1013,43 @@
           "unit": "percentunit",
           "displayName": "",
           "custom": {
-            "displayMode": "lcd-gauge"
+            "cellOptions": {
+              "type": "color-text"
+            }
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value"
+            },
+            "properties": [
+              {
+                "id": "custom.displayMode",
+                "value": "lcd-gauge"
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "gauge"
+                }
+              },
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 3,
@@ -1038,10 +1073,7 @@
         "textMode": "value",
         "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "center",
-        "text": {
-          "valueSize": 28
-        }
+        "justifyMode": "center"
       },
       "pluginVersion": "9.3.2",
       "targets": [
@@ -1204,7 +1236,8 @@
               }
             ]
           },
-          "unit": "bytes"
+          "unit": "percentunit",
+          "decimals": 1
         },
         "overrides": []
       },
@@ -1229,7 +1262,7 @@
         "graphMode": "area",
         "justifyMode": "center",
         "text": {
-          "valueSize": 20
+          "valueSize": 24
         }
       },
       "targets": [
@@ -1323,10 +1356,43 @@
           "unit": "percentunit",
           "displayName": "",
           "custom": {
-            "displayMode": "lcd-gauge"
+            "cellOptions": {
+              "type": "color-text"
+            }
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value"
+            },
+            "properties": [
+              {
+                "id": "custom.displayMode",
+                "value": "lcd-gauge"
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "gauge"
+                }
+              },
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 3,
@@ -1349,10 +1415,7 @@
         "textMode": "value",
         "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "center",
-        "text": {
-          "valueSize": 28
-        }
+        "justifyMode": "center"
       },
       "pluginVersion": "9.3.2",
       "targets": [
