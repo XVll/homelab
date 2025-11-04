@@ -594,8 +594,8 @@
         ]
       },
       "gridPos": {
-        "h": 11,
-        "w": 24,
+        "h": 8,
+        "w": 18,
         "x": 0,
         "y": 0
       },
@@ -897,10 +897,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 5,
-        "w": 9,
-        "x": 0,
-        "y": 10
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 4
       },
       "id": 23,
       "options": {
@@ -908,7 +908,7 @@
           "calcs": [],
           "displayMode": "list",
           "placement": "bottom",
-          "showLegend": false
+          "showLegend": true
         },
         "tooltip": {
           "mode": "single",
@@ -943,7 +943,7 @@
           "refId": "total"
         }
       ],
-      "title": "CPU history",
+      "title": "PVE CPU",
       "transformations": [
         {
           "id": "configFromData",
@@ -1008,10 +1008,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 5,
+        "h": 4,
         "w": 3,
-        "x": 9,
-        "y": 10
+        "x": 18,
+        "y": 0
       },
       "id": 7,
       "interval": "",
@@ -1198,10 +1198,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 5,
-        "w": 9,
-        "x": 12,
-        "y": 10
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 8
       },
       "id": 24,
       "options": {
@@ -1209,7 +1209,7 @@
           "calcs": [],
           "displayMode": "list",
           "placement": "bottom",
-          "showLegend": false
+          "showLegend": true
         },
         "tooltip": {
           "mode": "single",
@@ -1244,7 +1244,7 @@
           "refId": "total"
         }
       ],
-      "title": "Memory history",
+      "title": "PVE Memory",
       "transformations": [
         {
           "id": "configFromData",
@@ -1309,10 +1309,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 5,
+        "h": 4,
         "w": 3,
         "x": 21,
-        "y": 10
+        "y": 0
       },
       "id": 8,
       "links": [],
@@ -1569,10 +1569,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 9,
-        "w": 12,
+        "h": 7,
+        "w": 9,
         "x": 0,
-        "y": 15
+        "y": 8
       },
       "id": 2,
       "links": [],
@@ -1583,7 +1583,7 @@
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
           "showLegend": true
         },
@@ -1607,7 +1607,7 @@
           "refId": "A"
         }
       ],
-      "title": "Guests CPU usage",
+      "title": "CPU usage",
       "type": "timeseries"
     },
     {
@@ -1674,10 +1674,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 12,
-        "y": 15
+        "h": 7,
+        "w": 9,
+        "x": 9,
+        "y": 8
       },
       "id": 5,
       "links": [],
@@ -1688,7 +1688,7 @@
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
           "showLegend": true
         },
@@ -1712,7 +1712,7 @@
           "refId": "A"
         }
       ],
-      "title": "Guests memory usage",
+      "title": "memory usage",
       "type": "timeseries"
     },
     {
@@ -1761,10 +1761,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 9,
-        "w": 3,
-        "x": 0,
-        "y": 24
+        "h": 5,
+        "w": 6,
+        "x": 18,
+        "y": 12
       },
       "id": 11,
       "links": [],
@@ -1833,10 +1833,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 9,
-        "w": 4,
-        "x": 3,
-        "y": 24
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 17
       },
       "id": 15,
       "links": [],
@@ -1962,10 +1962,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 9,
-        "w": 17,
-        "x": 7,
-        "y": 24
+        "h": 0,
+        "w": 0,
+        "x": 0,
+        "y": 0
       },
       "hideTimeOverride": false,
       "id": 9,
@@ -1975,7 +1975,7 @@
           "calcs": [
             "lastNotNull"
           ],
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
           "showLegend": true
         },
@@ -2001,7 +2001,7 @@
           "refId": "A"
         }
       ],
-      "title": "LXC guests Disk usage",
+      "title": "HIDDEN - LXC Disk usage",
       "type": "timeseries"
     },
     {
@@ -2080,10 +2080,10 @@
         ]
       },
       "gridPos": {
-        "h": 9,
-        "w": 24,
-        "x": 0,
-        "y": 33
+        "h": 6,
+        "w": 9,
+        "x": 9,
+        "y": 15
       },
       "id": 13,
       "interval": "",
@@ -2096,7 +2096,7 @@
             "lastNotNull",
             "sum"
           ],
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
           "showLegend": true
         },
@@ -2199,10 +2199,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 24,
+        "h": 6,
+        "w": 9,
         "x": 0,
-        "y": 42
+        "y": 15
       },
       "id": 12,
       "interval": "",
@@ -2214,7 +2214,7 @@
             "mean",
             "lastNotNull"
           ],
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
           "showLegend": true
         },
