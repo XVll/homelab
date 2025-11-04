@@ -159,7 +159,6 @@ services:
       - /etc/alloy/config.alloy
       - --server.http.listen-addr=0.0.0.0:12345
       - --storage.path=/var/lib/alloy/data
-      - --server.http.enable-pprof=true  # Enable profiling/debugging
     ports:
       - "10.10.10.112:12345:12345"  # Alloy web UI
       # OTLP ports (uncomment when enabling OpenTelemetry receiver in config.alloy)
@@ -184,7 +183,6 @@ services:
       - loki
     environment:
       - HOSTNAME=observability-vm
-      - ALLOY_LOG_LEVEL=debug  # Set to 'info' after testing complete
     healthcheck:
       test: ["CMD-SHELL", "alloy tools pprof health http://localhost:12345 || exit 1"]
       interval: 30s
