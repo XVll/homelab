@@ -16,33 +16,99 @@ auths:
 modules:
   synology:
     walk:
-      # CPU & Load - UCD-SNMP-MIB
-      - 1.3.6.1.4.1.2021.10.1.5     # laLoadInt (1, 5, 15 min load avg)
-      - 1.3.6.1.4.1.2021.11          # ssCpu (User, System, Idle, Wait)
-
-      # Memory - UCD-SNMP-MIB
-      - 1.3.6.1.4.1.2021.4           # memory (Total/Avail Real, Swap, Cached, Buffer)
-
-      # Network - IF-MIB (64-bit counters)
+      # Network - IF-MIB
       - 1.3.6.1.2.1.31.1.1.1.1       # ifName
       - 1.3.6.1.2.1.31.1.1.1.6       # ifHCInOctets
       - 1.3.6.1.2.1.31.1.1.1.10      # ifHCOutOctets
       - 1.3.6.1.2.1.2.2.1.8          # ifOperStatus
 
       # Disk/Storage - HOST-RESOURCES-MIB
-      - 1.3.6.1.2.1.25.2.3.1         # hrStorage (Descr, AllocationUnits, Size, Used)
+      - 1.3.6.1.2.1.25.2.3.1.2       # hrStorageDescr
+      - 1.3.6.1.2.1.25.2.3.1.3       # hrStorageAllocationUnits
+      - 1.3.6.1.2.1.25.2.3.1.5       # hrStorageSize
+      - 1.3.6.1.2.1.25.2.3.1.6       # hrStorageUsed
 
       # Disk I/O - UCD-SNMP-MIB
-      - 1.3.6.1.4.1.2021.13.15.1.1   # diskIO (Device, Reads, Writes, Bytes)
+      - 1.3.6.1.4.1.2021.13.15.1.1.2  # diskIODevice
+      - 1.3.6.1.4.1.2021.13.15.1.1.5  # diskIOReads
+      - 1.3.6.1.4.1.2021.13.15.1.1.6  # diskIOWrites
 
       # Synology-specific MIBs
-      - 1.3.6.1.4.1.6574.1           # synoSystem (status, temp, fan)
-      - 1.3.6.1.4.1.6574.2           # synoDisk (disk info)
-      - 1.3.6.1.4.1.6574.3           # synoRaid (RAID status)
+      - 1.3.6.1.4.1.6574.1           # synoSystem
+      - 1.3.6.1.4.1.6574.2           # synoDisk
+      - 1.3.6.1.4.1.6574.3           # synoRaid
 
-    # Minimal metrics - let walk auto-discover most metrics
     metrics:
+      # System
       - name: sysUpTime
         oid: 1.3.6.1.2.1.1.3
         type: gauge
         help: System uptime in hundredths of a second
+
+      # Load averages - UCD-SNMP-MIB
+      - name: laLoad1
+        oid: 1.3.6.1.4.1.2021.10.1.3.1
+        type: gauge
+        help: 1 minute load average
+
+      - name: laLoad5
+        oid: 1.3.6.1.4.1.2021.10.1.3.2
+        type: gauge
+        help: 5 minute load average
+
+      - name: laLoad15
+        oid: 1.3.6.1.4.1.2021.10.1.3.3
+        type: gauge
+        help: 15 minute load average
+
+      # CPU metrics - UCD-SNMP-MIB (raw counters)
+      - name: ssCpuRawUser
+        oid: 1.3.6.1.4.1.2021.11.50.0
+        type: counter
+        help: CPU time spent in user mode
+
+      - name: ssCpuRawSystem
+        oid: 1.3.6.1.4.1.2021.11.52.0
+        type: counter
+        help: CPU time spent in system mode
+
+      - name: ssCpuRawIdle
+        oid: 1.3.6.1.4.1.2021.11.53.0
+        type: counter
+        help: CPU time spent idle
+
+      - name: ssCpuRawWait
+        oid: 1.3.6.1.4.1.2021.11.54.0
+        type: counter
+        help: CPU time spent waiting for I/O
+
+      # Memory metrics - UCD-SNMP-MIB (in kB)
+      - name: memTotalReal
+        oid: 1.3.6.1.4.1.2021.4.5.0
+        type: gauge
+        help: Total real memory in kB
+
+      - name: memAvailReal
+        oid: 1.3.6.1.4.1.2021.4.6.0
+        type: gauge
+        help: Available real memory in kB
+
+      - name: memTotalSwap
+        oid: 1.3.6.1.4.1.2021.4.3.0
+        type: gauge
+        help: Total swap space in kB
+
+      - name: memAvailSwap
+        oid: 1.3.6.1.4.1.2021.4.4.0
+        type: gauge
+        help: Available swap space in kB
+
+      - name: memBuffer
+        oid: 1.3.6.1.4.1.2021.4.14.0
+        type: gauge
+        help: Memory used for buffers in kB
+
+      - name: memCached
+        oid: 1.3.6.1.4.1.2021.4.15.0
+        type: gauge
+        help: Memory used for cached data in kB
