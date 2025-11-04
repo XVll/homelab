@@ -72,6 +72,26 @@ prometheus.scrape "docker_metrics" {
 }
 
 // ============================================================================
+// SNMP: Synology NAS Monitoring
+// ============================================================================
+
+prometheus.exporter.snmp "synology" {
+  config_file = "/etc/alloy/snmp.yml"
+
+  target "synology" {
+    address = "10.10.10.100"
+    module  = "synology"
+    auth    = "homelab_v2"
+  }
+}
+
+prometheus.scrape "snmp_synology" {
+  targets    = prometheus.exporter.snmp.synology.targets
+  forward_to = [prometheus.remote_write.prometheus.receiver]
+  scrape_interval = "60s"
+}
+
+// ============================================================================
 // METRICS: Prometheus Remote Write
 // ============================================================================
 
@@ -90,7 +110,8 @@ prometheus.remote_write "prometheus" {
     cluster = "homelab",
     host = "observability-vm",
     host_ip = "10.10.10.112",
-    os = "Debian GNU/Linux 13 (trixie)",
+    collector = "alloy",
+    source = "alloy",
   }
 }
 

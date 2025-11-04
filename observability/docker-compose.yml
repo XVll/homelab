@@ -166,6 +166,7 @@ services:
       # - "10.10.10.112:4318:4318"    # OTLP HTTP (for app instrumentation)
     volumes:
       - ./alloy/config/config.alloy:/etc/alloy/config.alloy:ro
+      - ./alloy/config/snmp.yml:/etc/alloy/snmp.yml:ro  # SNMP config for Synology
       - /var/run/docker.sock:/var/run/docker.sock:ro  # Docker metrics + logs
       - /:/host/root:ro  # System metrics (CPU, disk, etc.)
       - /sys:/host/sys:ro  # System metrics
