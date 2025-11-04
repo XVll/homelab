@@ -897,22 +897,27 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
+        "h": 2,
         "w": 6,
         "x": 18,
-        "y": 4
+        "y": 6
       },
       "id": 23,
       "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": ""
         },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
+        "orientation": "horizontal",
+        "textMode": "value",
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "text": {
+          "valueSize": 20
         }
       },
       "targets": [
@@ -925,7 +930,8 @@
           "expr": "pve_cpu_usage_ratio{instance=\"$instance\"} and on(id) pve_node_info",
           "legendFormat": "__auto",
           "range": true,
-          "refId": "usage"
+          "refId": "usage",
+          "instant": false
         },
         {
           "datasource": {
@@ -937,13 +943,13 @@
           "expr": "pve_cpu_usage_limit{instance=\"$instance\"} and on(id) pve_node_info",
           "format": "table",
           "hide": false,
-          "instant": true,
+          "instant": false,
           "legendFormat": "__auto",
-          "range": false,
+          "range": true,
           "refId": "total"
         }
       ],
-      "title": "PVE CPU",
+      "title": "CPU",
       "transformations": [
         {
           "id": "configFromData",
@@ -958,7 +964,7 @@
           }
         }
       ],
-      "type": "timeseries"
+      "type": "stat"
     },
     {
       "datasource": {
@@ -1003,13 +1009,16 @@
             ]
           },
           "unit": "percentunit",
-          "displayName": ""
+          "displayName": "",
+          "custom": {
+            "displayMode": "lcd-gauge"
+          }
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
-        "w": 3,
+        "h": 3,
+        "w": 6,
         "x": 18,
         "y": 0
       },
@@ -1018,18 +1027,20 @@
       "links": [],
       "maxDataPoints": 100,
       "options": {
-        "orientation": "auto",
         "reduceOptions": {
+          "values": false,
           "calcs": [
             "lastNotNull"
           ],
-          "fields": "",
-          "values": false
+          "fields": ""
         },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true,
+        "orientation": "horizontal",
+        "textMode": "value",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
         "text": {
-          "valueSize": 32
+          "valueSize": 28
         }
       },
       "pluginVersion": "9.3.2",
@@ -1049,7 +1060,7 @@
         }
       ],
       "title": "Current CPU",
-      "type": "gauge"
+      "type": "stat"
     },
     {
       "datasource": {
@@ -1198,22 +1209,27 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
+        "h": 2,
         "w": 6,
         "x": 18,
         "y": 8
       },
       "id": 24,
       "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": ""
         },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
+        "orientation": "horizontal",
+        "textMode": "value",
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "text": {
+          "valueSize": 20
         }
       },
       "targets": [
@@ -1226,7 +1242,8 @@
           "expr": "pve_memory_usage_bytes{instance=\"$instance\"} and on(id) pve_node_info",
           "legendFormat": "__auto",
           "range": true,
-          "refId": "usage"
+          "refId": "usage",
+          "instant": false
         },
         {
           "datasource": {
@@ -1238,13 +1255,13 @@
           "expr": "pve_memory_size_bytes{instance=\"$instance\"} and on(id) pve_node_info",
           "format": "table",
           "hide": false,
-          "instant": true,
+          "instant": false,
           "legendFormat": "__auto",
-          "range": false,
+          "range": true,
           "refId": "total"
         }
       ],
-      "title": "PVE Memory",
+      "title": "Memory",
       "transformations": [
         {
           "id": "configFromData",
@@ -1259,7 +1276,7 @@
           }
         }
       ],
-      "type": "timeseries"
+      "type": "stat"
     },
     {
       "datasource": {
@@ -1304,32 +1321,37 @@
             ]
           },
           "unit": "percentunit",
-          "displayName": ""
+          "displayName": "",
+          "custom": {
+            "displayMode": "lcd-gauge"
+          }
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
-        "w": 3,
-        "x": 21,
-        "y": 0
+        "h": 3,
+        "w": 6,
+        "x": 18,
+        "y": 3
       },
       "id": 8,
       "links": [],
       "maxDataPoints": 100,
       "options": {
-        "orientation": "auto",
         "reduceOptions": {
+          "values": false,
           "calcs": [
             "lastNotNull"
           ],
-          "fields": "",
-          "values": false
+          "fields": ""
         },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true,
+        "orientation": "horizontal",
+        "textMode": "value",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
         "text": {
-          "valueSize": 32
+          "valueSize": 28
         }
       },
       "pluginVersion": "9.3.2",
@@ -1349,7 +1371,7 @@
         }
       ],
       "title": "Current memory",
-      "type": "gauge"
+      "type": "stat"
     },
     {
       "datasource": {
@@ -1578,11 +1600,7 @@
       "links": [],
       "options": {
         "legend": {
-          "calcs": [
-            "max",
-            "mean",
-            "lastNotNull"
-          ],
+          "calcs": [],
           "displayMode": "list",
           "placement": "bottom",
           "showLegend": true
@@ -1683,11 +1701,7 @@
       "links": [],
       "options": {
         "legend": {
-          "calcs": [
-            "max",
-            "mean",
-            "lastNotNull"
-          ],
+          "calcs": [],
           "displayMode": "list",
           "placement": "bottom",
           "showLegend": true
@@ -1761,10 +1775,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 5,
+        "h": 11,
         "w": 6,
         "x": 18,
-        "y": 12
+        "y": 10
       },
       "id": 11,
       "links": [],
@@ -1833,10 +1847,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
-        "w": 6,
-        "x": 18,
-        "y": 17
+        "h": 0,
+        "w": 0,
+        "x": 0,
+        "y": 0
       },
       "id": 15,
       "links": [],
@@ -1876,7 +1890,7 @@
           "refId": "storage size"
         }
       ],
-      "title": "Space allocation",
+      "title": "HIDDEN - Space allocation",
       "transformations": [
         {
           "id": "organize",
@@ -2090,15 +2104,10 @@
       "links": [],
       "options": {
         "legend": {
-          "calcs": [
-            "max",
-            "mean",
-            "lastNotNull",
-            "sum"
-          ],
+          "calcs": [],
           "displayMode": "list",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": false
         },
         "tooltip": {
           "mode": "single",
@@ -2209,14 +2218,10 @@
       "links": [],
       "options": {
         "legend": {
-          "calcs": [
-            "max",
-            "mean",
-            "lastNotNull"
-          ],
+          "calcs": [],
           "displayMode": "list",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": false
         },
         "tooltip": {
           "mode": "multi",
