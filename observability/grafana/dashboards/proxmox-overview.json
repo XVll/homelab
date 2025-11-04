@@ -132,11 +132,11 @@
               },
               {
                 "id": "custom.displayMode",
-                "value": "color-text"
+                "value": "color-background"
               },
               {
                 "id": "custom.width",
-                "value": 73
+                "value": 60
               }
             ]
           },
@@ -152,7 +152,7 @@
               },
               {
                 "id": "custom.width",
-                "value": 100
+                "value": 80
               }
             ]
           },
@@ -168,7 +168,7 @@
               },
               {
                 "id": "custom.width",
-                "value": 82
+                "value": 70
               }
             ]
           },
@@ -318,7 +318,7 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 66
+                "value": 50
               }
             ]
           },
@@ -345,12 +345,110 @@
                 "value": 106
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CPU Usage"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "color-text"
+              },
+              {
+                "id": "custom.width",
+                "value": 100
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "from": 0,
+                      "to": 0.7,
+                      "result": {
+                        "color": "green",
+                        "index": 0
+                      }
+                    },
+                    "type": "range"
+                  },
+                  {
+                    "options": {
+                      "from": 0.7,
+                      "to": 0.9,
+                      "result": {
+                        "color": "orange",
+                        "index": 1
+                      }
+                    },
+                    "type": "range"
+                  },
+                  {
+                    "options": {
+                      "from": 0.9,
+                      "to": 2,
+                      "result": {
+                        "color": "red",
+                        "index": 2
+                      }
+                    },
+                    "type": "range"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Disk I/O"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "Bps"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "custom.width",
+                "value": 90
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Network I/O"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "Bps"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "custom.width",
+                "value": 110
+              }
+            ]
           }
         ]
       },
       "gridPos": {
-        "h": 14,
-        "w": 14,
+        "h": 10,
+        "w": 24,
         "x": 0,
         "y": 0
       },
@@ -478,6 +576,51 @@
           "legendFormat": "",
           "range": false,
           "refId": "diskusg_percent"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "sum by (id) ((pve_cpu_usage_ratio{instance=\"$instance\"} / pve_cpu_usage_limit) and on (id, instance) pve_guest_info and on(id) pve_up==1)",
+          "format": "table",
+          "hide": false,
+          "instant": true,
+          "legendFormat": "",
+          "range": false,
+          "refId": "cpu_usage"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "sum by (id) ((rate(pve_disk_write_bytes{instance=\"$instance\"}[5m]) + rate(pve_disk_read_bytes{instance=\"$instance\"}[5m])) and on (id, instance) pve_guest_info and on(id) pve_up==1)",
+          "format": "table",
+          "hide": false,
+          "instant": true,
+          "legendFormat": "",
+          "range": false,
+          "refId": "disk_io"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "sum by (id) ((rate(pve_network_receive_bytes{instance=\"$instance\"}[5m]) + rate(pve_network_transmit_bytes{instance=\"$instance\"}[5m])) and on (id, instance) pve_guest_info and on(id) pve_up==1)",
+          "format": "table",
+          "hide": false,
+          "instant": true,
+          "legendFormat": "",
+          "range": false,
+          "refId": "network_io"
         }
       ],
       "title": "Resource allocation summary",
@@ -514,7 +657,10 @@
               "Value #vcpus": "vCPUs",
               "id": "ID",
               "name": "Name",
-              "type": "Type"
+              "type": "Type",
+              "Value #cpu_usage": "CPU Usage",
+              "Value #disk_io": "Disk I/O",
+              "Value #network_io": "Network I/O"
             }
           }
         }
@@ -584,10 +730,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
-        "w": 7,
-        "x": 14,
-        "y": 0
+        "h": 5,
+        "w": 9,
+        "x": 0,
+        "y": 10
       },
       "id": 23,
       "options": {
@@ -696,8 +842,8 @@
       "gridPos": {
         "h": 5,
         "w": 3,
-        "x": 21,
-        "y": 0
+        "x": 9,
+        "y": 10
       },
       "id": 7,
       "interval": "",
@@ -775,10 +921,10 @@
         ]
       },
       "gridPos": {
-        "h": 2,
-        "w": 3,
-        "x": 21,
-        "y": 5
+        "h": 0,
+        "w": 0,
+        "x": 0,
+        "y": 0
       },
       "id": 22,
       "options": {
@@ -812,7 +958,8 @@
           "refId": "A"
         }
       ],
-      "type": "stat"
+      "type": "stat",
+      "title": "HIDDEN - CPUs"
     },
     {
       "datasource": {
@@ -878,10 +1025,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
-        "w": 7,
-        "x": 14,
-        "y": 7
+        "h": 5,
+        "w": 9,
+        "x": 12,
+        "y": 10
       },
       "id": 24,
       "options": {
@@ -991,7 +1138,7 @@
         "h": 5,
         "w": 3,
         "x": 21,
-        "y": 7
+        "y": 10
       },
       "id": 8,
       "links": [],
@@ -1093,10 +1240,10 @@
         ]
       },
       "gridPos": {
-        "h": 2,
-        "w": 3,
-        "x": 21,
-        "y": 12
+        "h": 0,
+        "w": 0,
+        "x": 0,
+        "y": 0
       },
       "id": 20,
       "options": {
@@ -1177,7 +1324,8 @@
           }
         }
       ],
-      "type": "stat"
+      "type": "stat",
+      "title": "HIDDEN - Memory"
     },
     {
       "datasource": {
@@ -1242,10 +1390,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 10,
+        "h": 9,
         "w": 12,
         "x": 0,
-        "y": 14
+        "y": 15
       },
       "id": 2,
       "links": [],
@@ -1257,7 +1405,7 @@
             "lastNotNull"
           ],
           "displayMode": "table",
-          "placement": "right",
+          "placement": "bottom",
           "showLegend": true
         },
         "tooltip": {
@@ -1346,10 +1494,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 10,
+        "h": 9,
         "w": 12,
         "x": 12,
-        "y": 14
+        "y": 15
       },
       "id": 5,
       "links": [],
@@ -1361,7 +1509,7 @@
             "lastNotNull"
           ],
           "displayMode": "table",
-          "placement": "right",
+          "placement": "bottom",
           "showLegend": true
         },
         "tooltip": {
@@ -1433,7 +1581,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 11,
+        "h": 9,
         "w": 3,
         "x": 0,
         "y": 24
@@ -1505,7 +1653,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 11,
+        "h": 9,
         "w": 4,
         "x": 3,
         "y": 24
@@ -1633,7 +1781,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 11,
+        "h": 9,
         "w": 17,
         "x": 7,
         "y": 24
@@ -1647,7 +1795,7 @@
             "lastNotNull"
           ],
           "displayMode": "table",
-          "placement": "right",
+          "placement": "bottom",
           "showLegend": true
         },
         "tooltip": {
@@ -1750,10 +1898,10 @@
         ]
       },
       "gridPos": {
-        "h": 10,
+        "h": 9,
         "w": 24,
         "x": 0,
-        "y": 35
+        "y": 33
       },
       "id": 13,
       "interval": "",
@@ -1767,7 +1915,7 @@
             "sum"
           ],
           "displayMode": "table",
-          "placement": "right",
+          "placement": "bottom",
           "showLegend": true
         },
         "tooltip": {
@@ -1871,7 +2019,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 45
+        "y": 42
       },
       "id": 12,
       "interval": "",
@@ -1884,7 +2032,7 @@
             "lastNotNull"
           ],
           "displayMode": "table",
-          "placement": "right",
+          "placement": "bottom",
           "showLegend": true
         },
         "tooltip": {
