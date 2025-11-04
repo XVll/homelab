@@ -1733,7 +1733,38 @@
             ]
           },
           "unit": "percentunit",
-          "decimals": 1
+          "decimals": 1,
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 30,
+            "gradientMode": "hue",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "area"
+            },
+            "axisGridShow": false
+          }
         },
         "overrides": []
       },
@@ -1753,13 +1784,13 @@
           "fields": ""
         },
         "orientation": "horizontal",
-        "textMode": "value",
-        "colorMode": "value",
+        "textMode": "value_and_name",
+        "colorMode": "background",
         "graphMode": "area",
         "justifyMode": "center",
         "text": {
-          "titleSize": 14,
-          "valueSize": 24
+          "titleSize": 12,
+          "valueSize": 28
         }
       },
       "pluginVersion": "11.4.0",
@@ -1810,7 +1841,38 @@
             ]
           },
           "unit": "percentunit",
-          "decimals": 1
+          "decimals": 1,
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 30,
+            "gradientMode": "hue",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "area"
+            },
+            "axisGridShow": false
+          }
         },
         "overrides": []
       },
@@ -1830,13 +1892,13 @@
           "fields": ""
         },
         "orientation": "horizontal",
-        "textMode": "value",
-        "colorMode": "value",
+        "textMode": "value_and_name",
+        "colorMode": "background",
         "graphMode": "area",
         "justifyMode": "center",
         "text": {
-          "titleSize": 14,
-          "valueSize": 24
+          "titleSize": 12,
+          "valueSize": 28
         }
       },
       "pluginVersion": "11.4.0",
