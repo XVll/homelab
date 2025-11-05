@@ -202,6 +202,42 @@
                 "value": "Bps"
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Load (1m)"
+            },
+            "properties": [
+              {
+                "id": "decimals",
+                "value": 2
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Load (5m)"
+            },
+            "properties": [
+              {
+                "id": "decimals",
+                "value": 2
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Load (15m)"
+            },
+            "properties": [
+              {
+                "id": "decimals",
+                "value": 2
+              }
+            ]
           }
         ]
       },
@@ -388,6 +424,17 @@
               "mountpoint": true,
               "raidIndex": true,
               "raidName": true
+            },
+            "indexByName": {
+              "instance": 0,
+              "Value #CPU": 1,
+              "Value #Memory": 2,
+              "Value #Disk": 3,
+              "Value #Load1": 4,
+              "Value #Load5": 5,
+              "Value #Load15": 6,
+              "Value #Network": 7,
+              "Value #DiskIO": 8
             },
             "renameByName": {
               "instance": "System",
