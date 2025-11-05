@@ -133,6 +133,17 @@ http:
       tls:
         certResolver: cloudflare
 
+    # Glance (Feed Dashboard)
+    glance:
+      rule: "Host(`glance.onurx.com`)"
+      entryPoints:
+        - websecure
+      service: glance
+      middlewares:
+        - private-default
+      tls:
+        certResolver: cloudflare
+
     # Gitea (Git + Container Registry + CI/CD)
     gitea:
       rule: "Host(`git.onurx.com`)"

@@ -1,0 +1,85 @@
+server:
+  port: 8080
+
+theme:
+  background-color: 15 23 42  # slate-900
+  primary-color: 99 102 241   # indigo-500
+  contrast-multiplier: 1.2
+
+pages:
+  - name: Homelab
+    columns:
+      - size: small
+        widgets:
+          - type: calendar
+
+          - type: clock
+            hour-format: 24h
+            timezones:
+              - timezone: America/New_York
+                label: New York
+
+          - type: weather
+            location: New York, United States
+            units: imperial
+
+      - size: full
+        widgets:
+          - type: bookmarks
+            title: Infrastructure
+            groups:
+              - title: Management
+                links:
+                  - title: Proxmox
+                    url: https://proxmox.onurx.com
+                  - title: Portainer
+                    url: https://portainer.onurx.com
+                  - title: Traefik
+                    url: https://traefik.onurx.com
+
+              - title: Observability
+                links:
+                  - title: Grafana
+                    url: https://grafana.onurx.com
+                  - title: Prometheus
+                    url: https://prometheus.onurx.com
+                  - title: Homarr
+                    url: https://home.onurx.com
+
+              - title: Media
+                links:
+                  - title: Plex
+                    url: https://plex.onurx.com
+                  - title: Overseerr
+                    url: https://overseerr.onurx.com
+                  - title: Sonarr
+                    url: https://sonarr.onurx.com
+                  - title: Radarr
+                    url: https://radarr.onurx.com
+
+              - title: Development
+                links:
+                  - title: Gitea
+                    url: https://git.onurx.com
+                  - title: Coolify
+                    url: https://deploy.onurx.com
+
+      - size: small
+        widgets:
+          - type: rss
+            title: Homelab News
+            limit: 5
+            collapse-after: 3
+            feeds:
+              - url: https://selfh.st/rss/
+                title: Self-Hosted
+
+          - type: monitor
+            title: Services
+            sites:
+              - title: Grafana
+                url: https://grafana.onurx.com
+              - title: Portainer
+                url: https://portainer.onurx.com
+              - title: Plex
+                url: https://plex.onurx.com

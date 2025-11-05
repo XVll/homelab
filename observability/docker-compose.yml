@@ -262,6 +262,34 @@ services:
         max-size: "10m"
         max-file: "3"
 
+  # ============================================================================
+  # 8. GLANCE - Feed-based Dashboard
+  # ============================================================================
+  # Alternative dashboard with RSS, calendar, and widget support
+  # Web UI: http://10.10.10.112:8080 or https://glance.onurx.com
+  # Documentation: https://github.com/glanceapp/glance
+
+  glance:
+    image: glanceapp/glance:v0.8.4
+    container_name: glance
+    restart: unless-stopped
+    ports:
+      - "10.10.10.112:8080:8080"
+    volumes:
+      - ./glance/config:/app/config
+    networks:
+      - obs_net
+    healthcheck:
+      test: ["CMD", "wget", "--tries=1", "--spider", "http://localhost:8080"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
 networks:
   obs_net:
     driver: bridge

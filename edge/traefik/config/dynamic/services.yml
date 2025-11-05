@@ -67,6 +67,11 @@ http:
         servers:
           - url: "http://10.10.10.112:3002"
 
+    glance:
+      loadBalancer:
+        servers:
+          - url: "http://10.10.10.112:8080"
+
     # VM 5: Dev (10.10.10.114)
     gitea:
       loadBalancer:
