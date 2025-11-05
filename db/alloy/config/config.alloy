@@ -29,11 +29,28 @@ prometheus.exporter.unix "system" {
 // Scrape system metrics from unix exporter
 prometheus.scrape "system_metrics" {
   targets    = prometheus.exporter.unix.system.targets
-  forward_to = [prometheus.remote_write.prometheus.receiver]
+  forward_to = [prometheus.relabel.normalize_node.receiver]
   scrape_interval = "10s"
+  job_name = "integrations/unix"
 
   clustering {
     enabled = false
+  }
+}
+
+prometheus.relabel "normalize_node" {
+  forward_to = [prometheus.remote_write.prometheus.receiver]
+
+  rule {
+    source_labels = ["instance"]
+    target_label  = "system_name"
+  }
+
+  rule {
+    source_labels = ["instance"]
+    regex         = "(.*)"
+    replacement   = "vm"
+    target_label  = "system_type"
   }
 }
 
