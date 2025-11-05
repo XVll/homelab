@@ -573,7 +573,8 @@
               "job": true,
               "Time": true,
               "system_type": true,
-              "Value #Status": true
+              "Value #Status": false,
+              "system_name": true
             },
             "indexByName": {
               "instance": 0,
