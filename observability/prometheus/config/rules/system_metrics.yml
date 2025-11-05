@@ -152,6 +152,78 @@ groups:
       # Skipping disk I/O for Home Assistant
 
       # ========================================================================
+      # Load Average - 1 minute
+      # ========================================================================
+
+      # Docker VMs
+      - record: system:load1
+        expr: |
+          node_load1{job="integrations/unix"}
+
+      # Synology (laLoadInt is scaled by 100, e.g., 123 = 1.23)
+      - record: system:load1
+        expr: |
+          label_replace(
+            laLoadInt{job=~"integrations/snmp.*", laNames="Load-1"} / 100,
+            "job", "integrations/snmp", "", ""
+          )
+
+      # Home Assistant (System Monitor integration sensor)
+      - record: system:load1
+        expr: |
+          sum by (instance, system_name, system_type, job) (
+            homeassistant_sensor_unit{job="integrations/homeassistant", entity="sensor.system_monitor_load_1m"}
+          )
+
+      # ========================================================================
+      # Load Average - 5 minute
+      # ========================================================================
+
+      # Docker VMs
+      - record: system:load5
+        expr: |
+          node_load5{job="integrations/unix"}
+
+      # Synology (laLoadInt is scaled by 100, e.g., 123 = 1.23)
+      - record: system:load5
+        expr: |
+          label_replace(
+            laLoadInt{job=~"integrations/snmp.*", laNames="Load-5"} / 100,
+            "job", "integrations/snmp", "", ""
+          )
+
+      # Home Assistant (System Monitor integration sensor)
+      - record: system:load5
+        expr: |
+          sum by (instance, system_name, system_type, job) (
+            homeassistant_sensor_unit{job="integrations/homeassistant", entity="sensor.system_monitor_load_5m"}
+          )
+
+      # ========================================================================
+      # Load Average - 15 minute
+      # ========================================================================
+
+      # Docker VMs
+      - record: system:load15
+        expr: |
+          node_load15{job="integrations/unix"}
+
+      # Synology (laLoadInt is scaled by 100, e.g., 123 = 1.23)
+      - record: system:load15
+        expr: |
+          label_replace(
+            laLoadInt{job=~"integrations/snmp.*", laNames="Load-15"} / 100,
+            "job", "integrations/snmp", "", ""
+          )
+
+      # Home Assistant (System Monitor integration sensor)
+      - record: system:load15
+        expr: |
+          sum by (instance, system_name, system_type, job) (
+            homeassistant_sensor_unit{job="integrations/homeassistant", entity="sensor.system_monitor_load_15m"}
+          )
+
+      # ========================================================================
       # System Status - 1 = up, 0 = down
       # ========================================================================
 
