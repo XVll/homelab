@@ -760,7 +760,27 @@
     "automation"
   ],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "ha",
+          "value": "ha"
+        },
+        "hide": 2,
+        "name": "instance",
+        "options": [
+          {
+            "selected": true,
+            "text": "ha",
+            "value": "ha"
+          }
+        ],
+        "query": "ha",
+        "skipUrlSync": false,
+        "type": "custom"
+      }
+    ]
   },
   "time": {
     "from": "now-6h",

@@ -146,7 +146,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "pve_cpu_usage_ratio{name=\"synology\"} * 100",
+          "expr": "pve_cpu_usage_ratio{name=\"$instance\"} * 100",
           "refId": "A",
           "legendFormat": "CPU Usage"
         }
@@ -249,7 +249,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "(pve_memory_usage_bytes{name=\"synology\"} / pve_memory_size_bytes{name=\"synology\"}) * 100",
+          "expr": "(pve_memory_usage_bytes{name=\"$instance\"} / pve_memory_size_bytes{name=\"$instance\"}) * 100",
           "refId": "A",
           "legendFormat": "Memory Usage"
         }
@@ -344,7 +344,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "rate(pve_network_receive_bytes{name=\"synology\"}[1m])",
+          "expr": "rate(pve_network_receive_bytes{name=\"$instance\"}[1m])",
           "refId": "A",
           "legendFormat": "RX"
         },
@@ -353,7 +353,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "rate(pve_network_transmit_bytes{name=\"synology\"}[1m])",
+          "expr": "rate(pve_network_transmit_bytes{name=\"$instance\"}[1m])",
           "refId": "B",
           "legendFormat": "TX"
         }
@@ -448,7 +448,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "rate(pve_disk_read_bytes{name=\"synology\"}[1m])",
+          "expr": "rate(pve_disk_read_bytes{name=\"$instance\"}[1m])",
           "refId": "A",
           "legendFormat": "Read"
         },
@@ -457,7 +457,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "rate(pve_disk_write_bytes{name=\"synology\"}[1m])",
+          "expr": "rate(pve_disk_write_bytes{name=\"$instance\"}[1m])",
           "refId": "B",
           "legendFormat": "Write"
         }
@@ -538,7 +538,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "systemStatus{instance=\"10.10.10.100\"}",
+          "expr": "systemStatus{instance=\"$instance\"}",
           "refId": "A"
         }
       ],
@@ -627,7 +627,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "min(raidStatus{instance=\"10.10.10.100\"})",
+          "expr": "min(raidStatus{instance=\"$instance\"})",
           "refId": "A"
         }
       ],
@@ -716,7 +716,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "min(diskHealthStatus{instance=\"10.10.10.100\"})",
+          "expr": "min(diskHealthStatus{instance=\"$instance\"})",
           "refId": "A"
         }
       ],
@@ -786,7 +786,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "max(diskTemperature{instance=\"10.10.10.100\"})",
+          "expr": "max(diskTemperature{instance=\"$instance\"})",
           "refId": "A"
         }
       ],
@@ -957,7 +957,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "diskTemperature{instance=\"10.10.10.100\"}",
+          "expr": "diskTemperature{instance=\"$instance\"}",
           "refId": "A",
           "legendFormat": "{{diskID}}"
         }
@@ -975,7 +975,27 @@
     "storage"
   ],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "synology",
+          "value": "synology"
+        },
+        "hide": 2,
+        "name": "instance",
+        "options": [
+          {
+            "selected": true,
+            "text": "synology",
+            "value": "synology"
+          }
+        ],
+        "query": "synology",
+        "skipUrlSync": false,
+        "type": "custom"
+      }
+    ]
   },
   "time": {
     "from": "now-6h",
