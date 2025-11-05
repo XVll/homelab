@@ -206,36 +206,55 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Load (1m)"
+              "options": "Load Average"
             },
             "properties": [
               {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "gauge",
+                  "mode": "gradient"
+                }
+              },
+              {
+                "id": "custom.width",
+                "value": 120
+              },
+              {
                 "id": "decimals",
                 "value": 2
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 4
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "Load (5m)"
+              "options": "Value #Load5"
             },
             "properties": [
               {
-                "id": "decimals",
-                "value": 2
+                "id": "custom.hidden",
+                "value": true
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "Load (15m)"
+              "options": "Value #Load15"
             },
             "properties": [
               {
-                "id": "decimals",
-                "value": 2
+                "id": "custom.hidden",
+                "value": true
               }
             ]
           }
@@ -434,10 +453,10 @@
               "Value #Memory": 2,
               "Value #Disk": 3,
               "Value #Load1": 4,
-              "Value #Load5": 5,
-              "Value #Load15": 6,
-              "Value #Network": 7,
-              "Value #DiskIO": 8
+              "Value #Network": 5,
+              "Value #DiskIO": 6,
+              "Value #Load5": 7,
+              "Value #Load15": 8
             },
             "renameByName": {
               "instance": "System",
@@ -446,9 +465,9 @@
               "Value #Disk": "Disk Usage",
               "Value #Network": "Network I/O",
               "Value #DiskIO": "Disk I/O",
-              "Value #Load1": "Load (1m)",
-              "Value #Load5": "Load (5m)",
-              "Value #Load15": "Load (15m)"
+              "Value #Load1": "Load Average",
+              "Value #Load5": "",
+              "Value #Load15": ""
             }
           }
         }
