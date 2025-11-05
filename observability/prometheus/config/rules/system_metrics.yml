@@ -149,14 +149,18 @@ groups:
           )
 
       # Home Assistant - Get disk I/O from Proxmox (VM ID qemu/116)
-      # Note: Using 5m window because HA has very low/sporadic disk activity
+      # Note: HA has very low disk activity, may show 0 or low values when idle
+      # Using same 1m window as other systems for consistency
       - record: system:disk_io:bytes_per_sec
         expr: |
           label_replace(
             label_replace(
               label_replace(
-                rate(pve_disk_read_bytes{id="qemu/116"}[5m]) +
-                rate(pve_disk_write_bytes{id="qemu/116"}[5m]),
+                (
+                  rate(pve_disk_read_bytes{id="qemu/116"}[1m]) +
+                  rate(pve_disk_write_bytes{id="qemu/116"}[1m])
+                ) or
+                vector(0),
                 "instance", "ha", "", ""
               ),
               "system_name", "ha", "", ""
