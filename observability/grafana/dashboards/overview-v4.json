@@ -88,7 +88,9 @@
                 "value": 0.9
               }
             ]
-          }
+          },
+          "min": 0,
+          "max": 1
         },
         "overrides": [
           {
@@ -101,33 +103,23 @@
                 "id": "mappings",
                 "value": [
                   {
+                    "type": "value",
                     "options": {
                       "0": {
-                        "text": "🔴"
+                        "text": "🔴 Offline",
+                        "color": "red"
                       },
                       "1": {
-                        "text": "🟢"
+                        "text": "🟢 Online",
+                        "color": "green"
                       }
-                    },
-                    "type": "value"
+                    }
                   }
                 ]
               },
               {
-                "id": "thresholds",
-                "value": {
-                  "mode": "absolute",
-                  "steps": [
-                    {
-                      "color": "red",
-                      "value": null
-                    },
-                    {
-                      "color": "green",
-                      "value": 1
-                    }
-                  ]
-                }
+                "id": "custom.displayMode",
+                "value": "color-background"
               }
             ]
           },
@@ -138,8 +130,24 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "CPU"
+              },
+              {
                 "id": "unit",
                 "value": "percentunit"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "lcd-gauge"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
               },
               {
                 "id": "thresholds",
@@ -170,8 +178,24 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Memory"
+              },
+              {
                 "id": "unit",
                 "value": "percentunit"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "lcd-gauge"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
               },
               {
                 "id": "thresholds",
@@ -202,8 +226,24 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Disk"
+              },
+              {
                 "id": "unit",
                 "value": "percentunit"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "lcd-gauge"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
               },
               {
                 "id": "thresholds",
@@ -234,8 +274,20 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Net I/O"
+              },
+              {
                 "id": "unit",
                 "value": "Bps"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "basic"
+              },
+              {
+                "id": "decimals",
+                "value": 2
               }
             ]
           },
@@ -246,8 +298,20 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Disk I/O"
+              },
+              {
                 "id": "unit",
                 "value": "Bps"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "basic"
+              },
+              {
+                "id": "decimals",
+                "value": 2
               }
             ]
           },
@@ -258,12 +322,20 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Load Avg"
+              },
+              {
                 "id": "unit",
                 "value": "short"
               },
               {
                 "id": "decimals",
                 "value": 2
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "basic"
               },
               {
                 "id": "thresholds",
@@ -284,17 +356,13 @@
                     }
                   ]
                 }
-              },
-              {
-                "id": "max",
-                "value": 8
               }
             ]
           }
         ]
       },
       "gridPos": {
-        "h": 5,
+        "h": 8,
         "w": 8,
         "x": 0,
         "y": 3
@@ -308,18 +376,18 @@
         }
       ],
       "options": {
-        "displayMode": "gradient",
-        "minVizHeight": 10,
-        "minVizWidth": 200,
-        "orientation": "horizontal",
         "reduceOptions": {
+          "values": false,
+          "fields": "",
           "calcs": [
             "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
+          ]
         },
-        "showUnfilled": false
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto"
       },
       "pluginVersion": "10.0.0",
       "targets": [
@@ -331,7 +399,7 @@
           "expr": "system:up{instance=\"edge\"}",
           "instant": true,
           "legendFormat": "Status",
-          "refId": "A"
+          "refId": "Status"
         },
         {
           "datasource": {
@@ -341,7 +409,7 @@
           "expr": "system:cpu_usage:ratio{instance=\"edge\"}",
           "instant": true,
           "legendFormat": "CPU",
-          "refId": "B"
+          "refId": "CPU"
         },
         {
           "datasource": {
@@ -351,7 +419,7 @@
           "expr": "system:memory_usage:ratio{instance=\"edge\"}",
           "instant": true,
           "legendFormat": "Memory",
-          "refId": "C"
+          "refId": "Memory"
         },
         {
           "datasource": {
@@ -361,7 +429,7 @@
           "expr": "system:disk_usage:ratio{instance=\"edge\"}",
           "instant": true,
           "legendFormat": "Disk",
-          "refId": "D"
+          "refId": "Disk"
         },
         {
           "datasource": {
@@ -371,7 +439,7 @@
           "expr": "system:network_io:bytes_per_sec{instance=\"edge\"}",
           "instant": true,
           "legendFormat": "Net I/O",
-          "refId": "E"
+          "refId": "NetIO"
         },
         {
           "datasource": {
@@ -381,7 +449,7 @@
           "expr": "system:disk_io:bytes_per_sec{instance=\"edge\"}",
           "instant": true,
           "legendFormat": "Disk I/O",
-          "refId": "F"
+          "refId": "DiskIO"
         },
         {
           "datasource": {
@@ -391,11 +459,11 @@
           "expr": "system:load1{instance=\"edge\"}",
           "instant": true,
           "legendFormat": "Load",
-          "refId": "G"
+          "refId": "Load"
         }
       ],
       "title": "Edge",
-      "type": "bargauge"
+      "type": "stat"
     },
     {
       "datasource": {
@@ -424,7 +492,9 @@
                 "value": 0.9
               }
             ]
-          }
+          },
+          "min": 0,
+          "max": 1
         },
         "overrides": [
           {
@@ -437,33 +507,23 @@
                 "id": "mappings",
                 "value": [
                   {
+                    "type": "value",
                     "options": {
                       "0": {
-                        "text": "🔴"
+                        "text": "🔴 Offline",
+                        "color": "red"
                       },
                       "1": {
-                        "text": "🟢"
+                        "text": "🟢 Online",
+                        "color": "green"
                       }
-                    },
-                    "type": "value"
+                    }
                   }
                 ]
               },
               {
-                "id": "thresholds",
-                "value": {
-                  "mode": "absolute",
-                  "steps": [
-                    {
-                      "color": "red",
-                      "value": null
-                    },
-                    {
-                      "color": "green",
-                      "value": 1
-                    }
-                  ]
-                }
+                "id": "custom.displayMode",
+                "value": "color-background"
               }
             ]
           },
@@ -474,8 +534,24 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "CPU"
+              },
+              {
                 "id": "unit",
                 "value": "percentunit"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "lcd-gauge"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
               },
               {
                 "id": "thresholds",
@@ -506,8 +582,24 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Memory"
+              },
+              {
                 "id": "unit",
                 "value": "percentunit"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "lcd-gauge"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
               },
               {
                 "id": "thresholds",
@@ -538,8 +630,24 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Disk"
+              },
+              {
                 "id": "unit",
                 "value": "percentunit"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "lcd-gauge"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
               },
               {
                 "id": "thresholds",
@@ -570,8 +678,20 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Net I/O"
+              },
+              {
                 "id": "unit",
                 "value": "Bps"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "basic"
+              },
+              {
+                "id": "decimals",
+                "value": 2
               }
             ]
           },
@@ -582,8 +702,20 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Disk I/O"
+              },
+              {
                 "id": "unit",
                 "value": "Bps"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "basic"
+              },
+              {
+                "id": "decimals",
+                "value": 2
               }
             ]
           },
@@ -594,12 +726,20 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Load Avg"
+              },
+              {
                 "id": "unit",
                 "value": "short"
               },
               {
                 "id": "decimals",
                 "value": 2
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "basic"
               },
               {
                 "id": "thresholds",
@@ -620,17 +760,13 @@
                     }
                   ]
                 }
-              },
-              {
-                "id": "max",
-                "value": 8
               }
             ]
           }
         ]
       },
       "gridPos": {
-        "h": 5,
+        "h": 8,
         "w": 8,
         "x": 8,
         "y": 3
@@ -644,18 +780,18 @@
         }
       ],
       "options": {
-        "displayMode": "gradient",
-        "minVizHeight": 10,
-        "minVizWidth": 200,
-        "orientation": "horizontal",
         "reduceOptions": {
+          "values": false,
+          "fields": "",
           "calcs": [
             "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
+          ]
         },
-        "showUnfilled": false
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto"
       },
       "pluginVersion": "10.0.0",
       "targets": [
@@ -667,7 +803,7 @@
           "expr": "system:up{instance=\"db\"}",
           "instant": true,
           "legendFormat": "Status",
-          "refId": "A"
+          "refId": "Status"
         },
         {
           "datasource": {
@@ -677,7 +813,7 @@
           "expr": "system:cpu_usage:ratio{instance=\"db\"}",
           "instant": true,
           "legendFormat": "CPU",
-          "refId": "B"
+          "refId": "CPU"
         },
         {
           "datasource": {
@@ -687,7 +823,7 @@
           "expr": "system:memory_usage:ratio{instance=\"db\"}",
           "instant": true,
           "legendFormat": "Memory",
-          "refId": "C"
+          "refId": "Memory"
         },
         {
           "datasource": {
@@ -697,7 +833,7 @@
           "expr": "system:disk_usage:ratio{instance=\"db\"}",
           "instant": true,
           "legendFormat": "Disk",
-          "refId": "D"
+          "refId": "Disk"
         },
         {
           "datasource": {
@@ -707,7 +843,7 @@
           "expr": "system:network_io:bytes_per_sec{instance=\"db\"}",
           "instant": true,
           "legendFormat": "Net I/O",
-          "refId": "E"
+          "refId": "NetIO"
         },
         {
           "datasource": {
@@ -717,7 +853,7 @@
           "expr": "system:disk_io:bytes_per_sec{instance=\"db\"}",
           "instant": true,
           "legendFormat": "Disk I/O",
-          "refId": "F"
+          "refId": "DiskIO"
         },
         {
           "datasource": {
@@ -727,11 +863,11 @@
           "expr": "system:load1{instance=\"db\"}",
           "instant": true,
           "legendFormat": "Load",
-          "refId": "G"
+          "refId": "Load"
         }
       ],
       "title": "DB",
-      "type": "bargauge"
+      "type": "stat"
     },
     {
       "datasource": {
@@ -760,7 +896,9 @@
                 "value": 0.9
               }
             ]
-          }
+          },
+          "min": 0,
+          "max": 1
         },
         "overrides": [
           {
@@ -773,33 +911,23 @@
                 "id": "mappings",
                 "value": [
                   {
+                    "type": "value",
                     "options": {
                       "0": {
-                        "text": "🔴"
+                        "text": "🔴 Offline",
+                        "color": "red"
                       },
                       "1": {
-                        "text": "🟢"
+                        "text": "🟢 Online",
+                        "color": "green"
                       }
-                    },
-                    "type": "value"
+                    }
                   }
                 ]
               },
               {
-                "id": "thresholds",
-                "value": {
-                  "mode": "absolute",
-                  "steps": [
-                    {
-                      "color": "red",
-                      "value": null
-                    },
-                    {
-                      "color": "green",
-                      "value": 1
-                    }
-                  ]
-                }
+                "id": "custom.displayMode",
+                "value": "color-background"
               }
             ]
           },
@@ -810,8 +938,24 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "CPU"
+              },
+              {
                 "id": "unit",
                 "value": "percentunit"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "lcd-gauge"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
               },
               {
                 "id": "thresholds",
@@ -842,8 +986,24 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Memory"
+              },
+              {
                 "id": "unit",
                 "value": "percentunit"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "lcd-gauge"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
               },
               {
                 "id": "thresholds",
@@ -874,8 +1034,24 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Disk"
+              },
+              {
                 "id": "unit",
                 "value": "percentunit"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "lcd-gauge"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
               },
               {
                 "id": "thresholds",
@@ -906,8 +1082,20 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Net I/O"
+              },
+              {
                 "id": "unit",
                 "value": "Bps"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "basic"
+              },
+              {
+                "id": "decimals",
+                "value": 2
               }
             ]
           },
@@ -918,8 +1106,20 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Disk I/O"
+              },
+              {
                 "id": "unit",
                 "value": "Bps"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "basic"
+              },
+              {
+                "id": "decimals",
+                "value": 2
               }
             ]
           },
@@ -930,12 +1130,20 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Load Avg"
+              },
+              {
                 "id": "unit",
                 "value": "short"
               },
               {
                 "id": "decimals",
                 "value": 2
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "basic"
               },
               {
                 "id": "thresholds",
@@ -956,17 +1164,13 @@
                     }
                   ]
                 }
-              },
-              {
-                "id": "max",
-                "value": 8
               }
             ]
           }
         ]
       },
       "gridPos": {
-        "h": 5,
+        "h": 8,
         "w": 8,
         "x": 16,
         "y": 3
@@ -980,18 +1184,18 @@
         }
       ],
       "options": {
-        "displayMode": "gradient",
-        "minVizHeight": 10,
-        "minVizWidth": 200,
-        "orientation": "horizontal",
         "reduceOptions": {
+          "values": false,
+          "fields": "",
           "calcs": [
             "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
+          ]
         },
-        "showUnfilled": false
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto"
       },
       "pluginVersion": "10.0.0",
       "targets": [
@@ -1003,7 +1207,7 @@
           "expr": "system:up{instance=\"observability\"}",
           "instant": true,
           "legendFormat": "Status",
-          "refId": "A"
+          "refId": "Status"
         },
         {
           "datasource": {
@@ -1013,7 +1217,7 @@
           "expr": "system:cpu_usage:ratio{instance=\"observability\"}",
           "instant": true,
           "legendFormat": "CPU",
-          "refId": "B"
+          "refId": "CPU"
         },
         {
           "datasource": {
@@ -1023,7 +1227,7 @@
           "expr": "system:memory_usage:ratio{instance=\"observability\"}",
           "instant": true,
           "legendFormat": "Memory",
-          "refId": "C"
+          "refId": "Memory"
         },
         {
           "datasource": {
@@ -1033,7 +1237,7 @@
           "expr": "system:disk_usage:ratio{instance=\"observability\"}",
           "instant": true,
           "legendFormat": "Disk",
-          "refId": "D"
+          "refId": "Disk"
         },
         {
           "datasource": {
@@ -1043,7 +1247,7 @@
           "expr": "system:network_io:bytes_per_sec{instance=\"observability\"}",
           "instant": true,
           "legendFormat": "Net I/O",
-          "refId": "E"
+          "refId": "NetIO"
         },
         {
           "datasource": {
@@ -1053,7 +1257,7 @@
           "expr": "system:disk_io:bytes_per_sec{instance=\"observability\"}",
           "instant": true,
           "legendFormat": "Disk I/O",
-          "refId": "F"
+          "refId": "DiskIO"
         },
         {
           "datasource": {
@@ -1063,11 +1267,11 @@
           "expr": "system:load1{instance=\"observability\"}",
           "instant": true,
           "legendFormat": "Load",
-          "refId": "G"
+          "refId": "Load"
         }
       ],
       "title": "Observability",
-      "type": "bargauge"
+      "type": "stat"
     },
     {
       "datasource": {
@@ -1096,7 +1300,9 @@
                 "value": 0.9
               }
             ]
-          }
+          },
+          "min": 0,
+          "max": 1
         },
         "overrides": [
           {
@@ -1109,33 +1315,23 @@
                 "id": "mappings",
                 "value": [
                   {
+                    "type": "value",
                     "options": {
                       "0": {
-                        "text": "🔴"
+                        "text": "🔴 Offline",
+                        "color": "red"
                       },
                       "1": {
-                        "text": "🟢"
+                        "text": "🟢 Online",
+                        "color": "green"
                       }
-                    },
-                    "type": "value"
+                    }
                   }
                 ]
               },
               {
-                "id": "thresholds",
-                "value": {
-                  "mode": "absolute",
-                  "steps": [
-                    {
-                      "color": "red",
-                      "value": null
-                    },
-                    {
-                      "color": "green",
-                      "value": 1
-                    }
-                  ]
-                }
+                "id": "custom.displayMode",
+                "value": "color-background"
               }
             ]
           },
@@ -1146,8 +1342,24 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "CPU"
+              },
+              {
                 "id": "unit",
                 "value": "percentunit"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "lcd-gauge"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
               },
               {
                 "id": "thresholds",
@@ -1178,8 +1390,24 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Memory"
+              },
+              {
                 "id": "unit",
                 "value": "percentunit"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "lcd-gauge"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
               },
               {
                 "id": "thresholds",
@@ -1210,8 +1438,24 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Disk"
+              },
+              {
                 "id": "unit",
                 "value": "percentunit"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "lcd-gauge"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
               },
               {
                 "id": "thresholds",
@@ -1242,8 +1486,20 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Net I/O"
+              },
+              {
                 "id": "unit",
                 "value": "Bps"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "basic"
+              },
+              {
+                "id": "decimals",
+                "value": 2
               }
             ]
           },
@@ -1254,8 +1510,20 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Disk I/O"
+              },
+              {
                 "id": "unit",
                 "value": "Bps"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "basic"
+              },
+              {
+                "id": "decimals",
+                "value": 2
               }
             ]
           },
@@ -1266,12 +1534,20 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Load Avg"
+              },
+              {
                 "id": "unit",
                 "value": "short"
               },
               {
                 "id": "decimals",
                 "value": 2
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "basic"
               },
               {
                 "id": "thresholds",
@@ -1292,20 +1568,16 @@
                     }
                   ]
                 }
-              },
-              {
-                "id": "max",
-                "value": 8
               }
             ]
           }
         ]
       },
       "gridPos": {
-        "h": 5,
+        "h": 8,
         "w": 8,
         "x": 0,
-        "y": 8
+        "y": 11
       },
       "id": 6,
       "links": [
@@ -1316,18 +1588,18 @@
         }
       ],
       "options": {
-        "displayMode": "gradient",
-        "minVizHeight": 10,
-        "minVizWidth": 200,
-        "orientation": "horizontal",
         "reduceOptions": {
+          "values": false,
+          "fields": "",
           "calcs": [
             "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
+          ]
         },
-        "showUnfilled": false
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto"
       },
       "pluginVersion": "10.0.0",
       "targets": [
@@ -1339,7 +1611,7 @@
           "expr": "system:up{instance=\"media\"}",
           "instant": true,
           "legendFormat": "Status",
-          "refId": "A"
+          "refId": "Status"
         },
         {
           "datasource": {
@@ -1349,7 +1621,7 @@
           "expr": "system:cpu_usage:ratio{instance=\"media\"}",
           "instant": true,
           "legendFormat": "CPU",
-          "refId": "B"
+          "refId": "CPU"
         },
         {
           "datasource": {
@@ -1359,7 +1631,7 @@
           "expr": "system:memory_usage:ratio{instance=\"media\"}",
           "instant": true,
           "legendFormat": "Memory",
-          "refId": "C"
+          "refId": "Memory"
         },
         {
           "datasource": {
@@ -1369,7 +1641,7 @@
           "expr": "system:disk_usage:ratio{instance=\"media\"}",
           "instant": true,
           "legendFormat": "Disk",
-          "refId": "D"
+          "refId": "Disk"
         },
         {
           "datasource": {
@@ -1379,7 +1651,7 @@
           "expr": "system:network_io:bytes_per_sec{instance=\"media\"}",
           "instant": true,
           "legendFormat": "Net I/O",
-          "refId": "E"
+          "refId": "NetIO"
         },
         {
           "datasource": {
@@ -1389,7 +1661,7 @@
           "expr": "system:disk_io:bytes_per_sec{instance=\"media\"}",
           "instant": true,
           "legendFormat": "Disk I/O",
-          "refId": "F"
+          "refId": "DiskIO"
         },
         {
           "datasource": {
@@ -1399,11 +1671,11 @@
           "expr": "system:load1{instance=\"media\"}",
           "instant": true,
           "legendFormat": "Load",
-          "refId": "G"
+          "refId": "Load"
         }
       ],
       "title": "Media",
-      "type": "bargauge"
+      "type": "stat"
     },
     {
       "datasource": {
@@ -1432,7 +1704,9 @@
                 "value": 0.9
               }
             ]
-          }
+          },
+          "min": 0,
+          "max": 1
         },
         "overrides": [
           {
@@ -1445,33 +1719,23 @@
                 "id": "mappings",
                 "value": [
                   {
+                    "type": "value",
                     "options": {
                       "0": {
-                        "text": "🔴"
+                        "text": "🔴 Offline",
+                        "color": "red"
                       },
                       "1": {
-                        "text": "🟢"
+                        "text": "🟢 Online",
+                        "color": "green"
                       }
-                    },
-                    "type": "value"
+                    }
                   }
                 ]
               },
               {
-                "id": "thresholds",
-                "value": {
-                  "mode": "absolute",
-                  "steps": [
-                    {
-                      "color": "red",
-                      "value": null
-                    },
-                    {
-                      "color": "green",
-                      "value": 1
-                    }
-                  ]
-                }
+                "id": "custom.displayMode",
+                "value": "color-background"
               }
             ]
           },
@@ -1482,8 +1746,24 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "CPU"
+              },
+              {
                 "id": "unit",
                 "value": "percentunit"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "lcd-gauge"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
               },
               {
                 "id": "thresholds",
@@ -1514,8 +1794,24 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Memory"
+              },
+              {
                 "id": "unit",
                 "value": "percentunit"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "lcd-gauge"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
               },
               {
                 "id": "thresholds",
@@ -1546,8 +1842,24 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Disk"
+              },
+              {
                 "id": "unit",
                 "value": "percentunit"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "lcd-gauge"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
               },
               {
                 "id": "thresholds",
@@ -1578,8 +1890,20 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Net I/O"
+              },
+              {
                 "id": "unit",
                 "value": "Bps"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "basic"
+              },
+              {
+                "id": "decimals",
+                "value": 2
               }
             ]
           },
@@ -1590,8 +1914,20 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Disk I/O"
+              },
+              {
                 "id": "unit",
                 "value": "Bps"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "basic"
+              },
+              {
+                "id": "decimals",
+                "value": 2
               }
             ]
           },
@@ -1602,12 +1938,20 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Load Avg"
+              },
+              {
                 "id": "unit",
                 "value": "short"
               },
               {
                 "id": "decimals",
                 "value": 2
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "basic"
               },
               {
                 "id": "thresholds",
@@ -1628,20 +1972,16 @@
                     }
                   ]
                 }
-              },
-              {
-                "id": "max",
-                "value": 8
               }
             ]
           }
         ]
       },
       "gridPos": {
-        "h": 5,
+        "h": 8,
         "w": 8,
         "x": 8,
-        "y": 8
+        "y": 11
       },
       "id": 7,
       "links": [
@@ -1652,18 +1992,18 @@
         }
       ],
       "options": {
-        "displayMode": "gradient",
-        "minVizHeight": 10,
-        "minVizWidth": 200,
-        "orientation": "horizontal",
         "reduceOptions": {
+          "values": false,
+          "fields": "",
           "calcs": [
             "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
+          ]
         },
-        "showUnfilled": false
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto"
       },
       "pluginVersion": "10.0.0",
       "targets": [
@@ -1675,7 +2015,7 @@
           "expr": "system:up{instance=\"dev\"}",
           "instant": true,
           "legendFormat": "Status",
-          "refId": "A"
+          "refId": "Status"
         },
         {
           "datasource": {
@@ -1685,7 +2025,7 @@
           "expr": "system:cpu_usage:ratio{instance=\"dev\"}",
           "instant": true,
           "legendFormat": "CPU",
-          "refId": "B"
+          "refId": "CPU"
         },
         {
           "datasource": {
@@ -1695,7 +2035,7 @@
           "expr": "system:memory_usage:ratio{instance=\"dev\"}",
           "instant": true,
           "legendFormat": "Memory",
-          "refId": "C"
+          "refId": "Memory"
         },
         {
           "datasource": {
@@ -1705,7 +2045,7 @@
           "expr": "system:disk_usage:ratio{instance=\"dev\"}",
           "instant": true,
           "legendFormat": "Disk",
-          "refId": "D"
+          "refId": "Disk"
         },
         {
           "datasource": {
@@ -1715,7 +2055,7 @@
           "expr": "system:network_io:bytes_per_sec{instance=\"dev\"}",
           "instant": true,
           "legendFormat": "Net I/O",
-          "refId": "E"
+          "refId": "NetIO"
         },
         {
           "datasource": {
@@ -1725,7 +2065,7 @@
           "expr": "system:disk_io:bytes_per_sec{instance=\"dev\"}",
           "instant": true,
           "legendFormat": "Disk I/O",
-          "refId": "F"
+          "refId": "DiskIO"
         },
         {
           "datasource": {
@@ -1735,11 +2075,11 @@
           "expr": "system:load1{instance=\"dev\"}",
           "instant": true,
           "legendFormat": "Load",
-          "refId": "G"
+          "refId": "Load"
         }
       ],
       "title": "Dev",
-      "type": "bargauge"
+      "type": "stat"
     },
     {
       "datasource": {
@@ -1768,7 +2108,9 @@
                 "value": 0.9
               }
             ]
-          }
+          },
+          "min": 0,
+          "max": 1
         },
         "overrides": [
           {
@@ -1781,33 +2123,23 @@
                 "id": "mappings",
                 "value": [
                   {
+                    "type": "value",
                     "options": {
                       "0": {
-                        "text": "🔴"
+                        "text": "🔴 Offline",
+                        "color": "red"
                       },
                       "1": {
-                        "text": "🟢"
+                        "text": "🟢 Online",
+                        "color": "green"
                       }
-                    },
-                    "type": "value"
+                    }
                   }
                 ]
               },
               {
-                "id": "thresholds",
-                "value": {
-                  "mode": "absolute",
-                  "steps": [
-                    {
-                      "color": "red",
-                      "value": null
-                    },
-                    {
-                      "color": "green",
-                      "value": 1
-                    }
-                  ]
-                }
+                "id": "custom.displayMode",
+                "value": "color-background"
               }
             ]
           },
@@ -1818,8 +2150,24 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "CPU"
+              },
+              {
                 "id": "unit",
                 "value": "percentunit"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "lcd-gauge"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
               },
               {
                 "id": "thresholds",
@@ -1850,8 +2198,24 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Memory"
+              },
+              {
                 "id": "unit",
                 "value": "percentunit"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "lcd-gauge"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
               },
               {
                 "id": "thresholds",
@@ -1882,8 +2246,24 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Disk"
+              },
+              {
                 "id": "unit",
                 "value": "percentunit"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "lcd-gauge"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
               },
               {
                 "id": "thresholds",
@@ -1914,8 +2294,20 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Net I/O"
+              },
+              {
                 "id": "unit",
                 "value": "Bps"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "basic"
+              },
+              {
+                "id": "decimals",
+                "value": 2
               }
             ]
           },
@@ -1926,8 +2318,20 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Disk I/O"
+              },
+              {
                 "id": "unit",
                 "value": "Bps"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "basic"
+              },
+              {
+                "id": "decimals",
+                "value": 2
               }
             ]
           },
@@ -1938,12 +2342,20 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Load Avg"
+              },
+              {
                 "id": "unit",
                 "value": "short"
               },
               {
                 "id": "decimals",
                 "value": 2
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "basic"
               },
               {
                 "id": "thresholds",
@@ -1964,20 +2376,16 @@
                     }
                   ]
                 }
-              },
-              {
-                "id": "max",
-                "value": 8
               }
             ]
           }
         ]
       },
       "gridPos": {
-        "h": 5,
+        "h": 8,
         "w": 8,
         "x": 16,
-        "y": 8
+        "y": 11
       },
       "id": 8,
       "links": [
@@ -1988,18 +2396,18 @@
         }
       ],
       "options": {
-        "displayMode": "gradient",
-        "minVizHeight": 10,
-        "minVizWidth": 200,
-        "orientation": "horizontal",
         "reduceOptions": {
+          "values": false,
+          "fields": "",
           "calcs": [
             "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
+          ]
         },
-        "showUnfilled": false
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto"
       },
       "pluginVersion": "10.0.0",
       "targets": [
@@ -2011,7 +2419,7 @@
           "expr": "system:up{instance=\"deploy\"}",
           "instant": true,
           "legendFormat": "Status",
-          "refId": "A"
+          "refId": "Status"
         },
         {
           "datasource": {
@@ -2021,7 +2429,7 @@
           "expr": "system:cpu_usage:ratio{instance=\"deploy\"}",
           "instant": true,
           "legendFormat": "CPU",
-          "refId": "B"
+          "refId": "CPU"
         },
         {
           "datasource": {
@@ -2031,7 +2439,7 @@
           "expr": "system:memory_usage:ratio{instance=\"deploy\"}",
           "instant": true,
           "legendFormat": "Memory",
-          "refId": "C"
+          "refId": "Memory"
         },
         {
           "datasource": {
@@ -2041,7 +2449,7 @@
           "expr": "system:disk_usage:ratio{instance=\"deploy\"}",
           "instant": true,
           "legendFormat": "Disk",
-          "refId": "D"
+          "refId": "Disk"
         },
         {
           "datasource": {
@@ -2051,7 +2459,7 @@
           "expr": "system:network_io:bytes_per_sec{instance=\"deploy\"}",
           "instant": true,
           "legendFormat": "Net I/O",
-          "refId": "E"
+          "refId": "NetIO"
         },
         {
           "datasource": {
@@ -2061,7 +2469,7 @@
           "expr": "system:disk_io:bytes_per_sec{instance=\"deploy\"}",
           "instant": true,
           "legendFormat": "Disk I/O",
-          "refId": "F"
+          "refId": "DiskIO"
         },
         {
           "datasource": {
@@ -2071,11 +2479,11 @@
           "expr": "system:load1{instance=\"deploy\"}",
           "instant": true,
           "legendFormat": "Load",
-          "refId": "G"
+          "refId": "Load"
         }
       ],
       "title": "Deploy",
-      "type": "bargauge"
+      "type": "stat"
     },
     {
       "collapsed": false,
@@ -2083,7 +2491,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 13
+        "y": 19
       },
       "id": 9,
       "panels": [],
@@ -2117,7 +2525,9 @@
                 "value": 0.9
               }
             ]
-          }
+          },
+          "min": 0,
+          "max": 1
         },
         "overrides": [
           {
@@ -2130,33 +2540,23 @@
                 "id": "mappings",
                 "value": [
                   {
+                    "type": "value",
                     "options": {
                       "0": {
-                        "text": "🔴"
+                        "text": "🔴 Offline",
+                        "color": "red"
                       },
                       "1": {
-                        "text": "🟢"
+                        "text": "🟢 Online",
+                        "color": "green"
                       }
-                    },
-                    "type": "value"
+                    }
                   }
                 ]
               },
               {
-                "id": "thresholds",
-                "value": {
-                  "mode": "absolute",
-                  "steps": [
-                    {
-                      "color": "red",
-                      "value": null
-                    },
-                    {
-                      "color": "green",
-                      "value": 1
-                    }
-                  ]
-                }
+                "id": "custom.displayMode",
+                "value": "color-background"
               }
             ]
           },
@@ -2167,8 +2567,24 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "CPU"
+              },
+              {
                 "id": "unit",
                 "value": "percentunit"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "lcd-gauge"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
               },
               {
                 "id": "thresholds",
@@ -2199,8 +2615,24 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Memory"
+              },
+              {
                 "id": "unit",
                 "value": "percentunit"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "lcd-gauge"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
               },
               {
                 "id": "thresholds",
@@ -2231,8 +2663,24 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Disk"
+              },
+              {
                 "id": "unit",
                 "value": "percentunit"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "lcd-gauge"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
               },
               {
                 "id": "thresholds",
@@ -2263,8 +2711,20 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Net I/O"
+              },
+              {
                 "id": "unit",
                 "value": "Bps"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "basic"
+              },
+              {
+                "id": "decimals",
+                "value": 2
               }
             ]
           },
@@ -2275,8 +2735,20 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Disk I/O"
+              },
+              {
                 "id": "unit",
                 "value": "Bps"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "basic"
+              },
+              {
+                "id": "decimals",
+                "value": 2
               }
             ]
           },
@@ -2287,12 +2759,20 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Load Avg"
+              },
+              {
                 "id": "unit",
                 "value": "short"
               },
               {
                 "id": "decimals",
                 "value": 2
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "basic"
               },
               {
                 "id": "thresholds",
@@ -2313,20 +2793,16 @@
                     }
                   ]
                 }
-              },
-              {
-                "id": "max",
-                "value": 8
               }
             ]
           }
         ]
       },
       "gridPos": {
-        "h": 5,
+        "h": 8,
         "w": 8,
         "x": 0,
-        "y": 14
+        "y": 20
       },
       "id": 10,
       "links": [
@@ -2337,18 +2813,18 @@
         }
       ],
       "options": {
-        "displayMode": "gradient",
-        "minVizHeight": 10,
-        "minVizWidth": 200,
-        "orientation": "horizontal",
         "reduceOptions": {
+          "values": false,
+          "fields": "",
           "calcs": [
             "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
+          ]
         },
-        "showUnfilled": false
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto"
       },
       "pluginVersion": "10.0.0",
       "targets": [
@@ -2360,7 +2836,7 @@
           "expr": "up{job=\"proxmox-exporter\"}",
           "instant": true,
           "legendFormat": "Status",
-          "refId": "A"
+          "refId": "Status"
         },
         {
           "datasource": {
@@ -2370,7 +2846,7 @@
           "expr": "avg(pve_cpu_usage_ratio{type=\"node\"})",
           "instant": true,
           "legendFormat": "CPU",
-          "refId": "B"
+          "refId": "CPU"
         },
         {
           "datasource": {
@@ -2380,7 +2856,7 @@
           "expr": "avg(pve_memory_usage_ratio{type=\"node\"})",
           "instant": true,
           "legendFormat": "Memory",
-          "refId": "C"
+          "refId": "Memory"
         },
         {
           "datasource": {
@@ -2390,7 +2866,7 @@
           "expr": "avg(pve_disk_usage_ratio{type=\"node\"})",
           "instant": true,
           "legendFormat": "Disk",
-          "refId": "D"
+          "refId": "Disk"
         },
         {
           "datasource": {
@@ -2400,7 +2876,7 @@
           "expr": "sum(rate(pve_network_receive_bytes{type=\"node\"}[5m])) + sum(rate(pve_network_transmit_bytes{type=\"node\"}[5m]))",
           "instant": true,
           "legendFormat": "Net I/O",
-          "refId": "E"
+          "refId": "NetIO"
         },
         {
           "datasource": {
@@ -2410,7 +2886,7 @@
           "expr": "sum(rate(pve_disk_read_bytes{type=\"node\"}[5m])) + sum(rate(pve_disk_write_bytes{type=\"node\"}[5m]))",
           "instant": true,
           "legendFormat": "Disk I/O",
-          "refId": "F"
+          "refId": "DiskIO"
         },
         {
           "datasource": {
@@ -2420,11 +2896,11 @@
           "expr": "avg(node_load1{job=\"node-exporter\"})",
           "instant": true,
           "legendFormat": "Load",
-          "refId": "G"
+          "refId": "Load"
         }
       ],
       "title": "Proxmox",
-      "type": "bargauge"
+      "type": "stat"
     },
     {
       "datasource": {
@@ -2453,7 +2929,9 @@
                 "value": 0.9
               }
             ]
-          }
+          },
+          "min": 0,
+          "max": 1
         },
         "overrides": [
           {
@@ -2466,33 +2944,23 @@
                 "id": "mappings",
                 "value": [
                   {
+                    "type": "value",
                     "options": {
                       "0": {
-                        "text": "🔴"
+                        "text": "🔴 Offline",
+                        "color": "red"
                       },
                       "1": {
-                        "text": "🟢"
+                        "text": "🟢 Online",
+                        "color": "green"
                       }
-                    },
-                    "type": "value"
+                    }
                   }
                 ]
               },
               {
-                "id": "thresholds",
-                "value": {
-                  "mode": "absolute",
-                  "steps": [
-                    {
-                      "color": "red",
-                      "value": null
-                    },
-                    {
-                      "color": "green",
-                      "value": 1
-                    }
-                  ]
-                }
+                "id": "custom.displayMode",
+                "value": "color-background"
               }
             ]
           },
@@ -2503,8 +2971,24 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "CPU"
+              },
+              {
                 "id": "unit",
                 "value": "percentunit"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "lcd-gauge"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
               },
               {
                 "id": "thresholds",
@@ -2535,8 +3019,24 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Memory"
+              },
+              {
                 "id": "unit",
                 "value": "percentunit"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "lcd-gauge"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
               },
               {
                 "id": "thresholds",
@@ -2567,8 +3067,24 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Disk"
+              },
+              {
                 "id": "unit",
                 "value": "percentunit"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "lcd-gauge"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
               },
               {
                 "id": "thresholds",
@@ -2599,8 +3115,20 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Net I/O"
+              },
+              {
                 "id": "unit",
                 "value": "Bps"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "basic"
+              },
+              {
+                "id": "decimals",
+                "value": 2
               }
             ]
           },
@@ -2611,8 +3139,20 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Disk I/O"
+              },
+              {
                 "id": "unit",
                 "value": "Bps"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "basic"
+              },
+              {
+                "id": "decimals",
+                "value": 2
               }
             ]
           },
@@ -2623,12 +3163,20 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Load Avg"
+              },
+              {
                 "id": "unit",
                 "value": "short"
               },
               {
                 "id": "decimals",
                 "value": 2
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "basic"
               },
               {
                 "id": "thresholds",
@@ -2649,20 +3197,16 @@
                     }
                   ]
                 }
-              },
-              {
-                "id": "max",
-                "value": 8
               }
             ]
           }
         ]
       },
       "gridPos": {
-        "h": 5,
+        "h": 8,
         "w": 8,
         "x": 8,
-        "y": 14
+        "y": 20
       },
       "id": 11,
       "links": [
@@ -2673,18 +3217,18 @@
         }
       ],
       "options": {
-        "displayMode": "gradient",
-        "minVizHeight": 10,
-        "minVizWidth": 200,
-        "orientation": "horizontal",
         "reduceOptions": {
+          "values": false,
+          "fields": "",
           "calcs": [
             "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
+          ]
         },
-        "showUnfilled": false
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto"
       },
       "pluginVersion": "10.0.0",
       "targets": [
@@ -2696,7 +3240,7 @@
           "expr": "system:up{instance=\"synology\"}",
           "instant": true,
           "legendFormat": "Status",
-          "refId": "A"
+          "refId": "Status"
         },
         {
           "datasource": {
@@ -2706,7 +3250,7 @@
           "expr": "system:cpu_usage:ratio{instance=\"synology\"}",
           "instant": true,
           "legendFormat": "CPU",
-          "refId": "B"
+          "refId": "CPU"
         },
         {
           "datasource": {
@@ -2716,7 +3260,7 @@
           "expr": "system:memory_usage:ratio{instance=\"synology\"}",
           "instant": true,
           "legendFormat": "Memory",
-          "refId": "C"
+          "refId": "Memory"
         },
         {
           "datasource": {
@@ -2726,7 +3270,7 @@
           "expr": "system:disk_usage:ratio{instance=\"synology\"}",
           "instant": true,
           "legendFormat": "Disk",
-          "refId": "D"
+          "refId": "Disk"
         },
         {
           "datasource": {
@@ -2736,7 +3280,7 @@
           "expr": "system:network_io:bytes_per_sec{instance=\"synology\"}",
           "instant": true,
           "legendFormat": "Net I/O",
-          "refId": "E"
+          "refId": "NetIO"
         },
         {
           "datasource": {
@@ -2746,7 +3290,7 @@
           "expr": "system:disk_io:bytes_per_sec{instance=\"synology\"}",
           "instant": true,
           "legendFormat": "Disk I/O",
-          "refId": "F"
+          "refId": "DiskIO"
         },
         {
           "datasource": {
@@ -2756,11 +3300,11 @@
           "expr": "system:load1{instance=\"synology\"}",
           "instant": true,
           "legendFormat": "Load",
-          "refId": "G"
+          "refId": "Load"
         }
       ],
       "title": "Synology",
-      "type": "bargauge"
+      "type": "stat"
     },
     {
       "collapsed": false,
@@ -2768,7 +3312,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 19
+        "y": 28
       },
       "id": 12,
       "panels": [],
@@ -2802,7 +3346,9 @@
                 "value": 0.9
               }
             ]
-          }
+          },
+          "min": 0,
+          "max": 1
         },
         "overrides": [
           {
@@ -2815,33 +3361,23 @@
                 "id": "mappings",
                 "value": [
                   {
+                    "type": "value",
                     "options": {
                       "0": {
-                        "text": "🔴"
+                        "text": "🔴 Offline",
+                        "color": "red"
                       },
                       "1": {
-                        "text": "🟢"
+                        "text": "🟢 Online",
+                        "color": "green"
                       }
-                    },
-                    "type": "value"
+                    }
                   }
                 ]
               },
               {
-                "id": "thresholds",
-                "value": {
-                  "mode": "absolute",
-                  "steps": [
-                    {
-                      "color": "red",
-                      "value": null
-                    },
-                    {
-                      "color": "green",
-                      "value": 1
-                    }
-                  ]
-                }
+                "id": "custom.displayMode",
+                "value": "color-background"
               }
             ]
           },
@@ -2852,8 +3388,24 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "CPU"
+              },
+              {
                 "id": "unit",
                 "value": "percentunit"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "lcd-gauge"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
               },
               {
                 "id": "thresholds",
@@ -2884,8 +3436,24 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Memory"
+              },
+              {
                 "id": "unit",
                 "value": "percentunit"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "lcd-gauge"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
               },
               {
                 "id": "thresholds",
@@ -2916,8 +3484,24 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Disk"
+              },
+              {
                 "id": "unit",
                 "value": "percentunit"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "lcd-gauge"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
               },
               {
                 "id": "thresholds",
@@ -2948,8 +3532,20 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Net I/O"
+              },
+              {
                 "id": "unit",
                 "value": "Bps"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "basic"
+              },
+              {
+                "id": "decimals",
+                "value": 2
               }
             ]
           },
@@ -2960,8 +3556,20 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Disk I/O"
+              },
+              {
                 "id": "unit",
                 "value": "Bps"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "basic"
+              },
+              {
+                "id": "decimals",
+                "value": 2
               }
             ]
           },
@@ -2972,12 +3580,20 @@
             },
             "properties": [
               {
+                "id": "displayName",
+                "value": "Load Avg"
+              },
+              {
                 "id": "unit",
                 "value": "short"
               },
               {
                 "id": "decimals",
                 "value": 2
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "basic"
               },
               {
                 "id": "thresholds",
@@ -2998,20 +3614,16 @@
                     }
                   ]
                 }
-              },
-              {
-                "id": "max",
-                "value": 8
               }
             ]
           }
         ]
       },
       "gridPos": {
-        "h": 5,
+        "h": 8,
         "w": 8,
         "x": 0,
-        "y": 20
+        "y": 29
       },
       "id": 13,
       "links": [
@@ -3022,18 +3634,18 @@
         }
       ],
       "options": {
-        "displayMode": "gradient",
-        "minVizHeight": 10,
-        "minVizWidth": 200,
-        "orientation": "horizontal",
         "reduceOptions": {
+          "values": false,
+          "fields": "",
           "calcs": [
             "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
+          ]
         },
-        "showUnfilled": false
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto"
       },
       "pluginVersion": "10.0.0",
       "targets": [
@@ -3045,7 +3657,7 @@
           "expr": "system:up{instance=\"ha\"}",
           "instant": true,
           "legendFormat": "Status",
-          "refId": "A"
+          "refId": "Status"
         },
         {
           "datasource": {
@@ -3055,7 +3667,7 @@
           "expr": "system:cpu_usage:ratio{instance=\"ha\"}",
           "instant": true,
           "legendFormat": "CPU",
-          "refId": "B"
+          "refId": "CPU"
         },
         {
           "datasource": {
@@ -3065,7 +3677,7 @@
           "expr": "system:memory_usage:ratio{instance=\"ha\"}",
           "instant": true,
           "legendFormat": "Memory",
-          "refId": "C"
+          "refId": "Memory"
         },
         {
           "datasource": {
@@ -3075,7 +3687,7 @@
           "expr": "system:disk_usage:ratio{instance=\"ha\"}",
           "instant": true,
           "legendFormat": "Disk",
-          "refId": "D"
+          "refId": "Disk"
         },
         {
           "datasource": {
@@ -3085,7 +3697,7 @@
           "expr": "system:network_io:bytes_per_sec{instance=\"ha\"}",
           "instant": true,
           "legendFormat": "Net I/O",
-          "refId": "E"
+          "refId": "NetIO"
         },
         {
           "datasource": {
@@ -3095,7 +3707,7 @@
           "expr": "system:disk_io:bytes_per_sec{instance=\"ha\"}",
           "instant": true,
           "legendFormat": "Disk I/O",
-          "refId": "F"
+          "refId": "DiskIO"
         },
         {
           "datasource": {
@@ -3105,11 +3717,11 @@
           "expr": "system:load1{instance=\"ha\"}",
           "instant": true,
           "legendFormat": "Load",
-          "refId": "G"
+          "refId": "Load"
         }
       ],
       "title": "Home Assistant",
-      "type": "bargauge"
+      "type": "stat"
     }
   ],
   "refresh": "10s",
