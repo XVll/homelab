@@ -148,7 +148,7 @@ groups:
             "job", "integrations/snmp", "", ""
           )
 
-      # Home Assistant - Get disk I/O from Proxmox (VM ID qemu/116)
+      # Home Assistant - Get disk I/O from Proxmox (by VM name)
       # Note: HA has very low disk activity, may show 0 or low values when idle
       # Using same 1m window as other systems for consistency
       - record: system:disk_io:bytes_per_sec
@@ -157,8 +157,8 @@ groups:
             label_replace(
               label_replace(
                 (
-                  rate(pve_disk_read_bytes{id="qemu/116"}[1m]) +
-                  rate(pve_disk_write_bytes{id="qemu/116"}[1m])
+                  rate(pve_disk_read_bytes{vm_name="ha"}[1m]) +
+                  rate(pve_disk_write_bytes{vm_name="ha"}[1m])
                 ) or
                 vector(0),
                 "instance", "ha", "", ""

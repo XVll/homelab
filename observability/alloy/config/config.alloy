@@ -152,7 +152,61 @@ prometheus.scrape "proxmox" {
   }
 
   scrape_interval = "60s"
+  forward_to = [prometheus.relabel.proxmox_vm_names.receiver]
+}
+
+prometheus.relabel "proxmox_vm_names" {
   forward_to = [prometheus.remote_write.prometheus.receiver]
+
+  // Map VM IDs to names for consistency
+  rule {
+    source_labels = ["id"]
+    regex         = "qemu/110"
+    replacement   = "edge"
+    target_label  = "vm_name"
+  }
+
+  rule {
+    source_labels = ["id"]
+    regex         = "qemu/111"
+    replacement   = "db"
+    target_label  = "vm_name"
+  }
+
+  rule {
+    source_labels = ["id"]
+    regex         = "qemu/112"
+    replacement   = "observability"
+    target_label  = "vm_name"
+  }
+
+  rule {
+    source_labels = ["id"]
+    regex         = "qemu/113"
+    replacement   = "media"
+    target_label  = "vm_name"
+  }
+
+  rule {
+    source_labels = ["id"]
+    regex         = "qemu/114"
+    replacement   = "dev"
+    target_label  = "vm_name"
+  }
+
+  rule {
+    source_labels = ["id"]
+    regex         = "qemu/101"
+    replacement   = "deploy"
+    target_label  = "vm_name"
+  }
+
+  rule {
+    source_labels = ["id"]
+    regex         = "qemu/116"
+    replacement   = "ha"
+    target_label  = "vm_name"
+  }
 }
 
 // ============================================================================
