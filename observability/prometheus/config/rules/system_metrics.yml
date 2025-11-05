@@ -148,8 +148,20 @@ groups:
             "job", "integrations/snmp", "", ""
           )
 
-      # Home Assistant - System Monitor doesn't expose disk I/O metrics
-      # Skipping disk I/O for Home Assistant
+      # Home Assistant - Get disk I/O from Proxmox (VM ID qemu/116)
+      - record: system:disk_io:bytes_per_sec
+        expr: |
+          label_replace(
+            label_replace(
+              label_replace(
+                rate(pve_disk_read_bytes{id="qemu/116"}[1m]) +
+                rate(pve_disk_write_bytes{id="qemu/116"}[1m]),
+                "instance", "ha", "", ""
+              ),
+              "system_name", "ha", "", ""
+            ),
+            "system_type", "automation", "", ""
+          )
 
       # ========================================================================
       # Load Average - 1 minute
