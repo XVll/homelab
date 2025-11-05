@@ -107,7 +107,7 @@ prometheus.exporter.snmp "synology" {
 prometheus.scrape "snmp_synology" {
   targets    = prometheus.exporter.snmp.synology.targets
   forward_to = [prometheus.relabel.normalize_snmp.receiver]
-  scrape_interval = "60s"
+  scrape_interval = "10s"
   job_name = "integrations/snmp"
 }
 
@@ -166,7 +166,7 @@ prometheus.scrape "homeassistant" {
 
   metrics_path    = "/api/prometheus"
   scheme          = "http"
-  scrape_interval = "60s"
+  scrape_interval = "10s"
   job_name = "integrations/homeassistant"
 
   authorization {

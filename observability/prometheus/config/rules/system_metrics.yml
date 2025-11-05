@@ -107,10 +107,10 @@ groups:
         expr: |
           label_replace(
             sum by (instance, system_name, system_type) (
-              rate(ifHCInOctets{job=~"integrations/snmp.*", ifName!~"lo|docker.*|sit.*"}[2m])
+              rate(ifHCInOctets{job=~"integrations/snmp.*", ifName!~"lo|docker.*|sit.*"}[1m])
             ) +
             sum by (instance, system_name, system_type) (
-              rate(ifHCOutOctets{job=~"integrations/snmp.*", ifName!~"lo|docker.*|sit.*"}[2m])
+              rate(ifHCOutOctets{job=~"integrations/snmp.*", ifName!~"lo|docker.*|sit.*"}[1m])
             ),
             "job", "integrations/snmp", "", ""
           )
@@ -144,10 +144,10 @@ groups:
         expr: |
           label_replace(
             sum by (instance, system_name, system_type) (
-              rate(spaceIONReadX{job=~"integrations/snmp.*"}[2m])
+              rate(spaceIONReadX{job=~"integrations/snmp.*"}[1m])
             ) +
             sum by (instance, system_name, system_type) (
-              rate(spaceIONWrittenX{job=~"integrations/snmp.*"}[2m])
+              rate(spaceIONWrittenX{job=~"integrations/snmp.*"}[1m])
             ),
             "job", "integrations/snmp", "", ""
           )
