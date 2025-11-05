@@ -32,10 +32,19 @@ pages:
                 links:
                   - title: Proxmox
                     url: https://proxmox.onurx.com
+                  - title: Synology NAS
+                    url: https://synology.onurx.com
                   - title: Portainer
                     url: https://portainer.onurx.com
                   - title: Traefik
                     url: https://traefik.onurx.com
+
+              - title: Edge Services
+                links:
+                  - title: AdGuard Home
+                    url: https://adguard.onurx.com
+                  - title: Authentik (SSO)
+                    url: https://auth.onurx.com
 
               - title: Observability
                 links:
@@ -43,10 +52,21 @@ pages:
                     url: https://grafana.onurx.com
                   - title: Prometheus
                     url: https://prometheus.onurx.com
+                  - title: Loki
+                    url: https://loki.onurx.com
+                  - title: Alloy
+                    url: https://alloy.onurx.com
                   - title: Homarr
                     url: https://home.onurx.com
 
-              - title: Media
+              - title: Database & Storage
+                links:
+                  - title: MinIO Console
+                    url: https://minio.onurx.com
+                  - title: MinIO S3 API
+                    url: https://s3.onurx.com
+
+              - title: Media - *arr Stack
                 links:
                   - title: Plex
                     url: https://plex.onurx.com
@@ -56,6 +76,24 @@ pages:
                     url: https://sonarr.onurx.com
                   - title: Radarr
                     url: https://radarr.onurx.com
+                  - title: Prowlarr
+                    url: https://prowlarr.onurx.com
+                  - title: Bazarr
+                    url: https://bazarr.onurx.com
+
+              - title: Media - Downloads
+                links:
+                  - title: SABnzbd
+                    url: https://sabnzbd.onurx.com
+                  - title: qBittorrent
+                    url: https://qbittorrent.onurx.com
+
+              - title: Media - Monitoring
+                links:
+                  - title: Tautulli
+                    url: https://tautulli.onurx.com
+                  - title: Notifiarr
+                    url: https://notifiarr.onurx.com
 
               - title: Development
                 links:
@@ -64,8 +102,62 @@ pages:
                   - title: Coolify
                     url: https://deploy.onurx.com
 
+              - title: Home Automation
+                links:
+                  - title: Home Assistant
+                    url: https://ha.onurx.com
+
       - size: small
         widgets:
+          - type: monitor
+            title: Service Status
+            cache: 1m
+            sites:
+              - title: Proxmox
+                url: https://proxmox.onurx.com
+              - title: Synology
+                url: https://synology.onurx.com
+              - title: Portainer
+                url: https://portainer.onurx.com
+              - title: Traefik
+                url: https://traefik.onurx.com
+              - title: AdGuard
+                url: https://adguard.onurx.com
+              - title: Authentik
+                url: https://auth.onurx.com
+              - title: Grafana
+                url: https://grafana.onurx.com
+              - title: Prometheus
+                url: https://prometheus.onurx.com
+              - title: MinIO
+                url: https://minio.onurx.com
+              - title: Plex
+                url: https://plex.onurx.com
+              - title: Overseerr
+                url: https://overseerr.onurx.com
+              - title: Sonarr
+                url: https://sonarr.onurx.com
+              - title: Radarr
+                url: https://radarr.onurx.com
+              - title: Prowlarr
+                url: https://prowlarr.onurx.com
+              - title: SABnzbd
+                url: https://sabnzbd.onurx.com
+              - title: qBittorrent
+                url: https://qbittorrent.onurx.com
+              - title: Bazarr
+                url: https://bazarr.onurx.com
+              - title: Tautulli
+                url: https://tautulli.onurx.com
+              - title: Gitea
+                url: https://git.onurx.com
+              - title: Coolify
+                url: https://deploy.onurx.com
+              - title: Home Assistant
+                url: https://ha.onurx.com
+              - title: Homarr
+                url: https://home.onurx.com
+
           - type: rss
             title: Homelab News
             limit: 5
@@ -73,13 +165,3 @@ pages:
             feeds:
               - url: https://selfh.st/rss/
                 title: Self-Hosted
-
-          - type: monitor
-            title: Services
-            sites:
-              - title: Grafana
-                url: https://grafana.onurx.com
-              - title: Portainer
-                url: https://portainer.onurx.com
-              - title: Plex
-                url: https://plex.onurx.com
