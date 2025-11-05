@@ -309,6 +309,11 @@
               "Time 3": true,
               "Time 4": true,
               "Time 5": true,
+              "__name__ 1": true,
+              "__name__ 2": true,
+              "__name__ 3": true,
+              "__name__ 4": true,
+              "__name__ 5": true,
               "job 1": true,
               "job 2": true,
               "job 3": true,
@@ -323,7 +328,13 @@
               "system_type 2": true,
               "system_type 3": true,
               "system_type 4": true,
-              "system_type 5": true
+              "system_type 5": true,
+              "cluster": true,
+              "environment": true,
+              "tier": true,
+              "device": true,
+              "fstype": true,
+              "mountpoint": true
             },
             "renameByName": {
               "instance": "System",
