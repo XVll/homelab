@@ -21,12 +21,10 @@ groups:
             "job", "integrations/snmp", "", ""
           )
 
-      # Home Assistant (if it exposes node_exporter metrics)
+      # Home Assistant (System Monitor integration sensor)
       - record: system:cpu_usage:ratio
         expr: |
-          1 - avg by (instance, system_name, system_type, job) (
-            irate(node_cpu_seconds_total{job="integrations/homeassistant", mode="idle"}[1m])
-          )
+          homeassistant_sensor_unit_percent{job="integrations/homeassistant", entity="sensor.system_monitor_processor_use"} / 100
 
       # ========================================================================
       # Memory Usage - Normalized to ratio (0.0 - 1.0)
@@ -50,14 +48,10 @@ groups:
             "job", "integrations/snmp", "", ""
           )
 
-      # Home Assistant
+      # Home Assistant (System Monitor integration sensor)
       - record: system:memory_usage:ratio
         expr: |
-          1 - (
-            avg by (instance, system_name, system_type, job) (node_memory_MemAvailable_bytes{job="integrations/homeassistant"})
-            /
-            avg by (instance, system_name, system_type, job) (node_memory_MemTotal_bytes{job="integrations/homeassistant"})
-          )
+          homeassistant_sensor_unit_percent{job="integrations/homeassistant", entity="sensor.system_monitor_memory_usage"} / 100
 
       # ========================================================================
       # Disk Usage - Normalized to ratio (0.0 - 1.0)
@@ -82,13 +76,10 @@ groups:
             "job", "integrations/snmp", "", ""
           )
 
-      # Home Assistant
+      # Home Assistant (System Monitor integration sensor)
       - record: system:disk_usage:ratio
         expr: |
-          (
-            node_filesystem_size_bytes{job="integrations/homeassistant", mountpoint=~"/|/root"}
-            - node_filesystem_avail_bytes{job="integrations/homeassistant", mountpoint=~"/|/root"}
-          ) / node_filesystem_size_bytes{job="integrations/homeassistant", mountpoint=~"/|/root"}
+          homeassistant_sensor_unit_percent{job="integrations/homeassistant", entity="sensor.system_monitor_disk_usage"} / 100
 
       # ========================================================================
       # Network I/O - Normalized to bytes per second
@@ -117,15 +108,14 @@ groups:
             "job", "integrations/snmp", "", ""
           )
 
-      # Home Assistant
+      # Home Assistant (System Monitor integration sensors - MB/s to bytes/sec)
       - record: system:network_io:bytes_per_sec
         expr: |
-          sum by (instance, system_name, system_type, job) (
-            rate(node_network_receive_bytes_total{job="integrations/homeassistant", device!~"lo|docker.*|veth.*|br-.*"}[1m])
-          ) +
-          sum by (instance, system_name, system_type, job) (
-            rate(node_network_transmit_bytes_total{job="integrations/homeassistant", device!~"lo|docker.*|veth.*|br-.*"}[1m])
-          )
+          (
+            homeassistant_sensor_data_rate_mb_per_s{job="integrations/homeassistant", entity="sensor.system_monitor_network_throughput_in_enp6s18"}
+            +
+            homeassistant_sensor_data_rate_mb_per_s{job="integrations/homeassistant", entity="sensor.system_monitor_network_throughput_out_enp6s18"}
+          ) * 1000000
 
       # ========================================================================
       # Disk I/O - Normalized to bytes per second
@@ -154,15 +144,8 @@ groups:
             "job", "integrations/snmp", "", ""
           )
 
-      # Home Assistant
-      - record: system:disk_io:bytes_per_sec
-        expr: |
-          sum by (instance, system_name, system_type, job) (
-            rate(node_disk_read_bytes_total{job="integrations/homeassistant"}[1m])
-          ) +
-          sum by (instance, system_name, system_type, job) (
-            rate(node_disk_written_bytes_total{job="integrations/homeassistant"}[1m])
-          )
+      # Home Assistant - System Monitor doesn't expose disk I/O metrics
+      # Skipping disk I/O for Home Assistant
 
       # ========================================================================
       # System Status - 1 = up, 0 = down
