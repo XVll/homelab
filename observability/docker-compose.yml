@@ -251,6 +251,7 @@ services:
       - PGID=1000
       - TZ=America/New_York
       - SECRET_ENCRYPTION_KEY=${HOMARR_ENCRYPTION_KEY}
+      - REDIS_URL=${REDIS_URL}
     networks:
       - obs_net
     healthcheck:
