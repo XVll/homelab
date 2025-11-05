@@ -102,15 +102,15 @@ groups:
             rate(node_network_transmit_bytes_total{job="integrations/unix", device!~"lo|docker.*|veth.*|br-.*"}[1m])
           )
 
-      # Synology (ifInOctets + ifOutOctets)
+      # Synology (ifHCInOctets + ifHCOutOctets - High Capacity counters)
       - record: system:network_io:bytes_per_sec
         expr: |
           label_replace(
             sum by (instance, system_name, system_type) (
-              rate(ifInOctets{job=~"integrations/snmp.*", ifName!~"lo|docker.*"}[2m])
+              rate(ifHCInOctets{job=~"integrations/snmp.*", ifName!~"lo|docker.*|sit.*"}[2m])
             ) +
             sum by (instance, system_name, system_type) (
-              rate(ifOutOctets{job=~"integrations/snmp.*", ifName!~"lo|docker.*"}[2m])
+              rate(ifHCOutOctets{job=~"integrations/snmp.*", ifName!~"lo|docker.*|sit.*"}[2m])
             ),
             "job", "integrations/snmp", "", ""
           )
