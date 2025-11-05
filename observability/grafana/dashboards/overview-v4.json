@@ -42,6 +42,24 @@
           {
             "matcher": {
               "id": "byName",
+              "options": "Edge (10.10.10.110)"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 200
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
               "options": "Status"
             },
             "properties": [
@@ -53,12 +71,12 @@
                       "0": {
                         "color": "red",
                         "index": 1,
-                        "text": "🔴"
+                        "text": "\ud83d\udd34"
                       },
                       "1": {
                         "color": "green",
                         "index": 0,
-                        "text": "🟢"
+                        "text": "\ud83d\udfe2"
                       }
                     },
                     "type": "value"
@@ -378,11 +396,13 @@
         "footer": {
           "countRows": false,
           "fields": "",
-          "reducer": ["sum"],
+          "reducer": [
+            "sum"
+          ],
           "show": false
         },
         "frameIndex": 0,
-        "showHeader": true,
+        "showHeader": false,
         "showTypeIcons": false
       },
       "pluginVersion": "11.4.0",
@@ -465,7 +485,7 @@
           "refId": "Load1"
         }
       ],
-      "title": "Edge (10.10.10.110)",
+      "title": "",
       "transformations": [
         {
           "id": "joinByField",
@@ -483,16 +503,17 @@
               "job": true,
               "system_type": true,
               "system_name": true,
-              "instance": true
+              "instance": false
             },
             "indexByName": {
-              "Value #Status": 0,
-              "Value #CPU": 1,
-              "Value #Memory": 2,
-              "Value #Disk": 3,
-              "Value #Load1": 4,
-              "Value #Network": 5,
-              "Value #DiskIO": 6
+              "instance": 0,
+              "Value #Status": 1,
+              "Value #CPU": 2,
+              "Value #Memory": 3,
+              "Value #Disk": 4,
+              "Value #Load1": 5,
+              "Value #Network": 6,
+              "Value #DiskIO": 7
             },
             "renameByName": {
               "Value #CPU": "CPU Usage",
@@ -501,7 +522,8 @@
               "Value #Network": "Network I/O",
               "Value #DiskIO": "Disk I/O",
               "Value #Load1": "Load Average",
-              "Value #Status": "Status"
+              "Value #Status": "Status",
+              "instance": "Edge (10.10.10.110)"
             }
           }
         }
@@ -541,6 +563,24 @@
           {
             "matcher": {
               "id": "byName",
+              "options": "DB (10.10.10.111)"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 200
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
               "options": "Status"
             },
             "properties": [
@@ -552,12 +592,12 @@
                       "0": {
                         "color": "red",
                         "index": 1,
-                        "text": "🔴"
+                        "text": "\ud83d\udd34"
                       },
                       "1": {
                         "color": "green",
                         "index": 0,
-                        "text": "🟢"
+                        "text": "\ud83d\udfe2"
                       }
                     },
                     "type": "value"
@@ -877,11 +917,13 @@
         "footer": {
           "countRows": false,
           "fields": "",
-          "reducer": ["sum"],
+          "reducer": [
+            "sum"
+          ],
           "show": false
         },
         "frameIndex": 0,
-        "showHeader": true,
+        "showHeader": false,
         "showTypeIcons": false
       },
       "pluginVersion": "11.4.0",
@@ -964,7 +1006,7 @@
           "refId": "Load1"
         }
       ],
-      "title": "DB (10.10.10.111)",
+      "title": "",
       "transformations": [
         {
           "id": "joinByField",
@@ -982,16 +1024,17 @@
               "job": true,
               "system_type": true,
               "system_name": true,
-              "instance": true
+              "instance": false
             },
             "indexByName": {
-              "Value #Status": 0,
-              "Value #CPU": 1,
-              "Value #Memory": 2,
-              "Value #Disk": 3,
-              "Value #Load1": 4,
-              "Value #Network": 5,
-              "Value #DiskIO": 6
+              "instance": 0,
+              "Value #Status": 1,
+              "Value #CPU": 2,
+              "Value #Memory": 3,
+              "Value #Disk": 4,
+              "Value #Load1": 5,
+              "Value #Network": 6,
+              "Value #DiskIO": 7
             },
             "renameByName": {
               "Value #CPU": "CPU Usage",
@@ -1000,7 +1043,8 @@
               "Value #Network": "Network I/O",
               "Value #DiskIO": "Disk I/O",
               "Value #Load1": "Load Average",
-              "Value #Status": "Status"
+              "Value #Status": "Status",
+              "instance": "DB (10.10.10.111)"
             }
           }
         }
@@ -1040,6 +1084,24 @@
           {
             "matcher": {
               "id": "byName",
+              "options": "Observability (10.10.10.112)"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 200
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
               "options": "Status"
             },
             "properties": [
@@ -1051,12 +1113,12 @@
                       "0": {
                         "color": "red",
                         "index": 1,
-                        "text": "🔴"
+                        "text": "\ud83d\udd34"
                       },
                       "1": {
                         "color": "green",
                         "index": 0,
-                        "text": "🟢"
+                        "text": "\ud83d\udfe2"
                       }
                     },
                     "type": "value"
@@ -1376,11 +1438,13 @@
         "footer": {
           "countRows": false,
           "fields": "",
-          "reducer": ["sum"],
+          "reducer": [
+            "sum"
+          ],
           "show": false
         },
         "frameIndex": 0,
-        "showHeader": true,
+        "showHeader": false,
         "showTypeIcons": false
       },
       "pluginVersion": "11.4.0",
@@ -1463,7 +1527,7 @@
           "refId": "Load1"
         }
       ],
-      "title": "Observability (10.10.10.112)",
+      "title": "",
       "transformations": [
         {
           "id": "joinByField",
@@ -1481,16 +1545,17 @@
               "job": true,
               "system_type": true,
               "system_name": true,
-              "instance": true
+              "instance": false
             },
             "indexByName": {
-              "Value #Status": 0,
-              "Value #CPU": 1,
-              "Value #Memory": 2,
-              "Value #Disk": 3,
-              "Value #Load1": 4,
-              "Value #Network": 5,
-              "Value #DiskIO": 6
+              "instance": 0,
+              "Value #Status": 1,
+              "Value #CPU": 2,
+              "Value #Memory": 3,
+              "Value #Disk": 4,
+              "Value #Load1": 5,
+              "Value #Network": 6,
+              "Value #DiskIO": 7
             },
             "renameByName": {
               "Value #CPU": "CPU Usage",
@@ -1499,7 +1564,8 @@
               "Value #Network": "Network I/O",
               "Value #DiskIO": "Disk I/O",
               "Value #Load1": "Load Average",
-              "Value #Status": "Status"
+              "Value #Status": "Status",
+              "instance": "Observability (10.10.10.112)"
             }
           }
         }
@@ -1539,6 +1605,24 @@
           {
             "matcher": {
               "id": "byName",
+              "options": "Media (10.10.10.113)"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 200
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
               "options": "Status"
             },
             "properties": [
@@ -1550,12 +1634,12 @@
                       "0": {
                         "color": "red",
                         "index": 1,
-                        "text": "🔴"
+                        "text": "\ud83d\udd34"
                       },
                       "1": {
                         "color": "green",
                         "index": 0,
-                        "text": "🟢"
+                        "text": "\ud83d\udfe2"
                       }
                     },
                     "type": "value"
@@ -1875,11 +1959,13 @@
         "footer": {
           "countRows": false,
           "fields": "",
-          "reducer": ["sum"],
+          "reducer": [
+            "sum"
+          ],
           "show": false
         },
         "frameIndex": 0,
-        "showHeader": true,
+        "showHeader": false,
         "showTypeIcons": false
       },
       "pluginVersion": "11.4.0",
@@ -1962,7 +2048,7 @@
           "refId": "Load1"
         }
       ],
-      "title": "Media (10.10.10.113)",
+      "title": "",
       "transformations": [
         {
           "id": "joinByField",
@@ -1980,16 +2066,17 @@
               "job": true,
               "system_type": true,
               "system_name": true,
-              "instance": true
+              "instance": false
             },
             "indexByName": {
-              "Value #Status": 0,
-              "Value #CPU": 1,
-              "Value #Memory": 2,
-              "Value #Disk": 3,
-              "Value #Load1": 4,
-              "Value #Network": 5,
-              "Value #DiskIO": 6
+              "instance": 0,
+              "Value #Status": 1,
+              "Value #CPU": 2,
+              "Value #Memory": 3,
+              "Value #Disk": 4,
+              "Value #Load1": 5,
+              "Value #Network": 6,
+              "Value #DiskIO": 7
             },
             "renameByName": {
               "Value #CPU": "CPU Usage",
@@ -1998,7 +2085,8 @@
               "Value #Network": "Network I/O",
               "Value #DiskIO": "Disk I/O",
               "Value #Load1": "Load Average",
-              "Value #Status": "Status"
+              "Value #Status": "Status",
+              "instance": "Media (10.10.10.113)"
             }
           }
         }
@@ -2038,6 +2126,24 @@
           {
             "matcher": {
               "id": "byName",
+              "options": "Dev (10.10.10.114)"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 200
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
               "options": "Status"
             },
             "properties": [
@@ -2049,12 +2155,12 @@
                       "0": {
                         "color": "red",
                         "index": 1,
-                        "text": "🔴"
+                        "text": "\ud83d\udd34"
                       },
                       "1": {
                         "color": "green",
                         "index": 0,
-                        "text": "🟢"
+                        "text": "\ud83d\udfe2"
                       }
                     },
                     "type": "value"
@@ -2374,11 +2480,13 @@
         "footer": {
           "countRows": false,
           "fields": "",
-          "reducer": ["sum"],
+          "reducer": [
+            "sum"
+          ],
           "show": false
         },
         "frameIndex": 0,
-        "showHeader": true,
+        "showHeader": false,
         "showTypeIcons": false
       },
       "pluginVersion": "11.4.0",
@@ -2461,7 +2569,7 @@
           "refId": "Load1"
         }
       ],
-      "title": "Dev (10.10.10.114)",
+      "title": "",
       "transformations": [
         {
           "id": "joinByField",
@@ -2479,16 +2587,17 @@
               "job": true,
               "system_type": true,
               "system_name": true,
-              "instance": true
+              "instance": false
             },
             "indexByName": {
-              "Value #Status": 0,
-              "Value #CPU": 1,
-              "Value #Memory": 2,
-              "Value #Disk": 3,
-              "Value #Load1": 4,
-              "Value #Network": 5,
-              "Value #DiskIO": 6
+              "instance": 0,
+              "Value #Status": 1,
+              "Value #CPU": 2,
+              "Value #Memory": 3,
+              "Value #Disk": 4,
+              "Value #Load1": 5,
+              "Value #Network": 6,
+              "Value #DiskIO": 7
             },
             "renameByName": {
               "Value #CPU": "CPU Usage",
@@ -2497,7 +2606,8 @@
               "Value #Network": "Network I/O",
               "Value #DiskIO": "Disk I/O",
               "Value #Load1": "Load Average",
-              "Value #Status": "Status"
+              "Value #Status": "Status",
+              "instance": "Dev (10.10.10.114)"
             }
           }
         }
@@ -2537,6 +2647,24 @@
           {
             "matcher": {
               "id": "byName",
+              "options": "Deploy (10.10.10.101)"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 200
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
               "options": "Status"
             },
             "properties": [
@@ -2548,12 +2676,12 @@
                       "0": {
                         "color": "red",
                         "index": 1,
-                        "text": "🔴"
+                        "text": "\ud83d\udd34"
                       },
                       "1": {
                         "color": "green",
                         "index": 0,
-                        "text": "🟢"
+                        "text": "\ud83d\udfe2"
                       }
                     },
                     "type": "value"
@@ -2873,11 +3001,13 @@
         "footer": {
           "countRows": false,
           "fields": "",
-          "reducer": ["sum"],
+          "reducer": [
+            "sum"
+          ],
           "show": false
         },
         "frameIndex": 0,
-        "showHeader": true,
+        "showHeader": false,
         "showTypeIcons": false
       },
       "pluginVersion": "11.4.0",
@@ -2960,7 +3090,7 @@
           "refId": "Load1"
         }
       ],
-      "title": "Deploy (10.10.10.101)",
+      "title": "",
       "transformations": [
         {
           "id": "joinByField",
@@ -2978,16 +3108,17 @@
               "job": true,
               "system_type": true,
               "system_name": true,
-              "instance": true
+              "instance": false
             },
             "indexByName": {
-              "Value #Status": 0,
-              "Value #CPU": 1,
-              "Value #Memory": 2,
-              "Value #Disk": 3,
-              "Value #Load1": 4,
-              "Value #Network": 5,
-              "Value #DiskIO": 6
+              "instance": 0,
+              "Value #Status": 1,
+              "Value #CPU": 2,
+              "Value #Memory": 3,
+              "Value #Disk": 4,
+              "Value #Load1": 5,
+              "Value #Network": 6,
+              "Value #DiskIO": 7
             },
             "renameByName": {
               "Value #CPU": "CPU Usage",
@@ -2996,7 +3127,8 @@
               "Value #Network": "Network I/O",
               "Value #DiskIO": "Disk I/O",
               "Value #Load1": "Load Average",
-              "Value #Status": "Status"
+              "Value #Status": "Status",
+              "instance": "Deploy (10.10.10.101)"
             }
           }
         }
@@ -3036,6 +3168,24 @@
           {
             "matcher": {
               "id": "byName",
+              "options": "HA (10.10.10.116)"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 200
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
               "options": "Status"
             },
             "properties": [
@@ -3047,12 +3197,12 @@
                       "0": {
                         "color": "red",
                         "index": 1,
-                        "text": "🔴"
+                        "text": "\ud83d\udd34"
                       },
                       "1": {
                         "color": "green",
                         "index": 0,
-                        "text": "🟢"
+                        "text": "\ud83d\udfe2"
                       }
                     },
                     "type": "value"
@@ -3372,11 +3522,13 @@
         "footer": {
           "countRows": false,
           "fields": "",
-          "reducer": ["sum"],
+          "reducer": [
+            "sum"
+          ],
           "show": false
         },
         "frameIndex": 0,
-        "showHeader": true,
+        "showHeader": false,
         "showTypeIcons": false
       },
       "pluginVersion": "11.4.0",
@@ -3459,7 +3611,7 @@
           "refId": "Load1"
         }
       ],
-      "title": "Home Assistant (10.10.10.116)",
+      "title": "",
       "transformations": [
         {
           "id": "joinByField",
@@ -3477,16 +3629,17 @@
               "job": true,
               "system_type": true,
               "system_name": true,
-              "instance": true
+              "instance": false
             },
             "indexByName": {
-              "Value #Status": 0,
-              "Value #CPU": 1,
-              "Value #Memory": 2,
-              "Value #Disk": 3,
-              "Value #Load1": 4,
-              "Value #Network": 5,
-              "Value #DiskIO": 6
+              "instance": 0,
+              "Value #Status": 1,
+              "Value #CPU": 2,
+              "Value #Memory": 3,
+              "Value #Disk": 4,
+              "Value #Load1": 5,
+              "Value #Network": 6,
+              "Value #DiskIO": 7
             },
             "renameByName": {
               "Value #CPU": "CPU Usage",
@@ -3495,7 +3648,8 @@
               "Value #Network": "Network I/O",
               "Value #DiskIO": "Disk I/O",
               "Value #Load1": "Load Average",
-              "Value #Status": "Status"
+              "Value #Status": "Status",
+              "instance": "HA (10.10.10.116)"
             }
           }
         }
@@ -3535,6 +3689,24 @@
           {
             "matcher": {
               "id": "byName",
+              "options": "Synology (10.10.10.200)"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 200
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
               "options": "Status"
             },
             "properties": [
@@ -3546,12 +3718,12 @@
                       "0": {
                         "color": "red",
                         "index": 1,
-                        "text": "🔴"
+                        "text": "\ud83d\udd34"
                       },
                       "1": {
                         "color": "green",
                         "index": 0,
-                        "text": "🟢"
+                        "text": "\ud83d\udfe2"
                       }
                     },
                     "type": "value"
@@ -3871,11 +4043,13 @@
         "footer": {
           "countRows": false,
           "fields": "",
-          "reducer": ["sum"],
+          "reducer": [
+            "sum"
+          ],
           "show": false
         },
         "frameIndex": 0,
-        "showHeader": true,
+        "showHeader": false,
         "showTypeIcons": false
       },
       "pluginVersion": "11.4.0",
@@ -3958,7 +4132,7 @@
           "refId": "Load1"
         }
       ],
-      "title": "Synology NAS",
+      "title": "",
       "transformations": [
         {
           "id": "joinByField",
@@ -3976,16 +4150,17 @@
               "job": true,
               "system_type": true,
               "system_name": true,
-              "instance": true
+              "instance": false
             },
             "indexByName": {
-              "Value #Status": 0,
-              "Value #CPU": 1,
-              "Value #Memory": 2,
-              "Value #Disk": 3,
-              "Value #Load1": 4,
-              "Value #Network": 5,
-              "Value #DiskIO": 6
+              "instance": 0,
+              "Value #Status": 1,
+              "Value #CPU": 2,
+              "Value #Memory": 3,
+              "Value #Disk": 4,
+              "Value #Load1": 5,
+              "Value #Network": 6,
+              "Value #DiskIO": 7
             },
             "renameByName": {
               "Value #CPU": "CPU Usage",
@@ -3994,7 +4169,8 @@
               "Value #Network": "Network I/O",
               "Value #DiskIO": "Disk I/O",
               "Value #Load1": "Load Average",
-              "Value #Status": "Status"
+              "Value #Status": "Status",
+              "instance": "Synology (10.10.10.200)"
             }
           }
         }
@@ -4054,7 +4230,9 @@
         "orientation": "horizontal",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
@@ -4153,7 +4331,9 @@
         "namePlacement": "top",
         "orientation": "vertical",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
@@ -4254,7 +4434,11 @@
       "id": 11,
       "options": {
         "legend": {
-          "calcs": ["lastNotNull", "min", "max"],
+          "calcs": [
+            "lastNotNull",
+            "min",
+            "max"
+          ],
           "displayMode": "table",
           "placement": "bottom",
           "showLegend": true,
@@ -4355,7 +4539,11 @@
       "id": 12,
       "options": {
         "legend": {
-          "calcs": ["lastNotNull", "min", "max"],
+          "calcs": [
+            "lastNotNull",
+            "min",
+            "max"
+          ],
           "displayMode": "table",
           "placement": "bottom",
           "showLegend": true,
@@ -4457,7 +4645,11 @@
       "id": 13,
       "options": {
         "legend": {
-          "calcs": ["lastNotNull", "min", "max"],
+          "calcs": [
+            "lastNotNull",
+            "min",
+            "max"
+          ],
           "displayMode": "table",
           "placement": "bottom",
           "showLegend": true,
@@ -4558,7 +4750,11 @@
       "id": 14,
       "options": {
         "legend": {
-          "calcs": ["lastNotNull", "min", "max"],
+          "calcs": [
+            "lastNotNull",
+            "min",
+            "max"
+          ],
           "displayMode": "table",
           "placement": "bottom",
           "showLegend": true,
@@ -4659,7 +4855,11 @@
       "id": 15,
       "options": {
         "legend": {
-          "calcs": ["lastNotNull", "min", "max"],
+          "calcs": [
+            "lastNotNull",
+            "min",
+            "max"
+          ],
           "displayMode": "table",
           "placement": "bottom",
           "showLegend": true,
@@ -4690,7 +4890,10 @@
   ],
   "refresh": "5s",
   "schemaVersion": 40,
-  "tags": ["overview", "unified"],
+  "tags": [
+    "overview",
+    "unified"
+  ],
   "templating": {
     "list": [
       {
