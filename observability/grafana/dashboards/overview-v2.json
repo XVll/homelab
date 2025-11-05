@@ -24,7 +24,8 @@
             "cellOptions": {
               "type": "auto"
             },
-            "inspect": false
+            "inspect": false,
+            "filterable": false
           },
           "mappings": [],
           "thresholds": {
@@ -329,7 +330,7 @@
         ]
       },
       "gridPos": {
-        "h": 12,
+        "h": 10,
         "w": 24,
         "x": 0,
         "y": 0
@@ -343,7 +344,9 @@
           "reducer": ["sum"],
           "show": false
         },
+        "frameIndex": 0,
         "showHeader": true,
+        "showTypeIcons": false,
         "sortBy": [
           {
             "desc": false,
