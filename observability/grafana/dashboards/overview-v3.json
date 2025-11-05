@@ -364,6 +364,41 @@
                 "value": true
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "System"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "VM Details",
+                    "url": "/d/system-detail?var-instance=${__value.raw}"
+                  },
+                  {
+                    "title": "Synology Details",
+                    "url": "/d/synology-detail"
+                  },
+                  {
+                    "title": "Home Assistant Details",
+                    "url": "/d/homeassistant-detail"
+                  },
+                  {
+                    "title": "Proxmox Details",
+                    "url": "/d/proxmox-overview"
+                  }
+                ]
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "auto"
+                }
+              }
+            ]
           }
         ]
       },
