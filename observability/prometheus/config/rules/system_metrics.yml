@@ -139,15 +139,15 @@ groups:
             rate(node_disk_written_bytes_total{job="integrations/unix"}[1m])
           )
 
-      # Synology (spaceIOReads + spaceIOWrites)
+      # Synology (spaceIONReadX + spaceIONWrittenX - Extended counters)
       - record: system:disk_io:bytes_per_sec
         expr: |
           label_replace(
             sum by (instance, system_name, system_type) (
-              rate(spaceIOReads{job=~"integrations/snmp.*"}[2m])
+              rate(spaceIONReadX{job=~"integrations/snmp.*"}[2m])
             ) +
             sum by (instance, system_name, system_type) (
-              rate(spaceIOWrites{job=~"integrations/snmp.*"}[2m])
+              rate(spaceIONWrittenX{job=~"integrations/snmp.*"}[2m])
             ),
             "job", "integrations/snmp", "", ""
           )
