@@ -245,4 +245,4 @@ groups:
       # ========================================================================
 
       - record: system:up
-        expr: up{job=~"integrations/(unix|snmp|homeassistant)"}
+        expr: up{job=~"integrations/(unix|snmp.*|homeassistant)"}
