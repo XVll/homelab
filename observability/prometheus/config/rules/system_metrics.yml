@@ -172,7 +172,7 @@ groups:
       - record: system:load1
         expr: |
           sum by (instance, system_name, system_type, job) (
-            homeassistant_sensor_unit{job="integrations/homeassistant", entity="sensor.system_monitor_load_1m"}
+            homeassistant_sensor_state{job="integrations/homeassistant", entity="sensor.system_monitor_load_1_min"}
           )
 
       # ========================================================================
@@ -196,7 +196,7 @@ groups:
       - record: system:load5
         expr: |
           sum by (instance, system_name, system_type, job) (
-            homeassistant_sensor_unit{job="integrations/homeassistant", entity="sensor.system_monitor_load_5m"}
+            homeassistant_sensor_state{job="integrations/homeassistant", entity="sensor.system_monitor_load_5_min"}
           )
 
       # ========================================================================
@@ -220,7 +220,7 @@ groups:
       - record: system:load15
         expr: |
           sum by (instance, system_name, system_type, job) (
-            homeassistant_sensor_unit{job="integrations/homeassistant", entity="sensor.system_monitor_load_15m"}
+            homeassistant_sensor_state{job="integrations/homeassistant", entity="sensor.system_monitor_load_15_min"}
           )
 
       # ========================================================================
