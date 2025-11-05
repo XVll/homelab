@@ -188,6 +188,32 @@
               {
                 "id": "unit",
                 "value": "Bps"
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 10000000
+                    },
+                    {
+                      "color": "red",
+                      "value": 50000000
+                    }
+                  ]
+                }
               }
             ]
           },
@@ -200,6 +226,32 @@
               {
                 "id": "unit",
                 "value": "Bps"
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 5000000
+                    },
+                    {
+                      "color": "red",
+                      "value": 20000000
+                    }
+                  ]
+                }
               }
             ]
           },
@@ -230,7 +282,27 @@
               },
               {
                 "id": "max",
-                "value": 4
+                "value": 8
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 2
+                    },
+                    {
+                      "color": "red",
+                      "value": 4
+                    }
+                  ]
+                }
               }
             ]
           },
