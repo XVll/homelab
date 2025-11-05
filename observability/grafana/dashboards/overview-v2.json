@@ -265,12 +265,8 @@
                 "id": "custom.cellOptions",
                 "value": {
                   "type": "gauge",
-                  "mode": "gradient"
+                  "mode": "lcd"
                 }
-              },
-              {
-                "id": "custom.width",
-                "value": 120
               },
               {
                 "id": "decimals",
