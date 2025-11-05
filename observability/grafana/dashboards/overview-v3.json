@@ -1317,7 +1317,30 @@
     "unified"
   ],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "current": {
+          "text": "proxmox-exporter:9221",
+          "value": "proxmox-exporter:9221"
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "definition": "label_values(pve_node_info, instance)",
+        "includeAll": false,
+        "name": "instance",
+        "options": [],
+        "query": {
+          "query": "label_values(pve_node_info, instance)",
+          "refId": "Prometheus-instance-Variable-Query"
+        },
+        "refresh": 2,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
+      }
+    ]
   },
   "time": {
     "from": "now-1h",
