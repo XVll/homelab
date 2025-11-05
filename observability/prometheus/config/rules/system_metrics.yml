@@ -71,12 +71,14 @@ groups:
             - node_filesystem_avail_bytes{job="integrations/unix", mountpoint="/host/root", fstype="ext4"}
           ) / node_filesystem_size_bytes{job="integrations/unix", mountpoint="/host/root", fstype="ext4"}
 
-      # Synology (RAID storage usage)
+      # Synology (RAID storage usage - Volume 1 only, main data storage)
       - record: system:disk_usage:ratio
         expr: |
           label_replace(
-            (raidTotalSize{job=~"integrations/snmp.*"} - raidFreeSize{job=~"integrations/snmp.*"})
-            / raidTotalSize{job=~"integrations/snmp.*"},
+            sum by (instance, system_name, system_type) (
+              (raidTotalSize{job=~"integrations/snmp.*", raidName="Volume 1"} - raidFreeSize{job=~"integrations/snmp.*", raidName="Volume 1"})
+              / raidTotalSize{job=~"integrations/snmp.*", raidName="Volume 1"}
+            ),
             "job", "integrations/snmp", "", ""
           )
 

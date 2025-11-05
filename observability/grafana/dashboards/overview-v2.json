@@ -334,7 +334,9 @@
               "tier": true,
               "device": true,
               "fstype": true,
-              "mountpoint": true
+              "mountpoint": true,
+              "raidIndex": true,
+              "raidName": true
             },
             "renameByName": {
               "instance": "System",
