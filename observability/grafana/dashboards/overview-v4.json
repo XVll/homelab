@@ -71,19 +71,7 @@
           "color": {
             "mode": "thresholds"
           },
-          "mappings": [
-            {
-              "options": {
-                "0": {
-                  "text": "🔴 Offline"
-                },
-                "1": {
-                  "text": "🟢 Online"
-                }
-              },
-              "type": "value"
-            }
-          ],
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -93,19 +81,220 @@
               },
               {
                 "color": "yellow",
-                "value": 70
+                "value": 0.7
               },
               {
                 "color": "red",
-                "value": 90
+                "value": 0.9
               }
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Status"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "0": {
+                        "text": "🔴"
+                      },
+                      "1": {
+                        "text": "🟢"
+                      }
+                    },
+                    "type": "value"
+                  }
+                ]
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "green",
+                      "value": 1
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CPU"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 0.7
+                    },
+                    {
+                      "color": "red",
+                      "value": 0.9
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Memory"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 0.75
+                    },
+                    {
+                      "color": "red",
+                      "value": 0.9
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Disk"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 0.7
+                    },
+                    {
+                      "color": "red",
+                      "value": 0.9
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Net I/O"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "Bps"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Disk I/O"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "Bps"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Load"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 2
+                    },
+                    {
+                      "color": "red",
+                      "value": 4
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "max",
+                "value": 8
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
-        "h": 6,
+        "h": 5,
         "w": 8,
         "x": 0,
         "y": 3
@@ -119,10 +308,10 @@
         }
       ],
       "options": {
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "auto",
+        "displayMode": "gradient",
+        "minVizHeight": 10,
+        "minVizWidth": 200,
+        "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -130,7 +319,7 @@
           "fields": "",
           "values": false
         },
-        "textMode": "value_and_name"
+        "showUnfilled": false
       },
       "pluginVersion": "10.0.0",
       "targets": [
@@ -149,9 +338,9 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "system:cpu_usage:ratio{instance=\"edge\"} * 100",
+          "expr": "system:cpu_usage:ratio{instance=\"edge\"}",
           "instant": true,
-          "legendFormat": "CPU Usage (%)",
+          "legendFormat": "CPU",
           "refId": "B"
         },
         {
@@ -159,14 +348,54 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "system:memory_usage:ratio{instance=\"edge\"} * 100",
+          "expr": "system:memory_usage:ratio{instance=\"edge\"}",
           "instant": true,
-          "legendFormat": "Memory Usage (%)",
+          "legendFormat": "Memory",
           "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "system:disk_usage:ratio{instance=\"edge\"}",
+          "instant": true,
+          "legendFormat": "Disk",
+          "refId": "D"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "system:network_io:bytes_per_sec{instance=\"edge\"}",
+          "instant": true,
+          "legendFormat": "Net I/O",
+          "refId": "E"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "system:disk_io:bytes_per_sec{instance=\"edge\"}",
+          "instant": true,
+          "legendFormat": "Disk I/O",
+          "refId": "F"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "system:load1{instance=\"edge\"}",
+          "instant": true,
+          "legendFormat": "Load",
+          "refId": "G"
         }
       ],
       "title": "Edge",
-      "type": "stat"
+      "type": "bargauge"
     },
     {
       "datasource": {
@@ -178,19 +407,7 @@
           "color": {
             "mode": "thresholds"
           },
-          "mappings": [
-            {
-              "options": {
-                "0": {
-                  "text": "🔴 Offline"
-                },
-                "1": {
-                  "text": "🟢 Online"
-                }
-              },
-              "type": "value"
-            }
-          ],
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -200,19 +417,220 @@
               },
               {
                 "color": "yellow",
-                "value": 70
+                "value": 0.7
               },
               {
                 "color": "red",
-                "value": 90
+                "value": 0.9
               }
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Status"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "0": {
+                        "text": "🔴"
+                      },
+                      "1": {
+                        "text": "🟢"
+                      }
+                    },
+                    "type": "value"
+                  }
+                ]
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "green",
+                      "value": 1
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CPU"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 0.7
+                    },
+                    {
+                      "color": "red",
+                      "value": 0.9
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Memory"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 0.75
+                    },
+                    {
+                      "color": "red",
+                      "value": 0.9
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Disk"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 0.7
+                    },
+                    {
+                      "color": "red",
+                      "value": 0.9
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Net I/O"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "Bps"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Disk I/O"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "Bps"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Load"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 2
+                    },
+                    {
+                      "color": "red",
+                      "value": 4
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "max",
+                "value": 8
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
-        "h": 6,
+        "h": 5,
         "w": 8,
         "x": 8,
         "y": 3
@@ -226,10 +644,10 @@
         }
       ],
       "options": {
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "auto",
+        "displayMode": "gradient",
+        "minVizHeight": 10,
+        "minVizWidth": 200,
+        "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -237,7 +655,7 @@
           "fields": "",
           "values": false
         },
-        "textMode": "value_and_name"
+        "showUnfilled": false
       },
       "pluginVersion": "10.0.0",
       "targets": [
@@ -256,9 +674,9 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "system:cpu_usage:ratio{instance=\"db\"} * 100",
+          "expr": "system:cpu_usage:ratio{instance=\"db\"}",
           "instant": true,
-          "legendFormat": "CPU Usage (%)",
+          "legendFormat": "CPU",
           "refId": "B"
         },
         {
@@ -266,14 +684,54 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "system:memory_usage:ratio{instance=\"db\"} * 100",
+          "expr": "system:memory_usage:ratio{instance=\"db\"}",
           "instant": true,
-          "legendFormat": "Memory Usage (%)",
+          "legendFormat": "Memory",
           "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "system:disk_usage:ratio{instance=\"db\"}",
+          "instant": true,
+          "legendFormat": "Disk",
+          "refId": "D"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "system:network_io:bytes_per_sec{instance=\"db\"}",
+          "instant": true,
+          "legendFormat": "Net I/O",
+          "refId": "E"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "system:disk_io:bytes_per_sec{instance=\"db\"}",
+          "instant": true,
+          "legendFormat": "Disk I/O",
+          "refId": "F"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "system:load1{instance=\"db\"}",
+          "instant": true,
+          "legendFormat": "Load",
+          "refId": "G"
         }
       ],
       "title": "DB",
-      "type": "stat"
+      "type": "bargauge"
     },
     {
       "datasource": {
@@ -285,19 +743,7 @@
           "color": {
             "mode": "thresholds"
           },
-          "mappings": [
-            {
-              "options": {
-                "0": {
-                  "text": "🔴 Offline"
-                },
-                "1": {
-                  "text": "🟢 Online"
-                }
-              },
-              "type": "value"
-            }
-          ],
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -307,19 +753,220 @@
               },
               {
                 "color": "yellow",
-                "value": 70
+                "value": 0.7
               },
               {
                 "color": "red",
-                "value": 90
+                "value": 0.9
               }
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Status"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "0": {
+                        "text": "🔴"
+                      },
+                      "1": {
+                        "text": "🟢"
+                      }
+                    },
+                    "type": "value"
+                  }
+                ]
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "green",
+                      "value": 1
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CPU"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 0.7
+                    },
+                    {
+                      "color": "red",
+                      "value": 0.9
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Memory"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 0.75
+                    },
+                    {
+                      "color": "red",
+                      "value": 0.9
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Disk"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 0.7
+                    },
+                    {
+                      "color": "red",
+                      "value": 0.9
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Net I/O"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "Bps"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Disk I/O"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "Bps"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Load"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 2
+                    },
+                    {
+                      "color": "red",
+                      "value": 4
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "max",
+                "value": 8
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
-        "h": 6,
+        "h": 5,
         "w": 8,
         "x": 16,
         "y": 3
@@ -333,10 +980,10 @@
         }
       ],
       "options": {
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "auto",
+        "displayMode": "gradient",
+        "minVizHeight": 10,
+        "minVizWidth": 200,
+        "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -344,7 +991,7 @@
           "fields": "",
           "values": false
         },
-        "textMode": "value_and_name"
+        "showUnfilled": false
       },
       "pluginVersion": "10.0.0",
       "targets": [
@@ -363,9 +1010,9 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "system:cpu_usage:ratio{instance=\"observability\"} * 100",
+          "expr": "system:cpu_usage:ratio{instance=\"observability\"}",
           "instant": true,
-          "legendFormat": "CPU Usage (%)",
+          "legendFormat": "CPU",
           "refId": "B"
         },
         {
@@ -373,14 +1020,54 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "system:memory_usage:ratio{instance=\"observability\"} * 100",
+          "expr": "system:memory_usage:ratio{instance=\"observability\"}",
           "instant": true,
-          "legendFormat": "Memory Usage (%)",
+          "legendFormat": "Memory",
           "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "system:disk_usage:ratio{instance=\"observability\"}",
+          "instant": true,
+          "legendFormat": "Disk",
+          "refId": "D"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "system:network_io:bytes_per_sec{instance=\"observability\"}",
+          "instant": true,
+          "legendFormat": "Net I/O",
+          "refId": "E"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "system:disk_io:bytes_per_sec{instance=\"observability\"}",
+          "instant": true,
+          "legendFormat": "Disk I/O",
+          "refId": "F"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "system:load1{instance=\"observability\"}",
+          "instant": true,
+          "legendFormat": "Load",
+          "refId": "G"
         }
       ],
       "title": "Observability",
-      "type": "stat"
+      "type": "bargauge"
     },
     {
       "datasource": {
@@ -392,19 +1079,7 @@
           "color": {
             "mode": "thresholds"
           },
-          "mappings": [
-            {
-              "options": {
-                "0": {
-                  "text": "🔴 Offline"
-                },
-                "1": {
-                  "text": "🟢 Online"
-                }
-              },
-              "type": "value"
-            }
-          ],
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -414,22 +1089,223 @@
               },
               {
                 "color": "yellow",
-                "value": 70
+                "value": 0.7
               },
               {
                 "color": "red",
-                "value": 90
+                "value": 0.9
               }
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Status"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "0": {
+                        "text": "🔴"
+                      },
+                      "1": {
+                        "text": "🟢"
+                      }
+                    },
+                    "type": "value"
+                  }
+                ]
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "green",
+                      "value": 1
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CPU"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 0.7
+                    },
+                    {
+                      "color": "red",
+                      "value": 0.9
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Memory"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 0.75
+                    },
+                    {
+                      "color": "red",
+                      "value": 0.9
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Disk"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 0.7
+                    },
+                    {
+                      "color": "red",
+                      "value": 0.9
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Net I/O"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "Bps"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Disk I/O"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "Bps"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Load"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 2
+                    },
+                    {
+                      "color": "red",
+                      "value": 4
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "max",
+                "value": 8
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
-        "h": 6,
+        "h": 5,
         "w": 8,
         "x": 0,
-        "y": 9
+        "y": 8
       },
       "id": 6,
       "links": [
@@ -440,10 +1316,10 @@
         }
       ],
       "options": {
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "auto",
+        "displayMode": "gradient",
+        "minVizHeight": 10,
+        "minVizWidth": 200,
+        "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -451,7 +1327,7 @@
           "fields": "",
           "values": false
         },
-        "textMode": "value_and_name"
+        "showUnfilled": false
       },
       "pluginVersion": "10.0.0",
       "targets": [
@@ -470,9 +1346,9 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "system:cpu_usage:ratio{instance=\"media\"} * 100",
+          "expr": "system:cpu_usage:ratio{instance=\"media\"}",
           "instant": true,
-          "legendFormat": "CPU Usage (%)",
+          "legendFormat": "CPU",
           "refId": "B"
         },
         {
@@ -480,14 +1356,54 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "system:memory_usage:ratio{instance=\"media\"} * 100",
+          "expr": "system:memory_usage:ratio{instance=\"media\"}",
           "instant": true,
-          "legendFormat": "Memory Usage (%)",
+          "legendFormat": "Memory",
           "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "system:disk_usage:ratio{instance=\"media\"}",
+          "instant": true,
+          "legendFormat": "Disk",
+          "refId": "D"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "system:network_io:bytes_per_sec{instance=\"media\"}",
+          "instant": true,
+          "legendFormat": "Net I/O",
+          "refId": "E"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "system:disk_io:bytes_per_sec{instance=\"media\"}",
+          "instant": true,
+          "legendFormat": "Disk I/O",
+          "refId": "F"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "system:load1{instance=\"media\"}",
+          "instant": true,
+          "legendFormat": "Load",
+          "refId": "G"
         }
       ],
       "title": "Media",
-      "type": "stat"
+      "type": "bargauge"
     },
     {
       "datasource": {
@@ -499,19 +1415,7 @@
           "color": {
             "mode": "thresholds"
           },
-          "mappings": [
-            {
-              "options": {
-                "0": {
-                  "text": "🔴 Offline"
-                },
-                "1": {
-                  "text": "🟢 Online"
-                }
-              },
-              "type": "value"
-            }
-          ],
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -521,22 +1425,223 @@
               },
               {
                 "color": "yellow",
-                "value": 70
+                "value": 0.7
               },
               {
                 "color": "red",
-                "value": 90
+                "value": 0.9
               }
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Status"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "0": {
+                        "text": "🔴"
+                      },
+                      "1": {
+                        "text": "🟢"
+                      }
+                    },
+                    "type": "value"
+                  }
+                ]
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "green",
+                      "value": 1
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CPU"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 0.7
+                    },
+                    {
+                      "color": "red",
+                      "value": 0.9
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Memory"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 0.75
+                    },
+                    {
+                      "color": "red",
+                      "value": 0.9
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Disk"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 0.7
+                    },
+                    {
+                      "color": "red",
+                      "value": 0.9
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Net I/O"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "Bps"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Disk I/O"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "Bps"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Load"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 2
+                    },
+                    {
+                      "color": "red",
+                      "value": 4
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "max",
+                "value": 8
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
-        "h": 6,
+        "h": 5,
         "w": 8,
         "x": 8,
-        "y": 9
+        "y": 8
       },
       "id": 7,
       "links": [
@@ -547,10 +1652,10 @@
         }
       ],
       "options": {
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "auto",
+        "displayMode": "gradient",
+        "minVizHeight": 10,
+        "minVizWidth": 200,
+        "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -558,7 +1663,7 @@
           "fields": "",
           "values": false
         },
-        "textMode": "value_and_name"
+        "showUnfilled": false
       },
       "pluginVersion": "10.0.0",
       "targets": [
@@ -577,9 +1682,9 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "system:cpu_usage:ratio{instance=\"dev\"} * 100",
+          "expr": "system:cpu_usage:ratio{instance=\"dev\"}",
           "instant": true,
-          "legendFormat": "CPU Usage (%)",
+          "legendFormat": "CPU",
           "refId": "B"
         },
         {
@@ -587,14 +1692,54 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "system:memory_usage:ratio{instance=\"dev\"} * 100",
+          "expr": "system:memory_usage:ratio{instance=\"dev\"}",
           "instant": true,
-          "legendFormat": "Memory Usage (%)",
+          "legendFormat": "Memory",
           "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "system:disk_usage:ratio{instance=\"dev\"}",
+          "instant": true,
+          "legendFormat": "Disk",
+          "refId": "D"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "system:network_io:bytes_per_sec{instance=\"dev\"}",
+          "instant": true,
+          "legendFormat": "Net I/O",
+          "refId": "E"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "system:disk_io:bytes_per_sec{instance=\"dev\"}",
+          "instant": true,
+          "legendFormat": "Disk I/O",
+          "refId": "F"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "system:load1{instance=\"dev\"}",
+          "instant": true,
+          "legendFormat": "Load",
+          "refId": "G"
         }
       ],
       "title": "Dev",
-      "type": "stat"
+      "type": "bargauge"
     },
     {
       "datasource": {
@@ -606,19 +1751,7 @@
           "color": {
             "mode": "thresholds"
           },
-          "mappings": [
-            {
-              "options": {
-                "0": {
-                  "text": "🔴 Offline"
-                },
-                "1": {
-                  "text": "🟢 Online"
-                }
-              },
-              "type": "value"
-            }
-          ],
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -628,22 +1761,223 @@
               },
               {
                 "color": "yellow",
-                "value": 70
+                "value": 0.7
               },
               {
                 "color": "red",
-                "value": 90
+                "value": 0.9
               }
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Status"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "0": {
+                        "text": "🔴"
+                      },
+                      "1": {
+                        "text": "🟢"
+                      }
+                    },
+                    "type": "value"
+                  }
+                ]
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "green",
+                      "value": 1
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CPU"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 0.7
+                    },
+                    {
+                      "color": "red",
+                      "value": 0.9
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Memory"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 0.75
+                    },
+                    {
+                      "color": "red",
+                      "value": 0.9
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Disk"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 0.7
+                    },
+                    {
+                      "color": "red",
+                      "value": 0.9
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Net I/O"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "Bps"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Disk I/O"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "Bps"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Load"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 2
+                    },
+                    {
+                      "color": "red",
+                      "value": 4
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "max",
+                "value": 8
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
-        "h": 6,
+        "h": 5,
         "w": 8,
         "x": 16,
-        "y": 9
+        "y": 8
       },
       "id": 8,
       "links": [
@@ -654,10 +1988,10 @@
         }
       ],
       "options": {
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "auto",
+        "displayMode": "gradient",
+        "minVizHeight": 10,
+        "minVizWidth": 200,
+        "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -665,7 +1999,7 @@
           "fields": "",
           "values": false
         },
-        "textMode": "value_and_name"
+        "showUnfilled": false
       },
       "pluginVersion": "10.0.0",
       "targets": [
@@ -684,9 +2018,9 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "system:cpu_usage:ratio{instance=\"deploy\"} * 100",
+          "expr": "system:cpu_usage:ratio{instance=\"deploy\"}",
           "instant": true,
-          "legendFormat": "CPU Usage (%)",
+          "legendFormat": "CPU",
           "refId": "B"
         },
         {
@@ -694,14 +2028,54 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "system:memory_usage:ratio{instance=\"deploy\"} * 100",
+          "expr": "system:memory_usage:ratio{instance=\"deploy\"}",
           "instant": true,
-          "legendFormat": "Memory Usage (%)",
+          "legendFormat": "Memory",
           "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "system:disk_usage:ratio{instance=\"deploy\"}",
+          "instant": true,
+          "legendFormat": "Disk",
+          "refId": "D"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "system:network_io:bytes_per_sec{instance=\"deploy\"}",
+          "instant": true,
+          "legendFormat": "Net I/O",
+          "refId": "E"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "system:disk_io:bytes_per_sec{instance=\"deploy\"}",
+          "instant": true,
+          "legendFormat": "Disk I/O",
+          "refId": "F"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "system:load1{instance=\"deploy\"}",
+          "instant": true,
+          "legendFormat": "Load",
+          "refId": "G"
         }
       ],
       "title": "Deploy",
-      "type": "stat"
+      "type": "bargauge"
     },
     {
       "collapsed": false,
@@ -709,7 +2083,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 15
+        "y": 13
       },
       "id": 9,
       "panels": [],
@@ -726,19 +2100,7 @@
           "color": {
             "mode": "thresholds"
           },
-          "mappings": [
-            {
-              "options": {
-                "0": {
-                  "text": "🔴 Offline"
-                },
-                "1": {
-                  "text": "🟢 Online"
-                }
-              },
-              "type": "value"
-            }
-          ],
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -748,22 +2110,223 @@
               },
               {
                 "color": "yellow",
-                "value": 70
+                "value": 0.7
               },
               {
                 "color": "red",
-                "value": 90
+                "value": 0.9
               }
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Status"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "0": {
+                        "text": "🔴"
+                      },
+                      "1": {
+                        "text": "🟢"
+                      }
+                    },
+                    "type": "value"
+                  }
+                ]
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "green",
+                      "value": 1
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CPU"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 0.7
+                    },
+                    {
+                      "color": "red",
+                      "value": 0.9
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Memory"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 0.75
+                    },
+                    {
+                      "color": "red",
+                      "value": 0.9
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Disk"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 0.7
+                    },
+                    {
+                      "color": "red",
+                      "value": 0.9
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Net I/O"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "Bps"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Disk I/O"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "Bps"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Load"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 2
+                    },
+                    {
+                      "color": "red",
+                      "value": 4
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "max",
+                "value": 8
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
-        "h": 6,
-        "w": 12,
+        "h": 5,
+        "w": 8,
         "x": 0,
-        "y": 16
+        "y": 14
       },
       "id": 10,
       "links": [
@@ -774,10 +2337,10 @@
         }
       ],
       "options": {
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "auto",
+        "displayMode": "gradient",
+        "minVizHeight": 10,
+        "minVizWidth": 200,
+        "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -785,7 +2348,7 @@
           "fields": "",
           "values": false
         },
-        "textMode": "value_and_name"
+        "showUnfilled": false
       },
       "pluginVersion": "10.0.0",
       "targets": [
@@ -804,9 +2367,9 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "100 - (avg(pve_cpu_usage_ratio{type=\"node\"}) * 100)",
+          "expr": "avg(pve_cpu_usage_ratio{type=\"node\"})",
           "instant": true,
-          "legendFormat": "CPU Available (%)",
+          "legendFormat": "CPU",
           "refId": "B"
         },
         {
@@ -814,14 +2377,54 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "100 - (avg(pve_memory_usage_ratio{type=\"node\"}) * 100)",
+          "expr": "avg(pve_memory_usage_ratio{type=\"node\"})",
           "instant": true,
-          "legendFormat": "Memory Available (%)",
+          "legendFormat": "Memory",
           "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "avg(pve_disk_usage_ratio{type=\"node\"})",
+          "instant": true,
+          "legendFormat": "Disk",
+          "refId": "D"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum(rate(pve_network_receive_bytes{type=\"node\"}[5m])) + sum(rate(pve_network_transmit_bytes{type=\"node\"}[5m]))",
+          "instant": true,
+          "legendFormat": "Net I/O",
+          "refId": "E"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum(rate(pve_disk_read_bytes{type=\"node\"}[5m])) + sum(rate(pve_disk_write_bytes{type=\"node\"}[5m]))",
+          "instant": true,
+          "legendFormat": "Disk I/O",
+          "refId": "F"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "avg(node_load1{job=\"node-exporter\"})",
+          "instant": true,
+          "legendFormat": "Load",
+          "refId": "G"
         }
       ],
       "title": "Proxmox",
-      "type": "stat"
+      "type": "bargauge"
     },
     {
       "datasource": {
@@ -833,19 +2436,7 @@
           "color": {
             "mode": "thresholds"
           },
-          "mappings": [
-            {
-              "options": {
-                "0": {
-                  "text": "🔴 Offline"
-                },
-                "1": {
-                  "text": "🟢 Online"
-                }
-              },
-              "type": "value"
-            }
-          ],
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -855,22 +2446,223 @@
               },
               {
                 "color": "yellow",
-                "value": 70
+                "value": 0.7
               },
               {
                 "color": "red",
-                "value": 90
+                "value": 0.9
               }
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Status"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "0": {
+                        "text": "🔴"
+                      },
+                      "1": {
+                        "text": "🟢"
+                      }
+                    },
+                    "type": "value"
+                  }
+                ]
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "green",
+                      "value": 1
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CPU"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 0.7
+                    },
+                    {
+                      "color": "red",
+                      "value": 0.9
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Memory"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 0.75
+                    },
+                    {
+                      "color": "red",
+                      "value": 0.9
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Disk"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 0.7
+                    },
+                    {
+                      "color": "red",
+                      "value": 0.9
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Net I/O"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "Bps"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Disk I/O"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "Bps"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Load"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 2
+                    },
+                    {
+                      "color": "red",
+                      "value": 4
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "max",
+                "value": 8
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
-        "h": 6,
-        "w": 12,
-        "x": 12,
-        "y": 16
+        "h": 5,
+        "w": 8,
+        "x": 8,
+        "y": 14
       },
       "id": 11,
       "links": [
@@ -881,10 +2673,10 @@
         }
       ],
       "options": {
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "auto",
+        "displayMode": "gradient",
+        "minVizHeight": 10,
+        "minVizWidth": 200,
+        "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -892,7 +2684,7 @@
           "fields": "",
           "values": false
         },
-        "textMode": "value_and_name"
+        "showUnfilled": false
       },
       "pluginVersion": "10.0.0",
       "targets": [
@@ -911,9 +2703,9 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "system:cpu_usage:ratio{instance=\"synology\"} * 100",
+          "expr": "system:cpu_usage:ratio{instance=\"synology\"}",
           "instant": true,
-          "legendFormat": "CPU Usage (%)",
+          "legendFormat": "CPU",
           "refId": "B"
         },
         {
@@ -921,14 +2713,54 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "system:memory_usage:ratio{instance=\"synology\"} * 100",
+          "expr": "system:memory_usage:ratio{instance=\"synology\"}",
           "instant": true,
-          "legendFormat": "Memory Usage (%)",
+          "legendFormat": "Memory",
           "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "system:disk_usage:ratio{instance=\"synology\"}",
+          "instant": true,
+          "legendFormat": "Disk",
+          "refId": "D"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "system:network_io:bytes_per_sec{instance=\"synology\"}",
+          "instant": true,
+          "legendFormat": "Net I/O",
+          "refId": "E"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "system:disk_io:bytes_per_sec{instance=\"synology\"}",
+          "instant": true,
+          "legendFormat": "Disk I/O",
+          "refId": "F"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "system:load1{instance=\"synology\"}",
+          "instant": true,
+          "legendFormat": "Load",
+          "refId": "G"
         }
       ],
       "title": "Synology",
-      "type": "stat"
+      "type": "bargauge"
     },
     {
       "collapsed": false,
@@ -936,7 +2768,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 22
+        "y": 19
       },
       "id": 12,
       "panels": [],
@@ -953,19 +2785,7 @@
           "color": {
             "mode": "thresholds"
           },
-          "mappings": [
-            {
-              "options": {
-                "0": {
-                  "text": "🔴 Offline"
-                },
-                "1": {
-                  "text": "🟢 Online"
-                }
-              },
-              "type": "value"
-            }
-          ],
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -975,22 +2795,223 @@
               },
               {
                 "color": "yellow",
-                "value": 70
+                "value": 0.7
               },
               {
                 "color": "red",
-                "value": 90
+                "value": 0.9
               }
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Status"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "0": {
+                        "text": "🔴"
+                      },
+                      "1": {
+                        "text": "🟢"
+                      }
+                    },
+                    "type": "value"
+                  }
+                ]
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "green",
+                      "value": 1
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CPU"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 0.7
+                    },
+                    {
+                      "color": "red",
+                      "value": 0.9
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Memory"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 0.75
+                    },
+                    {
+                      "color": "red",
+                      "value": 0.9
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Disk"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 0.7
+                    },
+                    {
+                      "color": "red",
+                      "value": 0.9
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Net I/O"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "Bps"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Disk I/O"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "Bps"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Load"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 2
+                    },
+                    {
+                      "color": "red",
+                      "value": 4
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "max",
+                "value": 8
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
-        "h": 6,
-        "w": 12,
+        "h": 5,
+        "w": 8,
         "x": 0,
-        "y": 23
+        "y": 20
       },
       "id": 13,
       "links": [
@@ -1001,10 +3022,10 @@
         }
       ],
       "options": {
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "auto",
+        "displayMode": "gradient",
+        "minVizHeight": 10,
+        "minVizWidth": 200,
+        "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -1012,7 +3033,7 @@
           "fields": "",
           "values": false
         },
-        "textMode": "value_and_name"
+        "showUnfilled": false
       },
       "pluginVersion": "10.0.0",
       "targets": [
@@ -1031,9 +3052,9 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "system:cpu_usage:ratio{instance=\"ha\"} * 100",
+          "expr": "system:cpu_usage:ratio{instance=\"ha\"}",
           "instant": true,
-          "legendFormat": "CPU Usage (%)",
+          "legendFormat": "CPU",
           "refId": "B"
         },
         {
@@ -1041,14 +3062,54 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "system:memory_usage:ratio{instance=\"ha\"} * 100",
+          "expr": "system:memory_usage:ratio{instance=\"ha\"}",
           "instant": true,
-          "legendFormat": "Memory Usage (%)",
+          "legendFormat": "Memory",
           "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "system:disk_usage:ratio{instance=\"ha\"}",
+          "instant": true,
+          "legendFormat": "Disk",
+          "refId": "D"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "system:network_io:bytes_per_sec{instance=\"ha\"}",
+          "instant": true,
+          "legendFormat": "Net I/O",
+          "refId": "E"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "system:disk_io:bytes_per_sec{instance=\"ha\"}",
+          "instant": true,
+          "legendFormat": "Disk I/O",
+          "refId": "F"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "system:load1{instance=\"ha\"}",
+          "instant": true,
+          "legendFormat": "Load",
+          "refId": "G"
         }
       ],
       "title": "Home Assistant",
-      "type": "stat"
+      "type": "bargauge"
     }
   ],
   "refresh": "10s",
