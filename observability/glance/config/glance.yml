@@ -25,139 +25,107 @@ pages:
 
       - size: full
         widgets:
-          - type: bookmarks
-            title: Infrastructure
-            groups:
-              - title: Management
-                links:
-                  - title: Proxmox
-                    url: https://proxmox.onurx.com
-                  - title: Synology NAS
-                    url: https://synology.onurx.com
-                  - title: Portainer
-                    url: https://portainer.onurx.com
-                  - title: Traefik
-                    url: https://traefik.onurx.com
-
-              - title: Edge Services
-                links:
-                  - title: AdGuard Home
-                    url: https://adguard.onurx.com
-                  - title: Authentik (SSO)
-                    url: https://auth.onurx.com
-
-              - title: Observability
-                links:
-                  - title: Grafana
-                    url: https://grafana.onurx.com
-                  - title: Prometheus
-                    url: https://prometheus.onurx.com
-                  - title: Loki
-                    url: https://loki.onurx.com
-                  - title: Alloy
-                    url: https://alloy.onurx.com
-                  - title: Homarr
-                    url: https://home.onurx.com
-
-              - title: Database & Storage
-                links:
-                  - title: MinIO Console
-                    url: https://minio.onurx.com
-                  - title: MinIO S3 API
-                    url: https://s3.onurx.com
-
-              - title: Media - *arr Stack
-                links:
-                  - title: Plex
-                    url: https://plex.onurx.com
-                  - title: Overseerr
-                    url: https://overseerr.onurx.com
-                  - title: Sonarr
-                    url: https://sonarr.onurx.com
-                  - title: Radarr
-                    url: https://radarr.onurx.com
-                  - title: Prowlarr
-                    url: https://prowlarr.onurx.com
-                  - title: Bazarr
-                    url: https://bazarr.onurx.com
-
-              - title: Media - Downloads
-                links:
-                  - title: SABnzbd
-                    url: https://sabnzbd.onurx.com
-                  - title: qBittorrent
-                    url: https://qbittorrent.onurx.com
-
-              - title: Media - Monitoring
-                links:
-                  - title: Tautulli
-                    url: https://tautulli.onurx.com
-                  - title: Notifiarr
-                    url: https://notifiarr.onurx.com
-
-              - title: Development
-                links:
-                  - title: Gitea
-                    url: https://git.onurx.com
-                  - title: Coolify
-                    url: https://deploy.onurx.com
-
-              - title: Home Automation
-                links:
-                  - title: Home Assistant
-                    url: https://ha.onurx.com
-
-      - size: small
-        widgets:
           - type: monitor
-            title: Service Status
+            title: Infrastructure
             cache: 1m
             sites:
               - title: Proxmox
-                url: https://proxmox.onurx.com
-              - title: Synology
-                url: https://synology.onurx.com
-              - title: Portainer
-                url: https://portainer.onurx.com
-              - title: Traefik
-                url: https://traefik.onurx.com
-              - title: AdGuard
-                url: https://adguard.onurx.com
-              - title: Authentik
-                url: https://auth.onurx.com
-              - title: Grafana
-                url: https://grafana.onurx.com
-              - title: Prometheus
-                url: https://prometheus.onurx.com
-              - title: MinIO
-                url: https://minio.onurx.com
-              - title: Plex
-                url: https://plex.onurx.com
-              - title: Overseerr
-                url: https://overseerr.onurx.com
-              - title: Sonarr
-                url: https://sonarr.onurx.com
-              - title: Radarr
-                url: https://radarr.onurx.com
-              - title: Prowlarr
-                url: https://prowlarr.onurx.com
-              - title: SABnzbd
-                url: https://sabnzbd.onurx.com
-              - title: qBittorrent
-                url: https://qbittorrent.onurx.com
-              - title: Bazarr
-                url: https://bazarr.onurx.com
-              - title: Tautulli
-                url: https://tautulli.onurx.com
-              - title: Gitea
-                url: https://git.onurx.com
-              - title: Coolify
-                url: https://deploy.onurx.com
-              - title: Home Assistant
-                url: https://ha.onurx.com
-              - title: Homarr
-                url: https://home.onurx.com
+                url: https://10.10.10.20:8006
+                icon: si:proxmox
+              - title: Synology NAS
+                url: https://10.10.10.100:5001
+                icon: si:synology
 
+          - type: monitor
+            title: Edge (110)
+            cache: 1m
+            sites:
+              - title: Traefik
+                url: http://10.10.10.110:8080
+                icon: si:traefikproxy
+              - title: AdGuard
+                url: http://10.10.10.110:3000
+                icon: si:adguard
+              - title: Authentik
+                url: http://10.10.10.110:9000
+
+          - type: monitor
+            title: Database (111)
+            cache: 1m
+            sites:
+              - title: MinIO Console
+                url: http://10.10.10.111:9002
+                icon: si:minio
+              - title: PostgreSQL
+                url: http://10.10.10.111:5432
+              - title: MongoDB
+                url: http://10.10.10.111:27017
+              - title: Redis
+                url: http://10.10.10.111:6379
+
+          - type: monitor
+            title: Observability (112)
+            cache: 1m
+            sites:
+              - title: Portainer
+                url: https://10.10.10.112:9443
+                icon: si:portainer
+              - title: Grafana
+                url: http://10.10.10.112:3000
+                icon: si:grafana
+              - title: Prometheus
+                url: http://10.10.10.112:9090
+                icon: si:prometheus
+              - title: Loki
+                url: http://10.10.10.112:3100
+              - title: Homarr
+                url: http://10.10.10.112:3002
+              - title: Glance
+                url: http://10.10.10.112:8080
+
+          - type: monitor
+            title: Media (113)
+            cache: 1m
+            sites:
+              - title: Plex
+                url: http://10.10.10.113:32400
+                icon: si:plex
+              - title: Overseerr
+                url: http://10.10.10.113:5055
+              - title: Sonarr
+                url: http://10.10.10.113:8989
+                icon: si:sonarr
+              - title: Radarr
+                url: http://10.10.10.113:7878
+                icon: si:radarr
+              - title: Prowlarr
+                url: http://10.10.10.113:9696
+              - title: SABnzbd
+                url: http://10.10.10.113:8085
+              - title: qBittorrent
+                url: http://10.10.10.113:8080
+              - title: Bazarr
+                url: http://10.10.10.113:6767
+              - title: Tautulli
+                url: http://10.10.10.113:8181
+              - title: Notifiarr
+                url: http://10.10.10.113:5454
+
+          - type: monitor
+            title: Dev & Deploy
+            cache: 1m
+            sites:
+              - title: Gitea
+                url: http://10.10.10.114:3001
+                icon: si:gitea
+              - title: Coolify
+                url: http://10.10.10.101:8000
+              - title: Home Assistant
+                url: http://10.10.10.116:8123
+                icon: si:homeassistant
+
+      - size: small
+        widgets:
           - type: rss
             title: Homelab News
             limit: 5
