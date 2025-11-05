@@ -423,7 +423,10 @@
               "fstype": true,
               "mountpoint": true,
               "raidIndex": true,
-              "raidName": true
+              "raidName": true,
+              "laNames 1": true,
+              "laNames 2": true,
+              "laNames 3": true
             },
             "indexByName": {
               "instance": 0,
