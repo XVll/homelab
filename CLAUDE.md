@@ -61,7 +61,7 @@ Homelab infrastructure repository managing Docker-based services across multiple
 |----|-----|-----------|----------|
 | edge | 10.10.10.110 | `/opt/homelab/` | Traefik, AdGuard, Authentik, NetBird |
 | db | 10.10.10.111 | `/opt/homelab/` | MongoDB, PostgreSQL, Redis, MinIO, Mosquitto |
-| observability | 10.10.10.112 | `/opt/homelab/` | Portainer, Prometheus, Grafana, Loki, Alloy, Beszel, Homepage |
+| observability | 10.10.10.112 | `/opt/homelab/` | Portainer, Prometheus, Grafana, Loki, Alloy, Beszel, Homarr |
 | media | 10.10.10.113 | `/opt/homelab/` | Plex, Sonarr, Radarr, Prowlarr, SABnzbd, qBittorrent, Bazarr, Overseerr |
 | dev | 10.10.10.114 | `/opt/homelab/` | Gitea, Docker Registry, GitHub Runner |
 | deploy | 10.10.10.101 | `/opt/homelab/` | Coolify |
@@ -72,7 +72,7 @@ Homelab infrastructure repository managing Docker-based services across multiple
 Services are deployed progressively in dependency order:
 1. **Phase 1**: MongoDB, PostgreSQL, Redis, MinIO, Mosquitto → Portainer
 2. **Phase 2**: Traefik → AdGuard → Authentik → NetBird
-3. **Phase 3**: Prometheus → Grafana → Loki → Alloy → Beszel → Homepage
+3. **Phase 3**: Prometheus → Grafana → Loki → Alloy → Beszel → Homarr
 4. **Phase 4**: Applications (media, dev, deploy stacks)
 
 ## Common Commands
@@ -206,7 +206,7 @@ When enabling new services:
 - `observability/grafana/provisioning/` - Datasources, dashboards
 - `observability/loki/config/config.yml` - Log aggregation
 - `observability/alloy/config/config.alloy` - Metrics/logs collection
-- `observability/homepage/config/` - Homepage dashboard configuration
+- `observability/homarr/config/` - Homarr dashboard configuration
 
 ### Edge Configurations
 

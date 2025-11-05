@@ -229,30 +229,31 @@ services:
         max-file: "3"
 
   # ============================================================================
-  # 7. HOMEPAGE - Unified Dashboard & Service Directory
+  # 7. HOMARR - Unified Dashboard & Service Directory
   # ============================================================================
   # Deploy last - provides unified view of all infrastructure
   # Web UI: http://10.10.10.112:3002 or https://home.onurx.com
-  # Configuration: homepage/config/ directory
+  # Documentation: https://homarr.dev/docs/getting-started/installation
 
-  homepage:
-    image: ghcr.io/gethomepage/homepage:latest
-    container_name: homepage
+  homarr:
+    image: ghcr.io/ajnart/homarr:latest
+    container_name: homarr
     restart: unless-stopped
     ports:
-      - "10.10.10.112:3002:3000"
+      - "10.10.10.112:3002:7575"
     volumes:
-      - ./homepage/config:/app/config
+      - ./homarr/config:/app/data/configs
+      - ./homarr/data:/data
+      - ./homarr/icons:/app/public/icons
       - /var/run/docker.sock:/var/run/docker.sock:ro  # Docker integration
-      - ./homepage/images:/app/public/images  # Custom icons
     environment:
       - PUID=1000
       - PGID=1000
-      - HOMEPAGE_ALLOWED_HOSTS=home.onurx.com
+      - TZ=America/New_York
     networks:
       - obs_net
     healthcheck:
-      test: ["CMD", "wget", "--tries=1", "--spider", "http://localhost:3000"]
+      test: ["CMD", "wget", "--tries=1", "--spider", "http://localhost:7575"]
       interval: 30s
       timeout: 10s
       retries: 3

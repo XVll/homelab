@@ -376,7 +376,7 @@
                 "value": [
                   {
                     "title": "View Details",
-                    "url": "/d/system-detail?var-instance=${__value.raw}"
+                    "url": "/d/system-detail?var-instance=${__value.raw}&__from=now-6h&__to=now"
                   }
                 ]
               },
@@ -535,6 +535,22 @@
           "options": {
             "byField": "instance",
             "mode": "outer"
+          }
+        },
+        {
+          "id": "calculateField",
+          "options": {
+            "mode": "reduceRow",
+            "reduce": {
+              "reducer": "last"
+            },
+            "replaceFields": false,
+            "binary": {
+              "left": "instance",
+              "operator": "==",
+              "right": "synology"
+            },
+            "alias": "is_synology"
           }
         },
         {

@@ -62,7 +62,7 @@ http:
         servers:
           - url: "http://10.10.10.112:12345"
 
-    homepage:
+    homarr:
       loadBalancer:
         servers:
           - url: "http://10.10.10.112:3002"
