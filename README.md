@@ -689,28 +689,63 @@ sudo chown -R fx:fx /opt/homelab
 
 ### Recent Changes
 
-**2025-11-05 - Synology & Home Assistant Monitoring:** ✅ Complete
-- Synology NAS monitoring via Alloy built-in SNMP exporter (150 metrics)
-  - CPU: ssCpuIdle, ssCpuUser, ssCpuSystem
-  - Memory: memTotalReal, memAvailReal, memBuffer, memCached
-  - Load: laLoadInt (1/5/15 minute averages)
-  - Network: ifHCInOctets, ifHCOutOctets (64-bit counters)
-  - Disk: hrStorageSize, hrStorageUsed, diskTemperature, diskStatus, diskHealthStatus
-  - RAID: raidStatus, diskSMARTAttr* metrics
-  - Labels: instance="observability", job="integrations/snmp/synology"
-- Home Assistant Prometheus integration enabled (54 metrics)
-  - Entity states, sensors, automations, devices
-  - Labels: instance="10.10.10.116:8123", job="homeassistant"
-  - Long-lived access token stored in 1Password
-- Dashboard improvements:
-  - All dashboards: Rate intervals changed from [30s] to [1m] for smoother graphs
-  - Systems Overview: Added clickable VM names → navigate to System Detail
-  - System Detail: Fixed queries to use instance label, removed host_ip references
-  - Fixed back navigation link in System Detail dashboard
+**2025-11-05 - Unified System Monitoring (Normalized Metrics):** ✅ Complete
+- **Prometheus Recording Rules** - Normalized metrics for multi-source monitoring:
+  - `system:cpu_usage:ratio` - CPU usage as ratio (0.0-1.0)
+  - `system:memory_usage:ratio` - Memory usage as ratio (0.0-1.0)
+  - `system:disk_usage:ratio` - Disk usage as ratio (0.0-1.0)
+  - `system:network_io:bytes_per_sec` - Network I/O in bytes/sec
+  - `system:disk_io:bytes_per_sec` - Disk I/O in bytes/sec
+  - `system:up` - System availability (1=up, 0=down)
 
-**Next Steps:**
-- Add Synology row to Systems Overview dashboard (metrics ready, needs UI work)
-- Home Assistant displays entity metrics (no system metrics available from HA OS)
+- **Standardized Scrape Intervals** - All systems now scrape at 10s:
+  - VMs: 10s (node_exporter + cAdvisor)
+  - Synology NAS: 10s (SNMP)
+  - Home Assistant: 10s (Prometheus API)
+  - Rate queries use 1m windows (6 data points) for accurate calculations
+
+- **Synology NAS Integration** (10.10.10.100):
+  - CPU: `ssCpuIdle` metric normalized to usage ratio
+  - Memory: `memTotalReal - memAvailReal` → ratio
+  - Disk: `raidTotalSize/raidFreeSize` for Volume 1 (main data storage)
+  - Network: High Capacity counters `ifHCInOctets + ifHCOutOctets`
+  - Disk I/O: Extended counters `spaceIONReadX + spaceIONWrittenX`
+  - Labels: instance="synology", system_name="synology", system_type="nas"
+
+- **Home Assistant Integration** (10.10.10.116):
+  - System Monitor integration sensors converted to normalized metrics
+  - CPU: `sensor.system_monitor_processor_use` (percent → ratio)
+  - Memory: `sensor.system_monitor_memory_usage` (percent → ratio)
+  - Disk: `sensor.system_monitor_disk_usage` (percent → ratio)
+  - Network: `sensor.system_monitor_network_throughput_*` (MB/s → bytes/sec)
+  - Disk I/O: Not available in System Monitor integration
+  - Labels: instance="ha", system_name="ha", system_type="automation"
+
+- **Grafana Dashboard** - System Overview (Normalized):
+  - Single table showing all systems (6 VMs + Synology + Home Assistant)
+  - Clean label structure (instance, system_name, system_type, job only)
+  - Gauge visualization for CPU, Memory, Disk (thresholds: green < 70%, yellow < 90%, red ≥ 90%)
+  - Auto-refresh: 5s
+  - Dashboard UID: `overview-v2`
+
+**Files Modified:**
+- `observability/prometheus/config/rules/system_metrics.yml` - Recording rules for all systems
+- `observability/alloy/config/config.alloy` - Scrape interval changes (SNMP 60s→10s, HA 60s→10s)
+- `observability/grafana/dashboards/overview-v2.json` - Unified dashboard
+
+**Metrics Coverage:**
+```
+System          CPU  Memory  Disk  Net I/O  Disk I/O
+-----------------------------------------------------
+edge            ✅   ✅      ✅    ✅       ✅
+db              ✅   ✅      ✅    ✅       ✅
+observability   ✅   ✅      ✅    ✅       ✅
+media           ✅   ✅      ✅    ✅       ✅
+dev             ✅   ✅      ✅    ✅       ✅
+deploy          ✅   ✅      ✅    ✅       ✅
+synology        ✅   ✅      ✅    ✅       ✅
+ha              ✅   ✅      ✅    ✅       ❌
+```
 
 **2025-11-04 - Monitoring Infrastructure Migration:** ✅ Complete
 - Migrated from standalone exporters to Grafana Alloy on all VMs
