@@ -2,8 +2,8 @@ server:
   port: 8080
 
 theme:
-  background-color: 15 23 42  # slate-900
-  primary-color: 99 102 241   # indigo-500
+  background-color: 222 47 11   # Dark blue-gray (HSL)
+  primary-color: 239 84 67      # Indigo (HSL)
   contrast-multiplier: 1.2
 
 pages:
