@@ -289,6 +289,42 @@
           "instant": true,
           "legendFormat": "",
           "refId": "DiskIO"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "system:load1",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "",
+          "refId": "Load1"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "system:load5",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "",
+          "refId": "Load5"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "system:load15",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "",
+          "refId": "Load15"
         }
       ],
       "title": "All Systems - Unified Monitoring",
@@ -309,26 +345,41 @@
               "Time 3": true,
               "Time 4": true,
               "Time 5": true,
+              "Time 6": true,
+              "Time 7": true,
+              "Time 8": true,
               "__name__ 1": true,
               "__name__ 2": true,
               "__name__ 3": true,
               "__name__ 4": true,
               "__name__ 5": true,
+              "__name__ 6": true,
+              "__name__ 7": true,
+              "__name__ 8": true,
               "job 1": true,
               "job 2": true,
               "job 3": true,
               "job 4": true,
               "job 5": true,
+              "job 6": true,
+              "job 7": true,
+              "job 8": true,
               "system_name 1": true,
               "system_name 2": true,
               "system_name 3": true,
               "system_name 4": true,
               "system_name 5": true,
+              "system_name 6": true,
+              "system_name 7": true,
+              "system_name 8": true,
               "system_type 1": true,
               "system_type 2": true,
               "system_type 3": true,
               "system_type 4": true,
               "system_type 5": true,
+              "system_type 6": true,
+              "system_type 7": true,
+              "system_type 8": true,
               "cluster": true,
               "environment": true,
               "tier": true,
@@ -344,7 +395,10 @@
               "Value #Memory": "Memory Usage",
               "Value #Disk": "Disk Usage",
               "Value #Network": "Network I/O",
-              "Value #DiskIO": "Disk I/O"
+              "Value #DiskIO": "Disk I/O",
+              "Value #Load1": "Load (1m)",
+              "Value #Load5": "Load (5m)",
+              "Value #Load15": "Load (15m)"
             }
           }
         }
