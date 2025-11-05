@@ -242,16 +242,13 @@ services:
     ports:
       - "10.10.10.112:3002:7575"
     volumes:
-      - ./homarr/config:/app/data/configs
-      - ./homarr/data:/data
-      - ./homarr/icons:/app/public/icons
+      - ./homarr/data:/appdata
       - /var/run/docker.sock:/var/run/docker.sock:ro  # Docker integration
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=America/New_York
       - SECRET_ENCRYPTION_KEY=${HOMARR_ENCRYPTION_KEY}
-      - REDIS_URL=${REDIS_URL}
     networks:
       - obs_net
     healthcheck:
