@@ -375,27 +375,15 @@
                 "id": "links",
                 "value": [
                   {
-                    "title": "VM Details",
+                    "title": "View Details",
                     "url": "/d/system-detail?var-instance=${__value.raw}"
-                  },
-                  {
-                    "title": "Synology Details",
-                    "url": "/d/synology-detail"
-                  },
-                  {
-                    "title": "Home Assistant Details",
-                    "url": "/d/homeassistant-detail"
-                  },
-                  {
-                    "title": "Proxmox Details",
-                    "url": "/d/proxmox-overview"
                   }
                 ]
               },
               {
                 "id": "custom.cellOptions",
                 "value": {
-                  "type": "auto"
+                  "type": "color-text"
                 }
               }
             ]
