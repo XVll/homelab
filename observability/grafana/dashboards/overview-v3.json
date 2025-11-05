@@ -538,22 +538,6 @@
           }
         },
         {
-          "id": "calculateField",
-          "options": {
-            "mode": "reduceRow",
-            "reduce": {
-              "reducer": "last"
-            },
-            "replaceFields": false,
-            "binary": {
-              "left": "instance",
-              "operator": "==",
-              "right": "synology"
-            },
-            "alias": "is_synology"
-          }
-        },
-        {
           "id": "organize",
           "options": {
             "excludeByName": {
@@ -613,7 +597,8 @@
               "Time": true,
               "system_type": true,
               "Value #Status": false,
-              "system_name": true
+              "system_name": true,
+              "is_synology": true
             },
             "indexByName": {
               "instance": 0,
@@ -1173,22 +1158,6 @@
           }
         },
         {
-          "id": "calculateField",
-          "options": {
-            "mode": "reduceRow",
-            "reduce": {
-              "reducer": "last"
-            },
-            "replaceFields": false,
-            "binary": {
-              "left": "instance",
-              "operator": "==",
-              "right": "synology"
-            },
-            "alias": "is_synology"
-          }
-        },
-        {
           "id": "organize",
           "options": {
             "excludeByName": {
@@ -1248,7 +1217,8 @@
               "Time": true,
               "system_type": true,
               "Value #Status": false,
-              "system_name": true
+              "system_name": true,
+              "is_synology": true
             },
             "indexByName": {
               "instance": 0,
@@ -1808,22 +1778,6 @@
           }
         },
         {
-          "id": "calculateField",
-          "options": {
-            "mode": "reduceRow",
-            "reduce": {
-              "reducer": "last"
-            },
-            "replaceFields": false,
-            "binary": {
-              "left": "instance",
-              "operator": "==",
-              "right": "synology"
-            },
-            "alias": "is_synology"
-          }
-        },
-        {
           "id": "organize",
           "options": {
             "excludeByName": {
@@ -1883,7 +1837,8 @@
               "Time": true,
               "system_type": true,
               "Value #Status": false,
-              "system_name": true
+              "system_name": true,
+              "is_synology": true
             },
             "indexByName": {
               "instance": 0,
