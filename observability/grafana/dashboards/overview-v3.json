@@ -568,7 +568,12 @@
               "raidName": true,
               "laNames 1": true,
               "laNames 2": true,
-              "laNames 3": true
+              "laNames 3": true,
+              "__name__": true,
+              "job": true,
+              "Time": true,
+              "system_type": true,
+              "Value #Status": true
             },
             "indexByName": {
               "instance": 0,
