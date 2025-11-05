@@ -236,7 +236,7 @@ services:
   # Documentation: https://homarr.dev/docs/getting-started/installation
 
   homarr:
-    image: ghcr.io/ajnart/homarr:latest
+    image: ghcr.io/homarr-labs/homarr:latest
     container_name: homarr
     restart: unless-stopped
     ports:
@@ -250,6 +250,7 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=America/New_York
+      - SECRET_ENCRYPTION_KEY=${HOMARR_ENCRYPTION_KEY}
     networks:
       - obs_net
     healthcheck:
