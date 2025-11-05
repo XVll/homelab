@@ -1,0 +1,172 @@
+groups:
+  - name: normalized_system_metrics
+    interval: 30s
+    rules:
+      # ========================================================================
+      # CPU Usage - Normalized to ratio (0.0 - 1.0)
+      # ========================================================================
+
+      # Docker VMs (edge, db, observability, etc.)
+      - record: system:cpu_usage:ratio
+        expr: |
+          1 - avg by (instance, system_name, system_type, job) (
+            irate(node_cpu_seconds_total{job="integrations/unix", mode="idle"}[1m])
+          )
+
+      # Synology NAS
+      - record: system:cpu_usage:ratio
+        expr: |
+          label_replace(
+            (100 - ssCpuIdle{job="integrations/snmp"}) / 100,
+            "job", "integrations/snmp", "", ""
+          )
+
+      # Home Assistant (if it exposes node_exporter metrics)
+      - record: system:cpu_usage:ratio
+        expr: |
+          1 - avg by (instance, system_name, system_type, job) (
+            irate(node_cpu_seconds_total{job="integrations/homeassistant", mode="idle"}[1m])
+          )
+
+      # ========================================================================
+      # Memory Usage - Normalized to ratio (0.0 - 1.0)
+      # ========================================================================
+
+      # Docker VMs
+      - record: system:memory_usage:ratio
+        expr: |
+          1 - (
+            avg by (instance, system_name, system_type, job) (node_memory_MemAvailable_bytes{job="integrations/unix"})
+            /
+            avg by (instance, system_name, system_type, job) (node_memory_MemTotal_bytes{job="integrations/unix"})
+          )
+
+      # Synology (SNMP metrics are in KB, convert to ratio)
+      - record: system:memory_usage:ratio
+        expr: |
+          label_replace(
+            (memTotalReal{job="integrations/snmp"} - memAvailReal{job="integrations/snmp"})
+            / memTotalReal{job="integrations/snmp"},
+            "job", "integrations/snmp", "", ""
+          )
+
+      # Home Assistant
+      - record: system:memory_usage:ratio
+        expr: |
+          1 - (
+            avg by (instance, system_name, system_type, job) (node_memory_MemAvailable_bytes{job="integrations/homeassistant"})
+            /
+            avg by (instance, system_name, system_type, job) (node_memory_MemTotal_bytes{job="integrations/homeassistant"})
+          )
+
+      # ========================================================================
+      # Disk Usage - Normalized to ratio (0.0 - 1.0)
+      # ========================================================================
+
+      # Docker VMs (root filesystem)
+      - record: system:disk_usage:ratio
+        expr: |
+          (
+            node_filesystem_size_bytes{job="integrations/unix", mountpoint="/host/root", fstype="ext4"}
+            - node_filesystem_avail_bytes{job="integrations/unix", mountpoint="/host/root", fstype="ext4"}
+          ) / node_filesystem_size_bytes{job="integrations/unix", mountpoint="/host/root", fstype="ext4"}
+
+      # Synology (primary storage pool - adjust OID if needed)
+      # Note: This uses hrStorage metrics from SNMP
+      - record: system:disk_usage:ratio
+        expr: |
+          label_replace(
+            (hrStorageSize{job="integrations/snmp", hrStorageDescr=~".*volume.*|.*pool.*"} - hrStorageUsed{job="integrations/snmp", hrStorageDescr=~".*volume.*|.*pool.*"})
+            / hrStorageSize{job="integrations/snmp", hrStorageDescr=~".*volume.*|.*pool.*"},
+            "job", "integrations/snmp", "", ""
+          )
+
+      # Home Assistant
+      - record: system:disk_usage:ratio
+        expr: |
+          (
+            node_filesystem_size_bytes{job="integrations/homeassistant", mountpoint=~"/|/root"}
+            - node_filesystem_avail_bytes{job="integrations/homeassistant", mountpoint=~"/|/root"}
+          ) / node_filesystem_size_bytes{job="integrations/homeassistant", mountpoint=~"/|/root"}
+
+      # ========================================================================
+      # Network I/O - Normalized to bytes per second
+      # ========================================================================
+
+      # Docker VMs
+      - record: system:network_io:bytes_per_sec
+        expr: |
+          sum by (instance, system_name, system_type, job) (
+            rate(node_network_receive_bytes_total{job="integrations/unix", device!~"lo|docker.*|veth.*|br-.*"}[1m])
+          ) +
+          sum by (instance, system_name, system_type, job) (
+            rate(node_network_transmit_bytes_total{job="integrations/unix", device!~"lo|docker.*|veth.*|br-.*"}[1m])
+          )
+
+      # Synology (ifInOctets + ifOutOctets)
+      - record: system:network_io:bytes_per_sec
+        expr: |
+          label_replace(
+            sum by (instance, system_name, system_type) (
+              rate(ifInOctets{job="integrations/snmp", ifDescr!~"lo|docker.*"}[1m])
+            ) +
+            sum by (instance, system_name, system_type) (
+              rate(ifOutOctets{job="integrations/snmp", ifDescr!~"lo|docker.*"}[1m])
+            ),
+            "job", "integrations/snmp", "", ""
+          )
+
+      # Home Assistant
+      - record: system:network_io:bytes_per_sec
+        expr: |
+          sum by (instance, system_name, system_type, job) (
+            rate(node_network_receive_bytes_total{job="integrations/homeassistant", device!~"lo|docker.*|veth.*|br-.*"}[1m])
+          ) +
+          sum by (instance, system_name, system_type, job) (
+            rate(node_network_transmit_bytes_total{job="integrations/homeassistant", device!~"lo|docker.*|veth.*|br-.*"}[1m])
+          )
+
+      # ========================================================================
+      # Disk I/O - Normalized to bytes per second
+      # ========================================================================
+
+      # Docker VMs
+      - record: system:disk_io:bytes_per_sec
+        expr: |
+          sum by (instance, system_name, system_type, job) (
+            rate(node_disk_read_bytes_total{job="integrations/unix"}[1m])
+          ) +
+          sum by (instance, system_name, system_type, job) (
+            rate(node_disk_written_bytes_total{job="integrations/unix"}[1m])
+          )
+
+      # Synology (diskIOReads + diskIOWrites if available)
+      # Note: May need to adjust based on actual SNMP OIDs exposed
+      - record: system:disk_io:bytes_per_sec
+        expr: |
+          label_replace(
+            sum by (instance, system_name, system_type) (
+              rate(diskIOReads{job="integrations/snmp"}[1m])
+            ) +
+            sum by (instance, system_name, system_type) (
+              rate(diskIOWrites{job="integrations/snmp"}[1m])
+            ),
+            "job", "integrations/snmp", "", ""
+          )
+
+      # Home Assistant
+      - record: system:disk_io:bytes_per_sec
+        expr: |
+          sum by (instance, system_name, system_type, job) (
+            rate(node_disk_read_bytes_total{job="integrations/homeassistant"}[1m])
+          ) +
+          sum by (instance, system_name, system_type, job) (
+            rate(node_disk_written_bytes_total{job="integrations/homeassistant"}[1m])
+          )
+
+      # ========================================================================
+      # System Status - 1 = up, 0 = down
+      # ========================================================================
+
+      - record: system:up
+        expr: up{job=~"integrations/(unix|snmp|homeassistant)"}
