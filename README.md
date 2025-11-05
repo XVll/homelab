@@ -718,14 +718,29 @@ sudo chown -R fx:fx /opt/homelab
   - Memory: `sensor.system_monitor_memory_usage` (percent → ratio)
   - Disk: `sensor.system_monitor_disk_usage` (percent → ratio)
   - Network: `sensor.system_monitor_network_throughput_*` (MB/s → bytes/sec)
-  - Disk I/O: Not available in System Monitor integration
+  - Disk I/O: From Proxmox `pve_disk_read/write_bytes` (5m rate window due to low activity)
+  - Load Average: System Monitor sensors for load_1_min, load_5_min, load_15_min
   - Labels: instance="ha", system_name="ha", system_type="automation"
 
-- **Grafana Dashboard** - System Overview (Normalized):
-  - Single table showing all systems (6 VMs + Synology + Home Assistant)
-  - Clean label structure (instance, system_name, system_type, job only)
-  - Gauge visualization for CPU, Memory, Disk (thresholds: green < 70%, yellow < 90%, red ≥ 90%)
-  - Auto-refresh: 5s
+- **Proxmox VM Name Labeling**:
+  - Alloy relabels VM IDs to human-readable names at scrape time
+  - Mapping: qemu/110→edge, qemu/111→db, qemu/112→observability, qemu/113→media, qemu/114→dev, qemu/101→deploy, qemu/116→ha
+  - Recording rules use `vm_name` label instead of fragile VM IDs
+  - Survives VM recreation/ID changes
+
+- **Grafana Dashboard** - System Overview (Normalized) v2:
+  - **Overview Table**: All 8 systems with current metrics (12 rows × 24 cols)
+    - Columns: System, CPU Usage, Memory Usage, Disk Usage, Load Average, Network I/O, Disk I/O
+    - LCD gauges for CPU/Memory/Disk/Load with threshold colors
+    - Colored text for I/O metrics (bytes/sec)
+  - **Time-Series Charts** (5 panels below table):
+    - CPU Usage (12 cols) - All systems over time
+    - Memory Usage (12 cols) - All systems over time
+    - Load Average (8 cols) - 1-minute load for all systems
+    - Network I/O (8 cols) - bytes/sec for all systems
+    - Disk I/O (8 cols) - bytes/sec for all systems
+  - Chart features: 1px smooth lines, 20% opacity gradient fill, tooltip sorted desc, legend with Last/Min/Max
+  - Auto-refresh: 5s | Time range: 1h
   - Dashboard UID: `overview-v2`
 
 **Files Modified:**
@@ -735,17 +750,26 @@ sudo chown -R fx:fx /opt/homelab
 
 **Metrics Coverage:**
 ```
-System          CPU  Memory  Disk  Net I/O  Disk I/O
------------------------------------------------------
-edge            ✅   ✅      ✅    ✅       ✅
-db              ✅   ✅      ✅    ✅       ✅
-observability   ✅   ✅      ✅    ✅       ✅
-media           ✅   ✅      ✅    ✅       ✅
-dev             ✅   ✅      ✅    ✅       ✅
-deploy          ✅   ✅      ✅    ✅       ✅
-synology        ✅   ✅      ✅    ✅       ✅
-ha              ✅   ✅      ✅    ✅       ❌
+System          CPU  Memory  Disk  Net I/O  Disk I/O  Load
+-----------------------------------------------------------
+edge            ✅   ✅      ✅    ✅       ✅       ✅
+db              ✅   ✅      ✅    ✅       ✅       ✅
+observability   ✅   ✅      ✅    ✅       ✅       ✅
+media           ✅   ✅      ✅    ✅       ✅       ✅
+dev             ✅   ✅      ✅    ✅       ✅       ✅
+deploy          ✅   ✅      ✅    ✅       ✅       ✅
+synology        ✅   ✅      ✅    ✅       ✅       ✅
+ha              ✅   ✅      ✅    ✅       ✅       ✅
 ```
+
+**2025-11-05 - Unified Monitoring Dashboard Complete:** ✅ Complete
+- Normalized all system metrics across 8 systems (6 VMs + Synology + Home Assistant)
+- Added load average metrics (1m/5m/15m) for all systems from 3 different sources
+- Implemented Home Assistant disk I/O using Proxmox metrics (`vm_name="ha"`)
+- Created Proxmox VM name labeling system (ID→name mapping in Alloy)
+- Built comprehensive Grafana dashboard with table + 5 time-series charts
+- All metrics now display with proper thresholds, smooth lines, and sorted tooltips/legends
+- Complete metric coverage: CPU, Memory, Disk, Network I/O, Disk I/O, Load Average
 
 **2025-11-04 - Monitoring Infrastructure Migration:** ✅ Complete
 - Migrated from standalone exporters to Grafana Alloy on all VMs
