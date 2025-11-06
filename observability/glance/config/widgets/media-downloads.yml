@@ -67,3 +67,86 @@
         </div>
       {{ end }}
     </div>
+
+- type: custom-api
+  title: qBittorrent
+  cache: 30s
+  url: ${QBITTORRENT_URL}/api/v2/transfer/info
+  template: |
+    <div class="p-2">
+      <div class="flex justify-between mb-2">
+        <div class="flex-1">
+          <div class="size-h6">DOWN SPEED</div>
+          <div class="color-highlight size-h3">{{ div (.JSON.Float "dl_info_speed") 1048576 | printf "%.1f" }}MB/s</div>
+        </div>
+        <div class="flex-1">
+          <div class="size-h6">UP SPEED</div>
+          <div class="color-highlight size-h3">{{ div (.JSON.Float "up_info_speed") 1048576 | printf "%.1f" }}MB/s</div>
+        </div>
+      </div>
+      <div class="flex justify-between mb-2">
+        <div class="flex-1">
+          <div class="size-h6">DOWNLOADED</div>
+          <div class="color-highlight size-h3">{{ div (.JSON.Float "dl_info_data") 1073741824 | printf "%.2f" }}GB</div>
+        </div>
+        <div class="flex-1">
+          <div class="size-h6">UPLOADED</div>
+          <div class="color-highlight size-h3">{{ div (.JSON.Float "up_info_data") 1073741824 | printf "%.2f" }}GB</div>
+        </div>
+      </div>
+    </div>
+
+- type: custom-api
+  title: Prowlarr Indexers
+  cache: 5m
+  url: ${PROWLARR_URL}/api/v1/indexer
+  headers:
+    X-Api-Key: ${PROWLARR_API_KEY}
+  template: |
+    <div class="p-2">
+      <div class="size-h5">Indexers ({{ len (.JSON.Array "") }})</div>
+      {{ range (.JSON.Array "") }}
+        <div class="flex items-center mb-1 border-b pb-1">
+          <div class="flex-1">
+            <div class="size-h6 color-highlight">{{ .String "name" }}</div>
+            <div class="size-h7">
+              {{ if .Bool "enable" }}
+                {{ if eq (.String "status.value") "ok" }}✓ Enabled & Working{{ else }}⚠ Enabled but {{ .String "status.value" }}{{ end }}
+              {{ else }}
+                ⏸ Disabled
+              {{ end }}
+            </div>
+          </div>
+        </div>
+      {{ end }}
+    </div>
+
+- type: custom-api
+  title: Bazarr Subtitles
+  cache: 5m
+  url: ${BAZARR_URL}/api/system/status
+  headers:
+    X-Api-Key: ${BAZARR_API_KEY}
+  template: |
+    <div class="p-2">
+      <div class="flex justify-between mb-2">
+        <div class="flex-1">
+          <div class="size-h6">VERSION</div>
+          <div class="color-highlight size-h3">{{ .JSON.String "data.bazarr_version" }}</div>
+        </div>
+        <div class="flex-1">
+          <div class="size-h6">SONARR SYNC</div>
+          <div class="color-highlight size-h3">{{ if .JSON.Bool "data.sonarr_signalr" }}✓{{ else }}✗{{ end }}</div>
+        </div>
+      </div>
+      <div class="flex justify-between mb-2">
+        <div class="flex-1">
+          <div class="size-h6">RADARR SYNC</div>
+          <div class="color-highlight size-h3">{{ if .JSON.Bool "data.radarr_signalr" }}✓{{ else }}✗{{ end }}</div>
+        </div>
+        <div class="flex-1">
+          <div class="size-h6">STATUS</div>
+          <div class="color-highlight size-h3">{{ if .JSON.String "data.status" }}{{ .JSON.String "data.status" }}{{ else }}OK{{ end }}</div>
+        </div>
+      </div>
+    </div>

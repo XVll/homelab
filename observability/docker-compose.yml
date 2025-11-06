@@ -297,6 +297,11 @@ services:
       - TAUTULLI_API_KEY=${TAUTULLI_API_KEY}
       - PLEX_URL=${PLEX_URL}
       - PLEX_TOKEN=${PLEX_TOKEN}
+      - QBITTORRENT_URL=${QBITTORRENT_URL}
+      - PROWLARR_URL=${PROWLARR_URL}
+      - PROWLARR_API_KEY=${PROWLARR_API_KEY}
+      - BAZARR_URL=${BAZARR_URL}
+      - BAZARR_API_KEY=${BAZARR_API_KEY}
     networks:
       - obs_net
     healthcheck:
