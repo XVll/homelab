@@ -122,20 +122,9 @@ http:
       tls:
         certResolver: cloudflare
 
-    # Homarr (Unified Dashboard)
-    homarr:
-      rule: "Host(`home.onurx.com`)"
-      entryPoints:
-        - websecure
-      service: homarr
-      middlewares:
-        - private-default
-      tls:
-        certResolver: cloudflare
-
-    # Glance (Feed Dashboard)
+    # Glance (Homelab Dashboard)
     glance:
-      rule: "Host(`glance.onurx.com`)"
+      rule: "Host(`home.onurx.com`)"
       entryPoints:
         - websecure
       service: glance

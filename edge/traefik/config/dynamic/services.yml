@@ -62,11 +62,6 @@ http:
         servers:
           - url: "http://10.10.10.112:12345"
 
-    homarr:
-      loadBalancer:
-        servers:
-          - url: "http://10.10.10.112:3002"
-
     glance:
       loadBalancer:
         servers:

@@ -229,44 +229,10 @@ services:
         max-file: "3"
 
   # ============================================================================
-  # 7. HOMARR - Unified Dashboard & Service Directory
+  # 7. GLANCE - Homelab Dashboard
   # ============================================================================
-  # Deploy last - provides unified view of all infrastructure
-  # Web UI: http://10.10.10.112:3002 or https://home.onurx.com
-  # Documentation: https://homarr.dev/docs/getting-started/installation
-
-  homarr:
-    image: ghcr.io/homarr-labs/homarr:latest
-    container_name: homarr
-    restart: unless-stopped
-    ports:
-      - "10.10.10.112:3002:7575"
-    volumes:
-      - ./homarr/data:/appdata
-      - /var/run/docker.sock:/var/run/docker.sock:ro  # Docker integration
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=America/New_York
-      - SECRET_ENCRYPTION_KEY=${HOMARR_ENCRYPTION_KEY}
-    networks:
-      - obs_net
-    healthcheck:
-      test: ["CMD", "wget", "--tries=1", "--spider", "http://localhost:7575"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
-
-  # ============================================================================
-  # 8. GLANCE - Feed-based Dashboard
-  # ============================================================================
-  # Alternative dashboard with RSS, calendar, and widget support
-  # Web UI: http://10.10.10.112:8080 or https://glance.onurx.com
+  # Primary dashboard with RSS, calendar, and widget support for all homelab services
+  # Web UI: http://10.10.10.112:8080 or https://home.onurx.com
   # Documentation: https://github.com/glanceapp/glance
 
   glance:
