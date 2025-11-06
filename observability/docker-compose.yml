@@ -280,7 +280,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro  # Docker widget
     environment:
       - PROXMOX_HOST=${PROXMOX_HOST}
-      - PROXMOX_TOKEN=${PROXMOX_TOKEN}
+      - PROXMOX_TOKEN_ID=${PROXMOX_TOKEN_ID}
+      - PROXMOX_TOKEN_SECRET=${PROXMOX_TOKEN_SECRET}
       - ADGUARD_URL=${ADGUARD_URL}
       - ADGUARD_USERNAME=${ADGUARD_USERNAME}
       - ADGUARD_PASSWORD=${ADGUARD_PASSWORD}

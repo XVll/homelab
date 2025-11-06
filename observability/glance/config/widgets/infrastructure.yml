@@ -4,7 +4,7 @@
   url: https://${PROXMOX_HOST}:8006/api2/json/cluster/resources?type=vm
   allow-insecure: true
   headers:
-    Authorization: PVEAPIToken=${PROXMOX_TOKEN}
+    Authorization: PVEAPIToken=${PROXMOX_TOKEN_ID}=${PROXMOX_TOKEN_SECRET}
   template: |
     <div class="p-2">
       <div class="size-h5">Debug: {{ .JSON.String "data" }}</div>
