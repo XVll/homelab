@@ -65,6 +65,8 @@
       url: http://10.10.10.113:6767
     - title: Tautulli
       url: http://10.10.10.113:8181
+    - title: Notifiarr
+      url: http://10.10.10.113:5454
 
 - type: monitor
   title: Development
