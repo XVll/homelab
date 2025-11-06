@@ -277,6 +277,7 @@ services:
       - "10.10.10.112:8080:8080"
     volumes:
       - ./glance/config:/app/config
+      - /var/run/docker.sock:/var/run/docker.sock:ro  # Docker widget
     environment:
       - ADGUARD_URL=${ADGUARD_URL}
       - ADGUARD_USERNAME=${ADGUARD_USERNAME}
