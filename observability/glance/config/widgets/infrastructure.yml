@@ -2,6 +2,7 @@
   title: Proxmox VMs
   cache: 30s
   url: https://${PROXMOX_HOST}:8006/api2/json/cluster/resources?type=vm
+  insecure: true
   headers:
     Authorization: PVEAPIToken=${PROXMOX_TOKEN}
   template: |
