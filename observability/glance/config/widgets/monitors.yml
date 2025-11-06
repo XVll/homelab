@@ -6,9 +6,11 @@
     - title: Proxmox
       url: https://10.10.10.20:8006
       icon: si:proxmox
+      allow-insecure: true
     - title: Synology NAS
       url: https://10.10.10.100:5001
       icon: si:synology
+      allow-insecure: true
     - title: Traefik
       url: http://10.10.10.110:8080
       icon: si:traefikproxy
@@ -20,6 +22,7 @@
     - title: Portainer
       url: https://10.10.10.112:9443
       icon: si:portainer
+      allow-insecure: true
     - title: Grafana
       url: http://10.10.10.112:3000
       icon: si:grafana
@@ -30,22 +33,16 @@
 - type: monitor
   title: Databases
   cache: 1m
-  collapse-after: 2
+  collapse-after: 1
   sites:
-    - title: MinIO
+    - title: MinIO Console
       url: http://10.10.10.111:9002
       icon: si:minio
-    - title: PostgreSQL
-      url: http://10.10.10.111:5432
-    - title: MongoDB
-      url: http://10.10.10.111:27017
-    - title: Redis
-      url: http://10.10.10.111:6379
 
 - type: monitor
   title: Media Services
   cache: 1m
-  collapse-after: 3
+  collapse-after: 2
   sites:
     - title: Plex
       url: http://10.10.10.113:32400
@@ -68,8 +65,6 @@
       url: http://10.10.10.113:6767
     - title: Tautulli
       url: http://10.10.10.113:8181
-    - title: Notifiarr
-      url: http://10.10.10.113:5454
 
 - type: monitor
   title: Development

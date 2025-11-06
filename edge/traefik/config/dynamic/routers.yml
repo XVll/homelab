@@ -271,17 +271,6 @@ http:
       tls:
         certResolver: cloudflare
 
-    # Notifiarr (TRaSH Sync)
-    notifiarr:
-      rule: "Host(`notifiarr.onurx.com`)"
-      entryPoints:
-        - websecure
-      service: notifiarr
-      middlewares:
-        - private-default
-      tls:
-        certResolver: cloudflare
-
     # Tautulli (Plex Monitoring)
     tautulli:
       rule: "Host(`tautulli.onurx.com`)"

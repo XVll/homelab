@@ -159,11 +159,6 @@ http:
         servers:
           - url: "http://10.10.10.113:6767"
 
-    notifiarr:
-      loadBalancer:
-        servers:
-          - url: "http://10.10.10.113:5454"
-
     tautulli:
       loadBalancer:
         servers:
