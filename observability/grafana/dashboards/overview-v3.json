@@ -18,9 +18,10 @@
   "description": "Unified system overview using normalized metrics",
   "editable": true,
   "fiscalYearStartMonth": 0,
-  "graphTooltip": 0,
+  "graphTooltip": 1,
   "id": 16,
   "links": [],
+  "liveNow": true,
   "panels": [
     {
       "datasource": {
@@ -1397,7 +1398,7 @@
       "type": "timeseries"
     }
   ],
-  "preload": false,
+  "preload": true,
   "refresh": "10s",
   "schemaVersion": 40,
   "tags": [
@@ -1432,13 +1433,13 @@
     ]
   },
   "time": {
-    "from": "now-12h",
+    "from": "now-24h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "System Overview v3 (With Proxmox Stats)",
   "uid": "overview-v3",
-  "version": 22,
+  "version": 24,
   "weekStart": ""
 }
