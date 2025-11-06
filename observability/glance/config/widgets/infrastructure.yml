@@ -1,3 +1,28 @@
+- type: custom-api
+  title: Proxmox VMs
+  cache: 30s
+  url: https://${PROXMOX_HOST}:8006/api2/json/cluster/resources?type=vm
+  headers:
+    Authorization: PVEAPIToken=${PROXMOX_TOKEN}
+  template: |
+    <div class="p-2">
+      <div class="size-h5">Virtual Machines</div>
+      {{ range (.JSON.Array "data") }}
+        {{ if eq (.String "type") "qemu" }}
+          <div class="flex items-center mb-1 border-b pb-1">
+            <div class="flex-1">
+              <div class="size-h6 color-highlight">{{ .String "name" }}</div>
+              <div class="size-h7">Node: {{ .String "node" }} • VMID: {{ .Int "vmid" }}</div>
+              <div class="size-h8 color-subdue">
+                {{ if eq (.String "status") "running" }}✓ Running{{ else }}⏸ Stopped{{ end }}
+                {{ if eq (.String "status") "running" }} • CPU: {{ (.Float "cpu" | printf "%.1f") }}% • RAM: {{ (.Float "mem" | printf "%.0f") }}MB{{ end }}
+              </div>
+            </div>
+          </div>
+        {{ end }}
+      {{ end }}
+    </div>
+
 - type: dns-stats
   title: AdGuard Home
   cache: 5m
