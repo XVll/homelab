@@ -7,15 +7,22 @@
     Authorization: PVEAPIToken=${PROXMOX_TOKEN_ID}=${PROXMOX_TOKEN_SECRET}
   template: |
     <div class="p-2">
-      <div class="size-h5">Debug: {{ .JSON.String "data" }}</div>
-      <div class="size-h6">Count: {{ len (.JSON.Array "data") }}</div>
+      <div class="size-h5">Virtual Machines ({{ len (.JSON.Array "data") }})</div>
       {{ range (.JSON.Array "data") }}
-        <div class="flex items-center mb-1 border-b pb-1">
-          <div class="flex-1">
-            <div class="size-h6 color-highlight">Type: {{ .String "type" }} - Name: {{ .String "name" }}</div>
-            <div class="size-h7">Node: {{ .String "node" }} • VMID: {{ .Int "vmid" }} • Status: {{ .String "status" }}</div>
+        {{ if ne (.Int "template") 1 }}
+          <div class="flex items-center mb-1 border-b pb-1">
+            <div class="flex-1">
+              <div class="size-h6 color-highlight">{{ .String "name" }} ({{ .Int "vmid" }})</div>
+              <div class="size-h7">
+                {{ if eq (.String "status") "running" }}
+                  ✓ Running • CPU: {{ mul (.Float "cpu") 100 | printf "%.1f" }}% • RAM: {{ div (.Float "mem") 1073741824 | printf "%.1f" }}GB/{{ div (.Float "maxmem") 1073741824 | printf "%.0f" }}GB
+                {{ else }}
+                  ⏸ Stopped
+                {{ end }}
+              </div>
+            </div>
           </div>
-        </div>
+        {{ end }}
       {{ end }}
     </div>
 
