@@ -1,6 +1,7 @@
 - type: monitor
-  title: Infrastructure
+  title: Core Infrastructure
   cache: 1m
+  collapse-after: 3
   sites:
     - title: Proxmox
       url: https://10.10.10.20:8006
@@ -8,11 +9,6 @@
     - title: Synology NAS
       url: https://10.10.10.100:5001
       icon: si:synology
-
-- type: monitor
-  title: Edge (110)
-  cache: 1m
-  sites:
     - title: Traefik
       url: http://10.10.10.110:8080
       icon: si:traefikproxy
@@ -21,12 +17,22 @@
       icon: si:adguard
     - title: Authentik
       url: http://10.10.10.110:9000
+    - title: Portainer
+      url: https://10.10.10.112:9443
+      icon: si:portainer
+    - title: Grafana
+      url: http://10.10.10.112:3000
+      icon: si:grafana
+    - title: Home Assistant
+      url: http://10.10.10.116:8123
+      icon: si:homeassistant
 
 - type: monitor
-  title: Database (111)
+  title: Databases
   cache: 1m
+  collapse-after: 2
   sites:
-    - title: MinIO Console
+    - title: MinIO
       url: http://10.10.10.111:9002
       icon: si:minio
     - title: PostgreSQL
@@ -37,28 +43,9 @@
       url: http://10.10.10.111:6379
 
 - type: monitor
-  title: Observability (112)
+  title: Media Services
   cache: 1m
-  sites:
-    - title: Portainer
-      url: https://10.10.10.112:9443
-      icon: si:portainer
-    - title: Grafana
-      url: http://10.10.10.112:3000
-      icon: si:grafana
-    - title: Prometheus
-      url: http://10.10.10.112:9090
-      icon: si:prometheus
-    - title: Loki
-      url: http://10.10.10.112:3100
-    - title: Homarr
-      url: http://10.10.10.112:3002
-    - title: Glance
-      url: http://10.10.10.112:8080
-
-- type: monitor
-  title: Media (113)
-  cache: 1m
+  collapse-after: 3
   sites:
     - title: Plex
       url: http://10.10.10.113:32400
@@ -85,14 +72,12 @@
       url: http://10.10.10.113:5454
 
 - type: monitor
-  title: Dev & Deploy
+  title: Development
   cache: 1m
+  collapse-after: 1
   sites:
     - title: Gitea
       url: http://10.10.10.114:3001
       icon: si:gitea
     - title: Coolify
       url: http://10.10.10.101:8000
-    - title: Home Assistant
-      url: http://10.10.10.116:8123
-      icon: si:homeassistant

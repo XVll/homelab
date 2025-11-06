@@ -9,14 +9,20 @@ theme:
 pages:
   - name: Homelab
     columns:
+      # LEFT COLUMN: System & Infrastructure
       - size: small
         widgets:
           - $include: widgets/system.yml
           - $include: widgets/infrastructure.yml
-          - $include: widgets/media-downloads.yml
-          - $include: widgets/media-services.yml
           - $include: widgets/feeds.yml
 
+      # CENTER COLUMN: Media Automation
       - size: full
         widgets:
+          - $include: widgets/media-downloads.yml
+
+      # RIGHT COLUMN: Media Services & Status
+      - size: small
+        widgets:
+          - $include: widgets/media-services.yml
           - $include: widgets/monitors.yml
