@@ -133,3 +133,123 @@ pages:
             feeds:
               - url: https://selfh.st/rss/
                 title: Self-Hosted
+
+  - name: Media & Stats
+    columns:
+      - size: small
+        widgets:
+          - type: calendar
+
+          - type: clock
+            hour-format: 24h
+            timezones:
+              - timezone: America/New_York
+                label: New York
+
+          # AdGuard DNS Stats (built-in widget)
+          - type: dns-stats
+            title: AdGuard Home
+            cache: 5m
+            provider: adguard
+            url: ${ADGUARD_URL}
+            username: ${ADGUARD_USERNAME}
+            password: ${ADGUARD_PASSWORD}
+
+      - size: full
+        widgets:
+          # Tautulli - Recently Watched
+          - type: custom-api
+            title: Recently Watched (Plex)
+            cache: 5m
+            url: http://${TAUTULLI_IP}:${TAUTULLI_PORT}/api/v2?apikey=${TAUTULLI_API_KEY}&cmd=get_history&length=10
+            template: |
+              <ul class="list list-gap-14 collapsible-container" data-collapse-after="5">
+              {{ range .JSON.Array "response.data.data" }}
+                <li>
+                  <div class="size-title-dynamic color-primary-if-not-visited">
+                    {{ .String "full_title" }}
+                  </div>
+                  <div class="text-secondary">{{ .String "friendly_name" }} • {{ .String "date" }}</div>
+                </li>
+              {{ end }}
+              </ul>
+
+          # Sonarr - Recent Releases
+          - type: custom-api
+            title: Sonarr - Recent Grabs
+            cache: 10m
+            url: ${SONARR_API_URL}/api/v3/history?pageSize=10&includeEpisode=true&eventType=3
+            headers:
+              X-Api-Key: ${SONARR_KEY}
+            template: |
+              <ul class="list list-gap-14 collapsible-container" data-collapse-after="5">
+              {{ range .JSON.Array "records" }}
+                <li>
+                  <div class="size-title-dynamic color-primary-if-not-visited">
+                    {{ .String "series.title" }} - {{ .String "episode.seasonNumber" }}x{{ .String "episode.episodeNumber" }}
+                  </div>
+                  <div class="text-secondary">{{ .String "episode.title" }}</div>
+                </li>
+              {{ end }}
+              </ul>
+
+          # Radarr - Recent Releases
+          - type: custom-api
+            title: Radarr - Recent Grabs
+            cache: 10m
+            url: ${RADARR_API_URL}/api/v3/history?pageSize=10&eventType=3
+            headers:
+              X-Api-Key: ${RADARR_KEY}
+            template: |
+              <ul class="list list-gap-14 collapsible-container" data-collapse-after="5">
+              {{ range .JSON.Array "records" }}
+                <li>
+                  <div class="size-title-dynamic color-primary-if-not-visited">
+                    {{ .String "movie.title" }} ({{ .String "movie.year" }})
+                  </div>
+                  <div class="text-secondary">{{ .String "sourceTitle" }}</div>
+                </li>
+              {{ end }}
+              </ul>
+
+          # qBittorrent Stats
+          - type: custom-api
+            title: qBittorrent
+            cache: 10s
+            url: http://${QBITTORRENT_IP}/api/v2/torrents/info
+            template: |
+              {{ $total := len .JSON.Array }}
+              {{ $downloading := 0 }}
+              {{ $seeding := 0 }}
+              {{ $dlSpeed := 0.0 }}
+              {{ $upSpeed := 0.0 }}
+              {{ range .JSON.Array }}
+                {{ if eq (.String "state") "downloading" }}
+                  {{ $downloading = add $downloading 1 }}
+                  {{ $dlSpeed = add $dlSpeed (.Float "dlspeed") }}
+                {{ end }}
+                {{ if or (eq (.String "state") "uploading") (eq (.String "state") "stalledUP") }}
+                  {{ $seeding = add $seeding 1 }}
+                  {{ $upSpeed = add $upSpeed (.Float "upspeed") }}
+                {{ end }}
+              {{ end }}
+              <div class="list">
+                <div>Total: {{ $total }} | Downloading: {{ $downloading }} | Seeding: {{ $seeding }}</div>
+                <div>⬇️ {{ div $dlSpeed 1048576 | printf "%.1f" }} MB/s | ⬆️ {{ div $upSpeed 1048576 | printf "%.1f" }} MB/s</div>
+              </div>
+              <ul class="list list-gap-14 collapsible-container" data-collapse-after="3">
+              {{ range .JSON.Array }}
+                {{ if eq (.String "state") "downloading" }}
+                  <li>
+                    <div class="size-title-dynamic">{{ .String "name" }}</div>
+                    <div class="text-secondary">{{ mul (.Float "progress") 100 | printf "%.0f" }}% • {{ div (.Float "dlspeed") 1048576 | printf "%.1f" }} MB/s</div>
+                  </li>
+                {{ end }}
+              {{ end }}
+              </ul>
+
+      - size: small
+        widgets:
+          - type: weather
+            location: New York, United States
+            units: imperial
