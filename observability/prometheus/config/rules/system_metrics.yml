@@ -1,6 +1,6 @@
 groups:
   - name: normalized_system_metrics
-    interval: 30s
+    interval: 15s
     rules:
       # ========================================================================
       # CPU Usage - Normalized to ratio (0.0 - 1.0)
