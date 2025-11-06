@@ -1,0 +1,35 @@
+- type: dns-stats
+  title: AdGuard Home
+  cache: 5m
+  service: adguard
+  url: ${ADGUARD_URL}
+  username: ${ADGUARD_USERNAME}
+  password: ${ADGUARD_PASSWORD}
+  hour-format: 24h
+
+- type: server-stats
+  title: Observability VM
+  cache: 30s
+  servers:
+    - type: local
+      name: observability (112)
+      hide-swap: false
+
+- type: docker-containers
+  title: Local Containers
+  cache: 30s
+  running-only: false
+
+- type: releases
+  title: Infrastructure Releases
+  cache: 1h
+  limit: 5
+  collapse-after: 3
+  show-source-icon: true
+  repositories:
+    - glanceapp/glance
+    - portainer/portainer
+    - grafana/grafana
+    - grafana/loki
+    - grafana/alloy
+    - traefik/traefik

@@ -1,0 +1,98 @@
+- type: monitor
+  title: Infrastructure
+  cache: 1m
+  sites:
+    - title: Proxmox
+      url: https://10.10.10.20:8006
+      icon: si:proxmox
+    - title: Synology NAS
+      url: https://10.10.10.100:5001
+      icon: si:synology
+
+- type: monitor
+  title: Edge (110)
+  cache: 1m
+  sites:
+    - title: Traefik
+      url: http://10.10.10.110:8080
+      icon: si:traefikproxy
+    - title: AdGuard
+      url: http://10.10.10.110:3000
+      icon: si:adguard
+    - title: Authentik
+      url: http://10.10.10.110:9000
+
+- type: monitor
+  title: Database (111)
+  cache: 1m
+  sites:
+    - title: MinIO Console
+      url: http://10.10.10.111:9002
+      icon: si:minio
+    - title: PostgreSQL
+      url: http://10.10.10.111:5432
+    - title: MongoDB
+      url: http://10.10.10.111:27017
+    - title: Redis
+      url: http://10.10.10.111:6379
+
+- type: monitor
+  title: Observability (112)
+  cache: 1m
+  sites:
+    - title: Portainer
+      url: https://10.10.10.112:9443
+      icon: si:portainer
+    - title: Grafana
+      url: http://10.10.10.112:3000
+      icon: si:grafana
+    - title: Prometheus
+      url: http://10.10.10.112:9090
+      icon: si:prometheus
+    - title: Loki
+      url: http://10.10.10.112:3100
+    - title: Homarr
+      url: http://10.10.10.112:3002
+    - title: Glance
+      url: http://10.10.10.112:8080
+
+- type: monitor
+  title: Media (113)
+  cache: 1m
+  sites:
+    - title: Plex
+      url: http://10.10.10.113:32400
+      icon: si:plex
+    - title: Overseerr
+      url: http://10.10.10.113:5055
+    - title: Sonarr
+      url: http://10.10.10.113:8989
+      icon: si:sonarr
+    - title: Radarr
+      url: http://10.10.10.113:7878
+      icon: si:radarr
+    - title: Prowlarr
+      url: http://10.10.10.113:9696
+    - title: SABnzbd
+      url: http://10.10.10.113:8085
+    - title: qBittorrent
+      url: http://10.10.10.113:8080
+    - title: Bazarr
+      url: http://10.10.10.113:6767
+    - title: Tautulli
+      url: http://10.10.10.113:8181
+    - title: Notifiarr
+      url: http://10.10.10.113:5454
+
+- type: monitor
+  title: Dev & Deploy
+  cache: 1m
+  sites:
+    - title: Gitea
+      url: http://10.10.10.114:3001
+      icon: si:gitea
+    - title: Coolify
+      url: http://10.10.10.101:8000
+    - title: Home Assistant
+      url: http://10.10.10.116:8123
+      icon: si:homeassistant

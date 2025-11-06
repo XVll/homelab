@@ -1,0 +1,69 @@
+- type: custom-api
+  title: Overseerr Requests
+  cache: 1m
+  url: ${OVERSEERR_URL}/api/v1/request/count
+  headers:
+    X-Api-Key: ${OVERSEERR_API_KEY}
+  template: |
+    <div class="p-2">
+      <div class="flex justify-between mb-2">
+        <div class="flex-1">
+          <div class="size-h6">PENDING</div>
+          <div class="color-highlight size-h3">{{ .JSON.Int "pending" }}</div>
+        </div>
+        <div class="flex-1">
+          <div class="size-h6">APPROVED</div>
+          <div class="color-highlight size-h3">{{ .JSON.Int "approved" }}</div>
+        </div>
+      </div>
+      <div class="flex justify-between mb-2">
+        <div class="flex-1">
+          <div class="size-h6">PROCESSING</div>
+          <div class="color-highlight size-h3">{{ .JSON.Int "processing" }}</div>
+        </div>
+        <div class="flex-1">
+          <div class="size-h6">AVAILABLE</div>
+          <div class="color-highlight size-h3">{{ .JSON.Int "available" }}</div>
+        </div>
+      </div>
+    </div>
+
+- type: custom-api
+  title: Tautulli Activity
+  cache: 30s
+  url: ${TAUTULLI_URL}/api/v2?apikey=${TAUTULLI_API_KEY}&cmd=get_activity
+  template: |
+    <div class="p-2">
+      <div class="size-h5">Now Watching ({{ .JSON.Int "response.data.stream_count" }})</div>
+      {{ range (.JSON.Array "response.data.sessions") }}
+        <div class="flex items-center mb-1 border-b pb-1">
+          <div class="flex-1">
+            <div class="size-h6 color-highlight">{{ .String "full_title" }}</div>
+            <div class="size-h7">{{ .String "friendly_name" }} - {{ .String "player" }}</div>
+            <div class="size-h8 color-subdue">{{ .Int "progress_percent" }}% • {{ .String "quality_profile" }}</div>
+          </div>
+        </div>
+      {{ else }}
+        <div class="size-h7 color-subdue">No active streams</div>
+      {{ end }}
+    </div>
+
+- type: custom-api
+  title: Plex Recently Added
+  cache: 5m
+  url: ${PLEX_URL}/library/recentlyAdded?X-Plex-Token=${PLEX_TOKEN}&X-Plex-Container-Size=10
+  headers:
+    Accept: application/json
+  template: |
+    <div class="p-2">
+      <div class="size-h5">Latest Additions</div>
+      {{ range (.JSON.Array "MediaContainer.Metadata") }}
+        <div class="flex items-center mb-1 border-b pb-1">
+          <div class="flex-1">
+            <div class="size-h6 color-highlight">{{ .String "title" }}</div>
+            <div class="size-h7">{{ .String "type" }} • {{ .String "year" }}</div>
+            <div class="size-h8 color-subdue">Added {{ (.Get "addedAt").Time.Format "Jan 02" }}</div>
+          </div>
+        </div>
+      {{ end }}
+    </div>

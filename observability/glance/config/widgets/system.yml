@@ -1,0 +1,11 @@
+- type: calendar
+
+- type: clock
+  hour-format: 24h
+  timezones:
+    - timezone: America/New_York
+      label: New York
+
+- type: weather
+  location: New York, United States
+  units: imperial

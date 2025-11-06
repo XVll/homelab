@@ -1,0 +1,7 @@
+- type: rss
+  title: Homelab News
+  limit: 5
+  collapse-after: 3
+  feeds:
+    - url: https://selfh.st/rss/
+      title: Self-Hosted
