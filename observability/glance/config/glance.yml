@@ -201,7 +201,7 @@ pages:
             template: |
               <div class="p-2">
                 <div class="size-h5">Upcoming Episodes (14 days)</div>
-                {{ range .JSON.Array }}
+                {{ range .JSON.Array "" }}
                   <div class="flex items-center mb-1 border-b pb-1">
                     <div class="flex-1">
                       <div class="size-h6 color-highlight">{{ .String "series.title" }}</div>
@@ -221,7 +221,7 @@ pages:
             template: |
               <div class="p-2">
                 <div class="size-h5">Upcoming Movies (14 days)</div>
-                {{ range .JSON.Array }}
+                {{ range .JSON.Array "" }}
                   <div class="flex items-center mb-1 border-b pb-1">
                     <div class="flex-1">
                       <div class="size-h6 color-highlight">{{ .String "title" }}</div>
