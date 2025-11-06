@@ -277,6 +277,10 @@ services:
       - "10.10.10.112:8080:8080"
     volumes:
       - ./glance/config:/app/config
+    environment:
+      - ADGUARD_URL=${ADGUARD_URL}
+      - ADGUARD_USERNAME=${ADGUARD_USERNAME}
+      - ADGUARD_PASSWORD=${ADGUARD_PASSWORD}
     networks:
       - obs_net
     healthcheck:
