@@ -1,6 +1,6 @@
 groups:
   - name: normalized_system_metrics
-    interval: 15s
+    interval: 10s
     rules:
       # ========================================================================
       # CPU Usage - Normalized to ratio (0.0 - 1.0)
@@ -10,7 +10,7 @@ groups:
       - record: system:cpu_usage:ratio
         expr: |
           1 - avg by (instance, system_name, system_type, job) (
-            irate(node_cpu_seconds_total{job="integrations/unix", mode="idle"}[5m])
+            irate(node_cpu_seconds_total{job="integrations/unix", mode="idle"}[1m])
           )
 
       # Synology NAS
@@ -95,10 +95,10 @@ groups:
       - record: system:network_io:bytes_per_sec
         expr: |
           sum by (instance, system_name, system_type, job) (
-            rate(node_network_receive_bytes_total{job="integrations/unix", device!~"lo|docker.*|veth.*|br-.*"}[5m])
+            rate(node_network_receive_bytes_total{job="integrations/unix", device!~"lo|docker.*|veth.*|br-.*"}[1m])
           ) +
           sum by (instance, system_name, system_type, job) (
-            rate(node_network_transmit_bytes_total{job="integrations/unix", device!~"lo|docker.*|veth.*|br-.*"}[5m])
+            rate(node_network_transmit_bytes_total{job="integrations/unix", device!~"lo|docker.*|veth.*|br-.*"}[1m])
           )
 
       # Synology (ifHCInOctets + ifHCOutOctets - High Capacity counters)
@@ -106,10 +106,10 @@ groups:
         expr: |
           label_replace(
             sum by (instance, system_name, system_type) (
-              rate(ifHCInOctets{job=~"integrations/snmp.*", ifName!~"lo|docker.*|sit.*"}[5m])
+              rate(ifHCInOctets{job=~"integrations/snmp.*", ifName!~"lo|docker.*|sit.*"}[1m])
             ) +
             sum by (instance, system_name, system_type) (
-              rate(ifHCOutOctets{job=~"integrations/snmp.*", ifName!~"lo|docker.*|sit.*"}[5m])
+              rate(ifHCOutOctets{job=~"integrations/snmp.*", ifName!~"lo|docker.*|sit.*"}[1m])
             ),
             "job", "integrations/snmp", "", ""
           )
@@ -129,10 +129,10 @@ groups:
       - record: system:disk_io:bytes_per_sec
         expr: |
           sum by (instance, system_name, system_type, job) (
-            rate(node_disk_read_bytes_total{job="integrations/unix"}[5m])
+            rate(node_disk_read_bytes_total{job="integrations/unix"}[1m])
           ) +
           sum by (instance, system_name, system_type, job) (
-            rate(node_disk_written_bytes_total{job="integrations/unix"}[5m])
+            rate(node_disk_written_bytes_total{job="integrations/unix"}[1m])
           )
 
       # Synology (spaceIONReadX + spaceIONWrittenX - Extended counters)
@@ -140,10 +140,10 @@ groups:
         expr: |
           label_replace(
             sum by (instance, system_name, system_type) (
-              rate(spaceIONReadX{job=~"integrations/snmp.*"}[5m])
+              rate(spaceIONReadX{job=~"integrations/snmp.*"}[1m])
             ) +
             sum by (instance, system_name, system_type) (
-              rate(spaceIONWrittenX{job=~"integrations/snmp.*"}[5m])
+              rate(spaceIONWrittenX{job=~"integrations/snmp.*"}[1m])
             ),
             "job", "integrations/snmp", "", ""
           )
@@ -157,8 +157,8 @@ groups:
             label_replace(
               label_replace(
                 (
-                  rate(pve_disk_read_bytes{vm_name="ha"}[5m]) +
-                  rate(pve_disk_write_bytes{vm_name="ha"}[5m])
+                  rate(pve_disk_read_bytes{vm_name="ha"}[1m]) +
+                  rate(pve_disk_write_bytes{vm_name="ha"}[1m])
                 ) or
                 vector(0),
                 "instance", "ha", "", ""

@@ -30,7 +30,7 @@ prometheus.exporter.unix "system" {
 prometheus.scrape "system_metrics" {
   targets    = prometheus.exporter.unix.system.targets
   forward_to = [prometheus.relabel.normalize_node.receiver]
-  scrape_interval = "15s"
+  scrape_interval = "10s"
   job_name = "integrations/unix"
 
   clustering {
@@ -81,7 +81,7 @@ prometheus.exporter.cadvisor "docker" {
 prometheus.scrape "docker_metrics" {
   targets    = prometheus.exporter.cadvisor.docker.targets
   forward_to = [prometheus.remote_write.prometheus.receiver]
-  scrape_interval = "15s"
+  scrape_interval = "10s"
 
   clustering {
     enabled = false
