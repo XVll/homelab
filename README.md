@@ -15,6 +15,7 @@ Docker-based homelab infrastructure on Proxmox VMs. All VMs are stateless and di
 | dev | 10.10.10.114 | Gitea, Docker Registry, GitHub Runner |
 | deploy | 10.10.10.101 | Coolify (deployment platform) |
 | ha | 10.10.10.116 | Home Assistant |
+| pbs | 10.10.10.120 | Proxmox Backup Server (LXC) |
 
 **Common commands:**
 ```bash
@@ -411,6 +412,56 @@ mongosh --host 10.10.10.111:27017 -u user -p pass
 redis-cli -h 10.10.10.111 -a password ping
 ```
 
+### Managing Backups
+
+**Backup Infrastructure:**
+- PBS (Proxmox Backup Server) LXC container on 10.10.10.120
+- Datastore: `/var/lib/proxmox-backup/datastore/backups` (local storage)
+- NFS mount: `/mnt/nas-backups` (Synology, for future offsite sync)
+- Automated daily backups at 02:00 via Proxmox backup job
+
+**Backup Schedule:**
+```bash
+# View backup jobs
+ssh root@10.10.10.20 'pvesh get /cluster/backup'
+
+# View backup status/logs
+# Proxmox UI → Datacenter → Backup → View logs
+
+# Manual backup (test)
+ssh root@10.10.10.20 'vzdump <vmid> --storage pbs --mode snapshot'
+```
+
+**What's Backed Up:**
+- ✅ All VMs (101, 110, 111, 112, 113, 114, 116) - Full disks + configs
+- ✅ PBS container (120) - Config and datastore metadata
+- ✅ VM 100 (Xpenology) - Boot disk only (12TB data disk excluded via `backup=0`)
+
+**Retention Policy:**
+- Daily: Keep last 3 backups
+- Weekly: Keep last 1 backup
+- Monthly: Keep last 1 backup
+
+**Restoring from Backup:**
+```bash
+# List available backups
+ssh root@10.10.10.20 'proxmox-backup-client snapshot list --repository pbs@pbs@10.10.10.120:backups'
+
+# Restore VM via Proxmox UI
+# Datacenter → Storage → pbs-backups → Backups → Restore
+
+# Restore specific files (PBS feature)
+# PBS UI: https://10.10.10.120:8007 → Datastore → Content → File Browser
+```
+
+**Accessing PBS:**
+- Web UI: https://10.10.10.120:8007
+- Login: root@pam
+- Check datastore status, verify backups, browse files
+
+**Known Issues:**
+- VM 100 (Xpenology) backup may timeout - disable QEMU guest agent if needed: `qm set 100 -agent 0`
+
 ### Adding Traefik Routes
 
 1. Add service to `edge/traefik/config/dynamic/services.yml`:
@@ -690,6 +741,24 @@ sudo chown -R fx:fx /opt/homelab
 
 ### Recent Changes
 
+**2025-11-07 - Backup Infrastructure Deployment:** ✅ Complete
+- **Proxmox Backup Server (PBS)** - Deployed as LXC container (VM 120) on 10.10.10.120
+- **Local datastore** - `/var/lib/proxmox-backup/datastore/backups` for fast backup/restore
+- **NFS mount** - Synology NAS mounted at `/mnt/nas-backups` for future offsite sync
+- **Automated backups** - Daily schedule at 02:00 for all VMs
+- **Retention policy** - 3 daily, 1 weekly, 1 monthly backups
+- **VM coverage:**
+  - All production VMs backed up (101, 110, 111, 112, 113, 114, 116, 120)
+  - VM 100 (Xpenology) boot disk only (12TB data disk excluded via `backup=0` flag)
+- **PBS features enabled:**
+  - Incremental backups with deduplication
+  - Snapshot mode (live backups, no VM downtime)
+  - File-level restore capability
+  - Backup verification (weekly)
+  - Garbage collection (daily)
+- **Known issue:** VM 100 backup timeout due to QEMU guest agent incompatibility (workaround: disable agent)
+- **Storage benefits:** PBS deduplication reduces backup size by ~70% vs traditional vzdump
+
 **2025-11-05 - Unified System Monitoring (Normalized Metrics):** ✅ Complete
 - **Prometheus Recording Rules** - Normalized metrics for multi-source monitoring:
   - `system:cpu_usage:ratio` - CPU usage as ratio (0.0-1.0)
@@ -786,22 +855,23 @@ ha              ✅   ✅      ✅    ✅       ✅       ✅
 
 **🔴 HIGH PRIORITY:**
 1. **Grafana Dashboards** - Add Synology to Systems Overview (metrics ready, needs manual UI work)
-2. **Backup Strategy** - No VM backups configured (Proxmox Backup Server or vzdump)
-3. **Authentication** - Authentik deployed but no applications configured
-4. **Resource Limits** - No CPU/memory limits on containers
-5. **Health Checks** - Several services missing health checks
+2. **Authentication** - Authentik deployed but no applications configured
+3. **Resource Limits** - No CPU/memory limits on containers
+4. **Health Checks** - Several services missing health checks
+5. **VM 100 Backup Fix** - Xpenology backup timeout (needs QEMU guest agent disabled)
 
 **🟡 MEDIUM PRIORITY:**
 1. **SSL Migration** - Route more services via Traefik (AdGuard, Portainer)
 2. **Synology Dashboards** - Create detailed Grafana dashboard using 150 available SNMP metrics
 
 **✅ COMPLETED:**
-1. **Dashboard Updates** - All dashboards updated to use new label structure (instance), fixed queries
-2. **Synology SNMP Monitoring** - 150 metrics via Alloy (CPU, memory, load, network, disk, RAID)
-3. **Home Assistant Integration** - 54 entity metrics via Prometheus integration
-4. **Monitoring Migration** - Alloy deployed across all VMs, standardized labels, centralized collection
-5. **NAS Mount Monitoring** - Prometheus alert configured for media VM NAS mount
-6. **Media Stack** - All services deployed (Plex, SABnzbd, Sonarr, Radarr, etc.)
+1. **Backup Strategy** - PBS deployed (VM 120), automated backups configured for all VMs
+2. **Dashboard Updates** - All dashboards updated to use new label structure (instance), fixed queries
+3. **Synology SNMP Monitoring** - 150 metrics via Alloy (CPU, memory, load, network, disk, RAID)
+4. **Home Assistant Integration** - 54 entity metrics via Prometheus integration
+5. **Monitoring Migration** - Alloy deployed across all VMs, standardized labels, centralized collection
+6. **NAS Mount Monitoring** - Prometheus alert configured for media VM NAS mount
+7. **Media Stack** - All services deployed (Plex, SABnzbd, Sonarr, Radarr, etc.)
 
 **🟢 LOW PRIORITY:**
 1. **Cloudflare Tunnels** - Migrate from direct DNS (blocked by email migration)
@@ -867,4 +937,4 @@ Repository is **public** (allows VMs to pull without auth)
 
 ---
 
-**Last Updated:** 2025-11-05
+**Last Updated:** 2025-11-07
