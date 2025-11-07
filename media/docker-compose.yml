@@ -123,6 +123,7 @@ services:
       - media_net
     environment:
       - NETDATA_CLAIM_TOKEN=${NETDATA_CLAIM_TOKEN}
+      - NETDATA_CLAIM_ROOMS=${NETDATA_CLAIM_ROOMS}
       - NETDATA_CLAIM_URL=https://app.netdata.cloud
     logging:
       driver: "json-file"
