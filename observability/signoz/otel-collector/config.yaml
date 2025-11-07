@@ -1,0 +1,74 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+  # Prometheus receiver for scraping metrics
+  prometheus:
+    config:
+      scrape_configs:
+        - job_name: 'otel-collector'
+          scrape_interval: 30s
+          static_configs:
+            - targets: ['localhost:8888']
+
+processors:
+  batch:
+    send_batch_size: 10000
+    send_batch_max_size: 11000
+    timeout: 10s
+
+  # Add resource attributes
+  resource:
+    attributes:
+      - key: deployment.environment
+        value: homelab
+        action: upsert
+
+exporters:
+  clickhousetraces:
+    datasource: tcp://signoz-clickhouse:9000/?database=signoz
+    migrations:
+      directory: /etc/signoz/migrations/clickhouse
+    ttl: 168h  # 7 days retention
+
+  clickhousemetricswrite:
+    datasource: tcp://signoz-clickhouse:9000/?database=signoz
+    migrations:
+      directory: /etc/signoz/migrations/clickhouse
+    ttl: 2160h  # 90 days retention
+
+  clickhouselogsexporter:
+    datasource: tcp://signoz-clickhouse:9000/?database=signoz
+    migrations:
+      directory: /etc/signoz/migrations/clickhouse
+    ttl: 720h  # 30 days retention
+
+extensions:
+  health_check:
+    endpoint: 0.0.0.0:13133
+  pprof:
+    endpoint: 0.0.0.0:1777
+  zpages:
+    endpoint: 0.0.0.0:55679
+
+service:
+  extensions: [health_check, pprof, zpages]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch, resource]
+      exporters: [clickhousetraces]
+
+    metrics:
+      receivers: [otlp, prometheus]
+      processors: [batch, resource]
+      exporters: [clickhousemetricswrite]
+
+    logs:
+      receivers: [otlp]
+      processors: [batch, resource]
+      exporters: [clickhouselogsexporter]

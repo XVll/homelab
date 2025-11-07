@@ -326,6 +326,121 @@ services:
         max-size: "10m"
         max-file: "3"
 
+  # ============================================================================
+  # 9. SIGNOZ - APM & Observability Platform
+  # ============================================================================
+  # Application Performance Monitoring with traces, metrics, and logs
+  # Web UI: http://10.10.10.112:3301 or https://signoz.onurx.com
+  # Documentation: https://signoz.io/docs
+  # OTLP receivers: gRPC (4317), HTTP (4318)
+
+  # ClickHouse - Database for traces, metrics, logs
+  signoz-clickhouse:
+    image: clickhouse/clickhouse-server:24.1.2-alpine
+    container_name: signoz-clickhouse
+    restart: unless-stopped
+    volumes:
+      - ./signoz/clickhouse/data:/var/lib/clickhouse
+      - ./signoz/clickhouse/config/clickhouse-config.xml:/etc/clickhouse-server/config.d/clickhouse-config.xml:ro
+      - ./signoz/clickhouse/config/clickhouse-users.xml:/etc/clickhouse-server/users.d/clickhouse-users.xml:ro
+    networks:
+      - obs_net
+    environment:
+      - CLICKHOUSE_DB=signoz
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "localhost:8123/ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # OtelCollector - Receives and processes telemetry data
+  signoz-otel-collector:
+    image: signoz/signoz-otel-collector:0.88.17
+    container_name: signoz-otel-collector
+    restart: unless-stopped
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ./signoz/otel-collector/config.yaml:/etc/otel-collector-config.yaml:ro
+    networks:
+      - obs_net
+    ports:
+      - "10.10.10.112:4317:4317"   # OTLP gRPC receiver
+      - "10.10.10.112:4318:4318"   # OTLP HTTP receiver
+    depends_on:
+      - signoz-clickhouse
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "localhost:13133"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Query Service - Backend API
+  signoz-query-service:
+    image: signoz/query-service:0.44.1
+    container_name: signoz-query-service
+    restart: unless-stopped
+    command: ["-config=/root/config/prometheus.yml"]
+    volumes:
+      - ./signoz/query-service/config:/root/config:ro
+    networks:
+      - obs_net
+    environment:
+      - ClickHouseUrl=tcp://signoz-clickhouse:9000
+      - STORAGE=clickhouse
+      - GODEBUG=netdns=go
+      - TELEMETRY_ENABLED=false
+      - DEPLOYMENT_TYPE=docker-standalone-amd
+    depends_on:
+      - signoz-clickhouse
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "localhost:8080/api/v1/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Frontend - Web UI
+  signoz-frontend:
+    image: signoz/frontend:0.44.1
+    container_name: signoz-frontend
+    restart: unless-stopped
+    ports:
+      - "10.10.10.112:3301:3301"
+    networks:
+      - obs_net
+    environment:
+      - FRONTEND_API_ENDPOINT=http://signoz-query-service:8080
+    depends_on:
+      - signoz-query-service
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "localhost:3301"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
 networks:
   obs_net:
     driver: bridge
