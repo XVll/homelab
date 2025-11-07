@@ -133,17 +133,6 @@ http:
       tls:
         certResolver: cloudflare
 
-    # SigNoz (APM & Observability)
-    signoz:
-      rule: "Host(`signoz.onurx.com`)"
-      entryPoints:
-        - websecure
-      service: signoz
-      middlewares:
-        - private-default
-      tls:
-        certResolver: cloudflare
-
     # Gitea (Git + Container Registry + CI/CD)
     gitea:
       rule: "Host(`git.onurx.com`)"

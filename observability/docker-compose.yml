@@ -326,19 +326,6 @@ services:
         max-size: "10m"
         max-file: "3"
 
-  # ============================================================================
-  # 9. SIGNOZ - APM & Observability Platform
-  # ============================================================================
-  # Application Performance Monitoring with traces, metrics, and logs
-  # Web UI: http://10.10.10.112:3301 or https://signoz.onurx.com
-  # Documentation: https://signoz.io/docs
-  # OTLP receivers: gRPC (4317), HTTP (4318)
-  #
-  # NOTE: SigNoz is deployed separately using their official docker-compose.yaml
-  # Location: /opt/homelab/observability/signoz-app/deploy/docker/
-  # To manage: cd /opt/homelab/observability/signoz-app/deploy/docker && docker compose [command]
-  # Traefik routing configured in edge/traefik/config/dynamic/
-
 networks:
   obs_net:
     driver: bridge
