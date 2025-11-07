@@ -74,6 +74,52 @@ services:
         max-size: "10m"
         max-file: "3"
 
+  # ============================================================================
+  # NETDATA - Real-Time System & Container Monitoring
+  # ============================================================================
+  # Real-time performance monitoring with 1-second granularity
+  # Streams to parent on observability VM (10.10.10.112)
+  # Web UI: http://10.10.10.114:19999
+  # Documentation: https://learn.netdata.cloud
+
+  netdata:
+    image: netdata/netdata:latest
+    container_name: netdata
+    hostname: dev
+    restart: unless-stopped
+    pid: host
+    cap_add:
+      - SYS_PTRACE
+      - SYS_ADMIN
+    security_opt:
+      - apparmor:unconfined
+    ports:
+      - "10.10.10.114:19999:19999"
+    volumes:
+      - ./netdata/config:/etc/netdata
+      - ./netdata/lib:/var/lib/netdata
+      - ./netdata/cache:/var/cache/netdata
+      - /:/host/root:ro,rslave
+      - /etc/passwd:/host/etc/passwd:ro
+      - /etc/group:/host/etc/group:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /etc/os-release:/host/etc/os-release:ro
+      - /var/log:/host/var/log:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - dev_net
+    environment:
+      - NETDATA_CLAIM_TOKEN=${NETDATA_CLAIM_TOKEN}
+      - NETDATA_CLAIM_ROOMS=${NETDATA_CLAIM_ROOMS}
+      - NETDATA_CLAIM_URL=https://app.netdata.cloud
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
   # ==========================================================================
   # GITEA - Self-hosted Git with Actions & Container Registry
   # ==========================================================================
