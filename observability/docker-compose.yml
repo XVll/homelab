@@ -364,7 +364,7 @@ services:
 
   # OtelCollector - Receives and processes telemetry data
   signoz-otel-collector:
-    image: signoz/signoz-otel-collector:0.88.17
+    image: signoz/signoz-otel-collector:0.111.16
     container_name: signoz-otel-collector
     restart: unless-stopped
     command: ["--config=/etc/otel-collector-config.yaml"]
@@ -390,7 +390,7 @@ services:
 
   # Query Service - Backend API
   signoz-query-service:
-    image: signoz/query-service:0.44.1
+    image: signoz/query-service:0.64.0
     container_name: signoz-query-service
     restart: unless-stopped
     command: ["-config=/root/config/prometheus.yml"]
@@ -419,7 +419,7 @@ services:
 
   # Frontend - Web UI
   signoz-frontend:
-    image: signoz/frontend:0.44.1
+    image: signoz/frontend:0.64.0
     container_name: signoz-frontend
     restart: unless-stopped
     ports:
