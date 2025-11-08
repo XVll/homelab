@@ -121,10 +121,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
       - media_net
-    environment:
-      - NETDATA_CLAIM_TOKEN=${NETDATA_CLAIM_TOKEN}
-      - NETDATA_CLAIM_ROOMS=${NETDATA_CLAIM_ROOMS}
-      - NETDATA_CLAIM_URL=https://app.netdata.cloud
     logging:
       driver: "json-file"
       options:
