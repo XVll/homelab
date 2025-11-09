@@ -445,8 +445,8 @@ redis-cli -h 10.10.10.111 -a password ping
 
 **Backup Infrastructure:**
 - PBS (Proxmox Backup Server) LXC container on 10.10.10.120
-- Datastore: `/var/lib/proxmox-backup/datastore/backups` (local storage)
-- NFS mount: `/mnt/nas-backups` (Synology, for future offsite sync)
+- Datastore: `nas-pbs` at `/mnt/nas-pbs` (NFS mount from Synology)
+- NFS source: `10.10.10.100:/volume1/backups/pbs` (11TB capacity, ~1TB used)
 - Automated daily backups at 02:00 via Proxmox backup job
 
 **Backup Schedule:**
@@ -674,6 +674,54 @@ docker exec sabnzbd ls -lah /media/
 
 **Prometheus Alert:** `NASNotMounted` alert will fire if NAS unmounts (checks filesystem size < 1TB)
 
+### PBS NFS Mount Issues
+
+**Problem:** PBS datastore becomes inaccessible after reboot with "Mount timed out" errors.
+
+**Root Cause:** NFS mount attempts before network is fully ready during boot.
+
+**Fix (Permanent):**
+```bash
+# SSH to PBS
+ssh root@10.10.10.120
+
+# Check current mount status
+mount | grep nas-pbs
+df -h | grep nas-pbs
+
+# Remount immediately (if unmounted)
+mount -a
+
+# Verify fstab has _netdev option (critical for network wait)
+cat /etc/fstab | grep nas-pbs
+# Should show: 10.10.10.100:/volume1/backups/pbs /mnt/nas-pbs nfs vers=4.1,nouser,atime,auto,retrans=2,rw,dev,exec,_netdev 0 0
+
+# Enable network-wait service (ensures mount happens after network is ready)
+systemctl enable systemd-networkd-wait-online.service
+
+# Verify mount unit dependencies
+systemctl show mnt-nas\\x2dpbs.mount | grep -E "(After|Requires|Wants)="
+# Should show: Wants=network-online.target
+```
+
+**Quick Diagnostics:**
+```bash
+# Check mount logs
+journalctl -b -u mnt-nas\\x2dpbs.mount --no-pager | tail -50
+
+# Check NFS export availability
+showmount -e 10.10.10.100
+
+# Check PBS datastore status
+proxmox-backup-manager datastore list
+proxmox-backup-manager datastore show nas-pbs
+```
+
+**Configuration Files:**
+- **fstab:** `/etc/fstab` - Must include `_netdev` option
+- **PBS datastore config:** `/etc/proxmox-backup/datastore.cfg` - Shows datastore path
+- **Systemd mount unit:** Auto-generated at `/run/systemd/generator/mnt-nas\x2dpbs.mount`
+
 ### 1Password Issues
 ```bash
 # Verify token
@@ -770,10 +818,22 @@ sudo chown -R fx:fx /opt/homelab
 
 ### Recent Changes
 
+**2025-11-09 - PBS NFS Mount Fix:** ✅ Complete
+- **Fixed PBS datastore inaccessibility** after reboots
+- **Root cause:** NFS mount timing out during boot (network not ready)
+- **Solution applied:**
+  - Added `_netdev` option to `/etc/fstab` (tells systemd to wait for network)
+  - Enabled `systemd-networkd-wait-online.service` for proper boot ordering
+- **Result:** PBS datastore now mounts reliably on every boot
+- **Configuration:**
+  - NFS source: `10.10.10.100:/volume1/backups/pbs`
+  - Mount point: `/mnt/nas-pbs`
+  - Datastore: `nas-pbs` (11TB capacity, ~1TB used)
+- **Documentation:** Added troubleshooting section to README
+
 **2025-11-07 - Backup Infrastructure Deployment:** ✅ Complete
 - **Proxmox Backup Server (PBS)** - Deployed as LXC container (VM 120) on 10.10.10.120
-- **Local datastore** - `/var/lib/proxmox-backup/datastore/backups` for fast backup/restore
-- **NFS mount** - Synology NAS mounted at `/mnt/nas-backups` for future offsite sync
+- **NFS datastore** - Synology NAS `10.10.10.100:/volume1/backups/pbs` mounted at `/mnt/nas-pbs`
 - **Automated backups** - Daily schedule at 02:00 for all VMs
 - **Retention policy** - 3 daily, 1 weekly, 1 monthly backups
 - **VM coverage:**
@@ -905,6 +965,70 @@ ha              ✅   ✅      ✅    ✅       ✅       ✅
 **🟢 LOW PRIORITY:**
 1. **Cloudflare Tunnels** - Migrate from direct DNS (blocked by email migration)
 2. **SSL Certificate Monitoring** - Add Prometheus alerts for cert expiry
+
+### Development Stack Roadmap
+
+**Observability & Monitoring:**
+- ✅ **Grafana** - Dashboards and visualization
+- ✅ **Prometheus** - Metrics storage (90 day retention)
+- ✅ **Loki** - Log aggregation (90 day retention)
+- ✅ **Alloy** - Metrics and logs collection (deployed on all VMs)
+- ✅ **Netdata** - Real-time infrastructure metrics (deployed on all VMs)
+- 📋 **Tempo** - Distributed tracing (planned)
+  - Storage: MinIO (already available)
+  - Collector: Alloy (already deployed)
+  - Visualization: Grafana (already deployed)
+  - Integration: Auto-correlate traces with Loki logs
+
+**Application Development:**
+- ✅ **Gitea** - Git hosting, Actions, Container Registry
+- ✅ **GitHub Runner** - Self-hosted CI/CD
+- ✅ **Coolify** - Application deployment platform
+- 📋 **Hoppscotch** - API development and testing (planned)
+  - Storage: PostgreSQL on db VM (10.10.10.111)
+  - Features: Team collaboration, collections, environments, public docs
+  - Deploy location: dev VM (10.10.10.114)
+
+**Code Quality & Security:**
+- 📋 **SonarQube** - Code quality, security scanning, tech debt tracking (planned)
+  - Storage: PostgreSQL on db VM (10.10.10.111)
+  - Features: Static analysis, security vulnerabilities, code coverage
+  - Integration: Gitea Actions, GitHub Runner
+  - Deploy location: dev VM (10.10.10.114)
+- 📋 **Trivy** - Container and dependency security scanning (planned)
+  - Type: CLI tool (no server required)
+  - Integration: CI/CD pipelines (Gitea Actions, GitHub Actions)
+  - Scans: Container images, filesystems, Git repositories, Kubernetes manifests
+
+**Error Tracking:**
+- 📋 **Sentry** - Error tracking, crash reporting, performance monitoring (planned)
+  - Storage: PostgreSQL (10.10.10.111), Redis (10.10.10.111), ClickHouse (self-hosted)
+  - Additional: Kafka, Memcached (required by Sentry)
+  - Features: Stack traces, error trends, performance APM, release tracking
+  - Integration: All application SDKs (Python, Node.js, Go, etc.)
+  - Deploy location: observability VM (10.10.10.112)
+
+**Testing Infrastructure:**
+- 📋 **k6** - Load and performance testing (planned)
+  - Type: CLI tool (optional InfluxDB for metrics storage)
+  - Integration: CI/CD pipelines
+  - Features: JavaScript-based tests, Grafana integration
+- 📋 **Playwright** - End-to-end browser testing (planned)
+  - Type: CLI tool (no server required)
+  - Integration: CI/CD pipelines
+  - Features: Multi-browser support (Chromium, Firefox, WebKit)
+
+**Message Broker:**
+- ✅ **Mosquitto** - MQTT for IoT communication
+- ✅ **Redis** - Pub/sub, queuing, caching
+- ⏸️ **RabbitMQ/NATS** - Advanced message broker (deferred)
+  - Decision: Use Redis Streams for now, evaluate need later
+
+**Deployment Priority:**
+1. **Phase 1 (Next):** Tempo, Hoppscotch
+2. **Phase 2:** SonarQube, Trivy (integrate with CI/CD)
+3. **Phase 3:** Sentry (requires ClickHouse + Kafka setup)
+4. **Phase 4:** k6, Playwright (as needed for projects)
 
 ### Network Information
 
