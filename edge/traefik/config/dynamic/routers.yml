@@ -133,6 +133,17 @@ http:
       tls:
         certResolver: cloudflare
 
+    # Tempo (Distributed Tracing)
+    tempo:
+      rule: "Host(`tempo.onurx.com`)"
+      entryPoints:
+        - websecure
+      service: tempo
+      middlewares:
+        - private-default
+      tls:
+        certResolver: cloudflare
+
     # Gitea (Git + Container Registry + CI/CD)
     gitea:
       rule: "Host(`git.onurx.com`)"
@@ -142,6 +153,17 @@ http:
       middlewares:
         - private-default
         - forwarded-headers
+      tls:
+        certResolver: cloudflare
+
+    # Hoppscotch (API Development & Testing)
+    hoppscotch:
+      rule: "Host(`api.onurx.com`)"
+      entryPoints:
+        - websecure
+      service: hoppscotch
+      middlewares:
+        - private-default
       tls:
         certResolver: cloudflare
 

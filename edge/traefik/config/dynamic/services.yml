@@ -67,11 +67,21 @@ http:
         servers:
           - url: "http://10.10.10.112:8080"
 
+    tempo:
+      loadBalancer:
+        servers:
+          - url: "http://10.10.10.112:3200"
+
     # VM 5: Dev (10.10.10.114)
     gitea:
       loadBalancer:
         servers:
           - url: "http://10.10.10.114:3001"
+
+    hoppscotch:
+      loadBalancer:
+        servers:
+          - url: "http://10.10.10.114:3000"
 
     coolify:
       loadBalancer:

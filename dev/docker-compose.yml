@@ -198,6 +198,57 @@ services:
   # Run: curl -sSL https://dokploy.com/install.sh | sh
   # This will set up Dokploy with its own Traefik instance
 
+  # ==========================================================================
+  # HOPPSCOTCH - API Development & Testing Platform
+  # ==========================================================================
+  # All-in-one container with frontend, backend, and admin
+  # Uses external PostgreSQL on db VM (10.10.10.111)
+  # Access: https://api.onurx.com
+
+  hoppscotch:
+    image: hoppscotch/hoppscotch:2025.10.0
+    container_name: hoppscotch
+    restart: unless-stopped
+    ports:
+      - "10.10.10.114:3000:3000"   # Frontend
+      - "10.10.10.114:3100:3100"   # Admin
+      - "10.10.10.114:3170:3170"   # Backend
+    environment:
+      # Database
+      - DATABASE_URL=postgresql://${HOPPSCOTCH_DB_USER}:${HOPPSCOTCH_DB_PASSWORD}@10.10.10.111:5432/hoppscotch?connect_timeout=300
+
+      # Security
+      - DATA_ENCRYPTION_KEY=${HOPPSCOTCH_ENCRYPTION_KEY}
+
+      # URLs (accessed via Traefik)
+      - VITE_BASE_URL=https://api.onurx.com
+      - VITE_BACKEND_GQL_URL=https://api.onurx.com/backend/graphql
+      - VITE_BACKEND_WS_URL=wss://api.onurx.com/backend/graphql
+      - VITE_BACKEND_API_URL=https://api.onurx.com/backend/v1
+
+      # Subpath access
+      - ENABLE_SUBPATH_BASED_ACCESS=true
+
+      # Application settings
+      - VITE_ALLOWED_AUTH_PROVIDERS=EMAIL
+      - REDIRECT_URL=https://api.onurx.com
+      - WHITELISTED_ORIGINS=https://api.onurx.com,https://api.onurx.com/admin,https://api.onurx.com/backend
+      - VITE_APP_TOS_LINK=https://api.onurx.com
+      - VITE_APP_PRIVACY_POLICY_LINK=https://api.onurx.com
+    networks:
+      - dev_net
+    healthcheck:
+      test: ["CMD", "wget", "--tries=1", "--spider", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
 # ============================================================================
 # NETWORKS
 # ============================================================================
