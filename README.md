@@ -193,13 +193,6 @@ docker compose ps
 - Connection: `mqtt://10.10.10.111:1883`
 - Anonymous connections enabled by default
 
-**ClickHouse:**
-- HTTP Port: 8123
-- Native Port: 9004
-- Connection HTTP: `http://10.10.10.111:8123`
-- Connection Native: `tcp://10.10.10.111:9004`
-- Default user: `default` (no password)
-
 **Kafka + Zookeeper:**
 - Kafka Port: 9092
 - Zookeeper Port: 2181
@@ -1056,12 +1049,12 @@ ha              ✅   ✅      ✅    ✅       ✅       ✅
   - Scans: Container images, filesystems, Git repositories, Kubernetes manifests
 
 **Error Tracking:**
-- 📋 **Sentry** - Error tracking, crash reporting, performance monitoring (planned)
-  - Storage: PostgreSQL (10.10.10.111), Redis (10.10.10.111), ClickHouse (self-hosted)
-  - Additional: Kafka, Memcached (required by Sentry)
+- 📋 **Sentry Cloud (Free Tier)** - Error tracking, crash reporting, performance monitoring (SaaS)
+  - Decision: Use Sentry Cloud instead of self-hosted (requires 50+ containers, 32GB RAM)
+  - Free tier: 5K errors/month, 10K performance units/month
   - Features: Stack traces, error trends, performance APM, release tracking
   - Integration: All application SDKs (Python, Node.js, Go, etc.)
-  - Deploy location: observability VM (10.10.10.112)
+  - Sign up: https://sentry.io
 
 **Testing Infrastructure:**
 - 📋 **k6** - Load and performance testing (planned)
@@ -1073,17 +1066,12 @@ ha              ✅   ✅      ✅    ✅       ✅       ✅
   - Integration: CI/CD pipelines
   - Features: Multi-browser support (Chromium, Firefox, WebKit)
 
-**Analytics & Event Streaming:**
-- ✅ **ClickHouse 24.11** - Columnar analytics database (deployed)
-  - Location: db VM (10.10.10.111)
-  - Ports: 8123 (HTTP), 9004 (Native TCP)
-  - Use cases: Event storage, analytics, data warehouse, log analysis
-  - Used by: Sentry, analytics projects
+**Event Streaming:**
 - ✅ **Kafka 7.8.0 + Zookeeper** - Event streaming platform (deployed)
   - Location: db VM (10.10.10.111)
   - Ports: 9092 (Kafka), 2181 (Zookeeper)
-  - Use cases: Event streaming, microservices communication, data pipelines
-  - Used by: Sentry, event-driven applications
+  - Use cases: Event streaming, microservices communication, data pipelines, real-time analytics
+  - Integration: Event-driven applications, data pipelines
 
 **Message Broker:**
 - ✅ **Mosquitto** - MQTT for IoT communication
@@ -1093,9 +1081,9 @@ ha              ✅   ✅      ✅    ✅       ✅       ✅
 
 **Deployment Priority:**
 1. **Phase 1:** ✅ Tempo, Hoppscotch (DEPLOYED)
-2. **Phase 2:** ✅ SonarQube (DEPLOYED) | 📋 Trivy (next - integrate with CI/CD)
-3. **Phase 3:** Sentry (requires ClickHouse + Kafka setup)
-4. **Phase 4:** k6, Playwright (as needed for projects)
+2. **Phase 2:** ✅ SonarQube, Kafka (DEPLOYED) | 📋 Trivy (integrate with CI/CD when needed)
+3. **Phase 3:** Sentry Cloud (use SaaS free tier instead of self-hosted)
+4. **Phase 4:** k6, Playwright, additional services (add as needed for projects)
 
 ### Network Information
 

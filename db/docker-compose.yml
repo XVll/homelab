@@ -282,43 +282,7 @@ services:
         max-file: "3"
 
   # ============================================================================
-  # 6. CLICKHOUSE - Columnar Analytics Database
-  # ============================================================================
-  # Used by: Sentry (error tracking), analytics projects
-  # Access: http://10.10.10.111:8123 (HTTP), tcp://10.10.10.111:9004 (Native)
-  # Default user: default (no password by default - configure in users.xml)
-
-  clickhouse:
-    image: clickhouse/clickhouse-server:24.11
-    container_name: clickhouse
-    restart: unless-stopped
-    ports:
-      - "10.10.10.111:8123:8123"  # HTTP interface
-      - "10.10.10.111:9004:9000"  # Native protocol (TCP) - Changed to avoid MinIO conflict (9000, 9002)
-    volumes:
-      - ./clickhouse/data:/var/lib/clickhouse
-      - ./clickhouse/logs:/var/log/clickhouse-server
-      - ./clickhouse/config:/etc/clickhouse-server/config.d
-    networks:
-      - data_net
-    ulimits:
-      nofile:
-        soft: 262144
-        hard: 262144
-    healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8123/ping"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 30s
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
-
-  # ============================================================================
-  # 7. ZOOKEEPER - Kafka Coordination Service
+  # 6. ZOOKEEPER - Kafka Coordination Service
   # ============================================================================
   # Required by: Kafka
   # Manages Kafka cluster metadata and coordination
@@ -350,9 +314,9 @@ services:
         max-file: "3"
 
   # ============================================================================
-  # 8. KAFKA - Event Streaming Platform
+  # 7. KAFKA - Event Streaming Platform
   # ============================================================================
-  # Used by: Sentry (event processing), data pipelines, microservices
+  # Used by: Data pipelines, microservices, event-driven applications
   # Access: kafka://10.10.10.111:9092
 
   kafka:
