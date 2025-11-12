@@ -9,10 +9,11 @@ Docker-based homelab infrastructure on Proxmox VMs. All VMs are stateless and di
 | VM | IP | Services |
 |----|-----|----------|
 | edge | 10.10.10.110 | Traefik, AdGuard, Authentik, NetBird, Netdata |
-| db | 10.10.10.111 | MongoDB, PostgreSQL, Redis, MinIO, Mosquitto, Netdata |
-| observability | 10.10.10.112 | Portainer, Grafana, Loki, Alloy, Glance, Netdata |
+| db | 10.10.10.111 | MongoDB, PostgreSQL, Redis, MinIO, Mosquitto, Qdrant, ClickHouse, Kafka, RabbitMQ, Netdata |
+| observability | 10.10.10.112 | Portainer, Grafana, Loki, Alloy, Glance, Langfuse, Netdata |
 | media | 10.10.10.113 | Plex, Sonarr, Radarr, Prowlarr, SABnzbd, qBittorrent, Bazarr, Overseerr, Netdata |
 | dev | 10.10.10.114 | Gitea, Docker Registry, GitHub Runner, Netdata |
+| ai | 10.10.10.115 | LiteLLM, Docling, n8n, Mem0, Open WebUI, Netdata (pending deployment) |
 | deploy | 10.10.10.101 | Coolify, Netdata |
 | ha | 10.10.10.116 | Home Assistant |
 | pbs | 10.10.10.120 | Proxmox Backup Server (LXC) |
@@ -823,6 +824,44 @@ sudo chown -R fx:fx /opt/homelab
 - Media stack (Plex, *arr, downloaders)
 
 ### Recent Changes
+
+**2025-11-12 - AI Infrastructure Deployment:** ⏳ In Progress
+- **New AI VM created** - VM 115 on 10.10.10.115 (hostname: ai)
+- **Database tier additions (db VM):**
+  - ✅ Qdrant (vector database) - Running on ports 6333 (HTTP), 6334 (gRPC)
+  - ✅ ClickHouse (OLAP database) - Running on ports 8123 (HTTP), 9004 (native)
+  - ✅ PostgreSQL databases created: litellm, langfuse, n8n
+  - ✅ MinIO bucket created: langfuse-events
+- **Observability tier additions (observability VM):**
+  - ✅ Langfuse v3.131.0 - AI observability platform running on port 3001
+  - Integrated with PostgreSQL + ClickHouse + Redis + MinIO
+  - Status: http://10.10.10.112:3001/api/public/health returns OK
+- **AI VM (10.10.10.115):**
+  - ✅ VM configured: hostname, 1Password service account, Git repo cloned
+  - ✅ Infrastructure files created: docker-compose.yml, .env, Alloy config, LiteLLM config
+  - ⏸️ **BLOCKED:** Services ready to deploy but 1Password CLI not working
+    - Issue: `OP_SERVICE_ACCOUNT_TOKEN` in .bashrc but not loaded in SSH sessions
+    - Need to: Fix token loading or deploy manually with explicit token export
+  - Services defined but not yet deployed:
+    - LiteLLM (AI gateway)
+    - Docling (document parsing)
+    - n8n (workflow automation)
+    - Mem0 (AI memory)
+    - Open WebUI (testing interface)
+    - Alloy (monitoring)
+    - Netdata (real-time metrics)
+- **1Password entries created:**
+  - ✅ All credentials stored in Server vault (litellm, docling, n8n, mem0, open-webui, langfuse/encryption_key)
+  - ✅ Passwords generated with hex encoding (no URL-unsafe characters)
+- **Configuration challenges resolved:**
+  - Langfuse v3 required: ENCRYPTION_KEY, Redis config, S3 with LANGFUSE_S3_EVENT_UPLOAD_* prefix
+  - ClickHouse: Disabled clustering for single-node (CLICKHOUSE_CLUSTER_ENABLED=false)
+  - ClickHouse: Password needed hex encoding to avoid URL parsing issues
+- **Next steps:**
+  - Fix 1Password CLI on ai VM (token not loading in SSH sessions)
+  - Deploy AI services on ai VM
+  - Add Traefik routes for Langfuse (langfuse.onurx.com) and other AI services
+  - Test LiteLLM → Langfuse observability integration
 
 **2025-11-09 - PBS NFS Mount Fix:** ✅ Complete
 - **Fixed PBS datastore inaccessibility** after reboots
