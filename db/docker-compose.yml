@@ -285,7 +285,7 @@ services:
   # 6. CLICKHOUSE - Columnar Analytics Database
   # ============================================================================
   # Used by: Sentry (error tracking), analytics projects
-  # Access: http://10.10.10.111:8123 (HTTP), tcp://10.10.10.111:9002 (Native)
+  # Access: http://10.10.10.111:8123 (HTTP), tcp://10.10.10.111:9004 (Native)
   # Default user: default (no password by default - configure in users.xml)
 
   clickhouse:
@@ -294,7 +294,7 @@ services:
     restart: unless-stopped
     ports:
       - "10.10.10.111:8123:8123"  # HTTP interface
-      - "10.10.10.111:9002:9000"  # Native protocol (TCP) - Changed from 9000 to avoid MinIO conflict
+      - "10.10.10.111:9004:9000"  # Native protocol (TCP) - Changed to avoid MinIO conflict (9000, 9002)
     volumes:
       - ./clickhouse/data:/var/lib/clickhouse
       - ./clickhouse/logs:/var/log/clickhouse-server
