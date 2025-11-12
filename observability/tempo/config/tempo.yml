@@ -40,9 +40,9 @@ storage:
       path: /var/tempo/wal
     s3:
       bucket: tempo-traces
-      endpoint: ${MINIO_ENDPOINT}         # From .env (10.10.10.111:9000)
-      access_key: ${MINIO_ACCESS_KEY}     # From .env
-      secret_key: ${MINIO_SECRET_KEY}     # From .env
+      endpoint: 10.10.10.111:9000
+      access_key: ${MINIO_ACCESS_KEY}
+      secret_key: ${MINIO_SECRET_KEY}
       insecure: true                      # MinIO internal, no TLS
     pool:
       max_workers: 100

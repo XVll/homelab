@@ -239,7 +239,9 @@ services:
     image: grafana/tempo:2.9.0
     container_name: tempo
     restart: unless-stopped
-    command: -config.file=/etc/tempo/tempo.yml
+    command:
+      - -config.file=/etc/tempo/tempo.yml
+      - -config.expand-env=true
     ports:
       - "10.10.10.112:3200:3200"   # Tempo HTTP
       - "10.10.10.112:4317:4317"   # OTLP gRPC receiver
