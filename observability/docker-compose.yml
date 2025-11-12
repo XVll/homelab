@@ -382,6 +382,9 @@ services:
       # Database (external PostgreSQL)
       - DATABASE_URL=postgresql://${LANGFUSE_DB_USER}:${LANGFUSE_DB_PASSWORD}@10.10.10.111:5432/langfuse
 
+      # ClickHouse (for v3 - external ClickHouse on db VM)
+      - CLICKHOUSE_URL=http://${CLICKHOUSE_USER}:${CLICKHOUSE_PASSWORD}@10.10.10.111:8123/langfuse
+
       # NextAuth configuration
       - NEXTAUTH_URL=https://langfuse.onurx.com
       - NEXTAUTH_SECRET=${LANGFUSE_NEXTAUTH_SECRET}

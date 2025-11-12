@@ -427,6 +427,41 @@ services:
         max-size: "10m"
         max-file: "3"
 
+  # ============================================================================
+  # 10. CLICKHOUSE - OLAP Database for Analytics
+  # ============================================================================
+  # Used by Langfuse v3 for analytical queries and event storage
+  # Access: http://10.10.10.111:8123 (HTTP), 10.10.10.111:9001 (native)
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:latest
+    container_name: clickhouse
+    restart: unless-stopped
+    ports:
+      - "10.10.10.111:8123:8123"  # HTTP
+      - "10.10.10.111:9001:9000"  # Native protocol
+    environment:
+      - CLICKHOUSE_DB=langfuse
+      - CLICKHOUSE_USER=${CLICKHOUSE_USER}
+      - CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD}
+      - CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT=1
+    volumes:
+      - ./clickhouse/data:/var/lib/clickhouse
+      - ./clickhouse/logs:/var/log/clickhouse-server
+    networks:
+      - data_net
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8123/ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
 networks:
   data_net:
     driver: bridge
