@@ -1083,11 +1083,21 @@ ha              ✅   ✅      ✅    ✅       ✅       ✅
   - Use cases: Event streaming, microservices communication, data pipelines, real-time analytics
   - Integration: Event-driven applications, data pipelines
 
-**Message Broker:**
-- ✅ **Mosquitto** - MQTT for IoT communication
-- ✅ **Redis** - Pub/sub, queuing, caching
-- ⏸️ **RabbitMQ/NATS** - Advanced message broker (deferred)
-  - Decision: Use Redis Streams + Kafka for now, evaluate need later
+**Message Brokers:**
+- ✅ **RabbitMQ 4.0** - AMQP message broker with Management UI (deployed)
+  - Location: db VM (10.10.10.111)
+  - Ports: 5672 (AMQP), 15672 (Management UI)
+  - Use cases: Task queues (Celery), pub/sub patterns, RPC, microservices messaging
+  - Features: Queue management, message routing, dead letter queues, priority queues
+  - Traefik: https://rabbitmq.onurx.com (private)
+  - Status: Running, health check passing
+- ✅ **Mosquitto MQTT** - Lightweight IoT message broker (deployed)
+  - Location: db VM (10.10.10.111)
+  - Port: 1883 (MQTT)
+  - Use cases: IoT devices, Home Assistant bridge
+- ✅ **Redis** - Pub/sub, streams, queuing, caching (deployed)
+  - Location: db VM (10.10.10.111)
+  - Port: 6379
 
 **Deployment Priority:**
 1. **Phase 1:** ✅ Tempo, Hoppscotch (DEPLOYED)
@@ -1118,6 +1128,7 @@ ha              ✅   ✅      ✅    ✅       ✅       ✅
 
 **Database:**
 - MinIO Console: http://10.10.10.111:9002
+- RabbitMQ: https://rabbitmq.onurx.com
 
 **Development:**
 - Gitea: https://git.onurx.com
