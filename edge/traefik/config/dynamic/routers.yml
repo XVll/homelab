@@ -167,6 +167,17 @@ http:
       tls:
         certResolver: cloudflare
 
+    # Meilisearch (Search Engine)
+    meilisearch:
+      rule: "Host(`search.onurx.com`)"
+      entryPoints:
+        - websecure
+      service: meilisearch
+      middlewares:
+        - private-default
+      tls:
+        certResolver: cloudflare
+
     # Coolify (Deployment Platform) - Public (has own auth)
     coolify:
       rule: "Host(`deploy.onurx.com`)"

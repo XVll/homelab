@@ -240,6 +240,40 @@ services:
         max-file: "3"
 
   # ==========================================================================
+  # MEILISEARCH - Fast, Typo-Tolerant Search Engine
+  # ==========================================================================
+  # Lightweight search engine for applications
+  # Self-contained (no external database needed)
+  # Access: https://search.onurx.com
+  # Use cases: Product search, documentation, autocomplete, content discovery
+
+  meilisearch:
+    image: getmeili/meilisearch:v1.12
+    container_name: meilisearch
+    restart: unless-stopped
+    ports:
+      - "7700:7700"
+    environment:
+      - MEILI_MASTER_KEY=${MEILISEARCH_MASTER_KEY}
+      - MEILI_ENV=production
+      - MEILI_HTTP_ADDR=0.0.0.0:7700
+    volumes:
+      - ./meilisearch/data:/meili_data
+    networks:
+      - dev_net
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:7700/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ==========================================================================
   # HOPPSCOTCH - API Development & Testing Platform
   # ==========================================================================
   # All-in-one container with frontend, backend, and admin
