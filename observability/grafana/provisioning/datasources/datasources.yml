@@ -29,6 +29,31 @@ datasources:
           name: TraceID
           url: "$${__value.raw}"
 
+  # Tempo (Distributed Tracing)
+  - name: Tempo
+    type: tempo
+    uid: tempo
+    access: proxy
+    url: http://tempo:3200
+    editable: true
+    jsonData:
+      httpMethod: GET
+      tracesToLogs:
+        datasourceUid: loki
+        filterByTraceID: true
+        filterBySpanID: false
+        mapTagNamesEnabled: false
+      tracesToMetrics:
+        datasourceUid: prometheus
+      serviceMap:
+        datasourceUid: prometheus
+      nodeGraph:
+        enabled: true
+      search:
+        hide: false
+      lokiSearch:
+        datasourceUid: loki
+
   # PostgreSQL (from VM2)
   - name: PostgreSQL
     type: postgres
