@@ -35,6 +35,22 @@ http:
           - url: "https://10.10.10.116:5001"
         serversTransport: insecureTransport
 
+    # DB VM (10.10.10.111)
+    minio-console:
+      loadBalancer:
+        servers:
+          - url: "http://10.10.10.111:9002"
+
+    minio-api:
+      loadBalancer:
+        servers:
+          - url: "http://10.10.10.111:9000"
+
+    rabbitmq:
+      loadBalancer:
+        servers:
+          - url: "http://10.10.10.111:15672"
+
     # Observability VM (10.10.10.112)
     portainer:
       loadBalancer:

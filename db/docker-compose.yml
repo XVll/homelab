@@ -352,6 +352,41 @@ services:
         max-size: "10m"
         max-file: "3"
 
+  # ============================================================================
+  # 8. RABBITMQ - Message Broker with Management UI
+  # ============================================================================
+  # AMQP message broker for task queues, pub/sub, RPC patterns
+  # Access: amqp://10.10.10.111:5672 (AMQP protocol)
+  #         http://10.10.10.111:15672 (Management UI)
+  # Use cases: Task queues (Celery), microservices messaging, event-driven apps
+
+  rabbitmq:
+    image: rabbitmq:4.0-management-alpine
+    container_name: rabbitmq
+    restart: unless-stopped
+    ports:
+      - "10.10.10.111:5672:5672"    # AMQP protocol
+      - "10.10.10.111:15672:15672"  # Management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+    volumes:
+      - ./rabbitmq/data:/var/lib/rabbitmq
+      - ./rabbitmq/logs:/var/log/rabbitmq
+    networks:
+      - data_net
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
 networks:
   data_net:
     driver: bridge

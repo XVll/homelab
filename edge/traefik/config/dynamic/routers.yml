@@ -212,6 +212,17 @@ http:
       tls:
         certResolver: cloudflare
 
+    # RabbitMQ Management UI
+    rabbitmq:
+      rule: "Host(`rabbitmq.onurx.com`)"
+      entryPoints:
+        - websecure
+      service: rabbitmq
+      middlewares:
+        - private-default
+      tls:
+        certResolver: cloudflare
+
     # ============================================================================
     # MEDIA SERVICES (VM 113) - Private access only
     # ============================================================================
