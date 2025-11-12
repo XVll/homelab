@@ -439,7 +439,7 @@ services:
     restart: unless-stopped
     ports:
       - "10.10.10.111:8123:8123"  # HTTP
-      - "10.10.10.111:9001:9000"  # Native protocol
+      - "10.10.10.111:9004:9000"  # Native protocol
     environment:
       - CLICKHOUSE_DB=langfuse
       - CLICKHOUSE_USER=${CLICKHOUSE_USER}
