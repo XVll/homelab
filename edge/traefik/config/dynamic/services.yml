@@ -135,16 +135,6 @@ http:
         servers:
           - url: "http://10.10.10.116:8123"
 
-    # VM 2: Database Host (10.10.10.111)
-    minio-console:
-      loadBalancer:
-        servers:
-          - url: "http://10.10.10.111:9002"
-
-    minio-api:
-      loadBalancer:
-        servers:
-          - url: "http://10.10.10.111:9000"
 
     # ============================================================================
     # Media Services - VM 113 (10.10.10.113)
