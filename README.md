@@ -984,401 +984,128 @@ ha              ✅   ✅      ✅    ✅       ✅       ✅
 
 ### AI Development Infrastructure (Planning Phase)
 
-**Status:** 📋 Under evaluation - Not yet deployed
+**Status:** 📋 Planning - Not yet deployed
 
-This section documents the AI infrastructure stack being planned for building AI-powered applications, agents, and automation workflows. The focus is on:
-- AI agents performing autonomous tasks (decision-making, file manipulation, function calling)
-- Document processing and manipulation
+AI infrastructure for building AI-powered applications with focus on:
+- AI agents (autonomous decision-making, function calling, task execution)
+- Document processing and RAG (Retrieval Augmented Generation)
 - Background AI workflows
-- Chatbot interfaces
-- System integration and automation
+- System automation
 
 ---
 
-#### Core AI Infrastructure
+#### Planned AI Stack
 
-**AI Gateway & Proxy:**
-- 📋 **LiteLLM** - Universal API gateway for LLM providers (planned)
-  - **Purpose:** Single unified API for multiple LLM providers (OpenAI, Anthropic, Ollama, Azure)
-  - **Features:** Load balancing, automatic fallbacks, cost tracking, rate limiting, response caching
-  - **Why needed:** Cost optimization, reliability (fallbacks), unified interface for all AI providers
-  - **Deployment:** dev VM (10.10.10.114)
-  - **Integration:** All applications call LiteLLM instead of direct provider APIs
-  - **Configuration:** Provider credentials, model routing rules, caching policies
-  - **Example use:** App calls LiteLLM → routes to cheapest available model → falls back if primary fails
+**Core Services (Deploy First):**
 
-**AI Observability:**
-- 📋 **Langfuse** - LLM observability and analytics platform (planned)
-  - **Purpose:** Track, debug, and optimize all AI interactions
-  - **Features:**
-    - Trace every LLM call with full context (prompts, completions, latency, costs)
-    - Cost tracking per user, per feature, per model
-    - Prompt versioning and A/B testing
-    - User analytics (who's using AI features, quality ratings)
-    - Performance metrics (token usage, error rates, latency)
-  - **Why critical:** Without observability, impossible to debug issues or control costs
-  - **Deployment:** dev VM (10.10.10.114)
-  - **Storage:** PostgreSQL on db VM (10.10.10.111)
-  - **Integration:** LiteLLM logs to Langfuse automatically, SDKs for direct instrumentation
-  - **Example queries:**
-    - "Why is my AI bill $500 this month?" → See breakdown by user/feature/model
-    - "Which prompts are failing most?" → View error rates and examples
-    - "How much does feature X cost per request?" → See average cost analysis
+1. **Langfuse** - AI observability (track costs, debug prompts, monitor usage)
+   - Location: dev VM (10.10.10.114)
+   - Storage: PostgreSQL (db VM)
+   - Why: Essential for production AI - impossible to debug or control costs without it
 
-**Vector Database (RAG):**
-- 📋 **Qdrant** - High-performance vector database for semantic search (planned)
-  - **Purpose:** Store and search document embeddings for RAG (Retrieval Augmented Generation)
-  - **Features:**
-    - Fast similarity search (find relevant documents for AI context)
-    - Filtering and metadata (search by date, category, user, etc.)
-    - Multi-tenancy support (separate data per user/organization)
-    - Payload storage (store original text + embeddings together)
-  - **Why needed:** Enable AI to answer questions using your documents/data
-  - **Deployment:** db VM (10.10.10.111) - data infrastructure tier
-  - **Use cases:**
-    - Document Q&A: "What does contract X say about Y?"
-    - Semantic search: Find similar documents/support tickets
-    - Agent memory: Store conversation history, retrieve relevant context
-    - Knowledge base: AI answers using your documentation
-  - **Integration:** Apps generate embeddings (via LiteLLM) → store in Qdrant → query for relevant chunks
-  - **Storage:** Persistent volume, scales to millions of vectors
+2. **LiteLLM** - AI gateway (unified API for OpenAI, Anthropic, Ollama, etc.)
+   - Location: dev VM (10.10.10.114)
+   - Why: Cost optimization, fallbacks, caching, single interface for all providers
 
-**Document Processing:**
-- 📋 **Unstructured.io** - Advanced document extraction and processing (planned)
-  - **Purpose:** Extract structured data from documents for AI consumption
-  - **What it extracts:**
-    - Text with layout preservation (headers, paragraphs, lists)
-    - Tables (converted to markdown/JSON)
-    - Images with descriptions
-    - Metadata (author, date, document type)
-  - **Features:**
-    - OCR support for scanned documents
-    - Intelligent chunking for LLMs (preserves context)
-    - 1000+ file format support (PDF, Word, Excel, images, etc.)
-    - Self-hosted REST API
-  - **Why better than simple extraction:**
-    - Preserves document structure (AI understands context better)
-    - Chunks intelligently (doesn't break mid-sentence)
-    - Handles complex layouts (multi-column PDFs, scientific papers)
-  - **Deployment:** dev VM (10.10.10.114)
-  - **Alternative options evaluated:**
-    - Apache Tika: Simple text extraction (no structure, no tables, no OCR)
-    - Docling (IBM): Best for complex PDFs, but Python-only, no REST API
-    - LlamaParse: Commercial cloud API (not self-hosted)
-  - **Example workflow:**
-    1. Upload PDF to app → store in MinIO
-    2. App calls Unstructured API → returns structured chunks
-    3. App generates embeddings (LiteLLM) → stores in Qdrant
-    4. User asks question → app searches Qdrant → sends relevant chunks to AI
+3. **Qdrant** - Vector database (semantic search, RAG)
+   - Location: db VM (10.10.10.111)
+   - Why: Store document embeddings, enable "chat with your docs" features
 
-**Workflow Automation:**
-- 📋 **n8n** - Visual workflow automation platform (planned)
-  - **Purpose:** Automate AI-driven workflows across systems (no-code/low-code)
-  - **Features:**
-    - 400+ integrations (email, Slack, databases, APIs, webhooks, file storage)
-    - Visual workflow builder (drag-and-drop)
-    - Built-in AI nodes (OpenAI, Anthropic, LangChain)
-    - Conditional logic (IF/ELSE based on AI decisions)
-    - Error handling (retries, fallbacks, notifications)
-    - Cron scheduling and webhook triggers
-  - **Why needed:** Connect AI decisions to real-world actions
-  - **Deployment:** dev VM (10.10.10.114)
-  - **Storage:** PostgreSQL on db VM (10.10.10.111)
-  - **Use cases:**
-    - **Document uploaded** → Extract text → AI summarizes → Send to Slack
-    - **Email received** → AI categorizes → Route to correct department
-    - **Event occurs** → AI decides action → Execute (notify, create ticket, update DB)
-    - **Schedule: daily** → AI analyzes reports → Sends summary email
-  - **Integration with existing:**
-    - Triggers: Webhooks from your apps, scheduled tasks, file uploads (MinIO)
-    - Actions: Call any API, send email, update database, run scripts
-    - AI: LiteLLM for AI calls, Qdrant for context retrieval
-  - **vs Inngest:**
-    - n8n: Visual workflows, system integration, no-code (homelab automation + prototyping)
-    - Inngest: Code-first AI workflows (TypeScript/Python) for production app features
-    - **Use both:** n8n for homelab automation, Inngest for app-integrated AI tasks
+4. **n8n** - Workflow automation (connect AI decisions to real-world actions)
+   - Location: dev VM (10.10.10.114)
+   - Storage: PostgreSQL (db VM)
+   - Why: Visual workflows for homelab automation + prototyping
+   - vs Inngest: n8n for no-code workflows, Inngest for production TypeScript code
+
+**Document Processing (Evaluate Options):**
+
+Need to decide between:
+- **Unstructured.io** - Best for AI/RAG (extracts tables, preserves structure, intelligent chunking)
+- **Apache Tika** - Simplest option (just text extraction, no structure)
+- **Docling** - Best for complex PDFs (but no REST API, Python-only)
+
+**Optional (Add Later):**
+- **Ollama** - Local LLM inference (needs GPU)
+- **Dify** - No-code AI app builder (skip for now, redundant with n8n + custom dev)
 
 ---
 
-#### AI Architecture for Web Applications
+#### Simple Architecture
 
-**Primary use case:** AI-powered features in custom web apps (.NET, TypeScript, etc.)
-
-**Proposed Architecture:**
+**For TypeScript Web Apps:**
 ```
-[Web Application (.NET/TypeScript)]
-    ↓ (API call)
-[LiteLLM Proxy] → OpenAI/Anthropic/Ollama
-    ↓ (logs all calls)
-[Langfuse] → Observability dashboard
-
-[Web Application]
-    ↓ (background task)
-[RabbitMQ] → Event queue
-    ↓ (worker consumes)
-[Inngest Worker] → AI processing
-    ↓ (retrieve context)
-[Qdrant] → Relevant documents
-    ↓ (call AI with context)
-[LiteLLM] → AI response
-    ↓ (store result)
-[RabbitMQ] → Notify app
-    ↓
-[Web Application] → Display to user
-```
-
-**Example: Document Processing Workflow**
-1. User uploads invoice (PDF) in web app
-2. App stores in MinIO, sends event to RabbitMQ: `{type: "document.uploaded", id: "123"}`
-3. Inngest worker receives event
-4. Worker calls Unstructured API → extracts: vendor, amount, due date, line items
-5. Worker generates embeddings (LiteLLM) → stores in Qdrant
-6. Worker calls LiteLLM with context: "Summarize this invoice and flag if urgent"
-7. AI analyzes: Amount $15K + due in 3 days = urgent
-8. Worker sends result to RabbitMQ
-9. Web app receives notification, shows summary + "URGENT" flag to user
-10. Langfuse logs entire workflow: prompts, tokens, cost, latency
-
-**Example: AI Decision-Making Workflow (via n8n)**
-1. Customer support email arrives
-2. n8n webhook receives email
-3. n8n calls Unstructured → extracts email content
-4. n8n searches Qdrant → finds similar past tickets
-5. n8n calls LiteLLM: "Categorize this email: billing/tech/sales. Is it urgent?"
-6. AI responds: "Category: billing, Urgency: high, Reason: account suspended"
-7. n8n executes decision:
-   - IF urgent + billing → Create high-priority ticket + notify billing team via Slack
-   - IF tech + low → Create ticket + auto-respond with knowledge base article
-8. Langfuse tracks cost, latency, decision quality
-
----
-
-#### Document Processing Pipeline Options
-
-**Goal:** Convert documents (PDF, Word, scanned images) into AI-ready chunks with embeddings
-
-**Pipeline Stages:**
-```
-1. EXTRACTION  → Get text/data from files
-2. CHUNKING    → Split into manageable pieces
-3. ENRICHMENT  → Add metadata, clean up
-4. EMBEDDING   → Convert to vectors
-5. STORAGE     → Store in vector DB (Qdrant)
-6. RETRIEVAL   → Search when needed (RAG)
-```
-
-**Extraction Tool Comparison:**
-
-| Tool | Complexity | Structure | Tables | OCR | Best For |
-|------|-----------|----------|--------|-----|----------|
-| **Unstructured** | ⭐⭐⭐ | ✅ Yes | ✅ Yes | ✅ Yes | RAG, AI apps (recommended) |
-| Apache Tika | ⭐ | ❌ No | ❌ No | ❌ No | Simple text extraction |
-| Docling (IBM) | ⭐⭐⭐ | ✅ Yes | ✅ Yes | ✅ Yes | Complex PDFs (no REST API) |
-| LlamaParse | ⭐ | ✅ Yes | ✅ Yes | ✅ Yes | Cloud SaaS (not self-hosted) |
-
-**Recommended Pipeline (Option 1 - Best Quality):**
-```
-Document upload → Unstructured API → Structured chunks + tables + images
+[TypeScript App] → [LiteLLM] → OpenAI/Anthropic
                        ↓
-                  LiteLLM (OpenAI embeddings) → Vectors
+                  [Langfuse] (observability)
+
+[TypeScript App] → [Inngest] (background AI tasks)
                        ↓
-                  Qdrant → Store chunks + vectors + metadata
+                  [Qdrant] (search docs)
                        ↓
-              User query → Search Qdrant → Retrieve relevant chunks
-                       ↓
-              LiteLLM (with context) → AI answer
+                  [LiteLLM] (AI with context)
 ```
 
-**Cost-Optimized Pipeline (Option 2 - Free Embeddings):**
-```
-Document → Unstructured → Chunks
-              ↓
-         Ollama (local embeddings) → Vectors (free, no API costs)
-              ↓
-         Qdrant → Storage
-```
-⚠️ **Requires:** GPU for acceptable performance (or very slow on CPU)
+**Example: Document Q&A**
+1. Upload PDF → Extract text → Generate embeddings → Store in Qdrant
+2. User asks question → Search Qdrant → Send relevant chunks to AI → Return answer
+3. Langfuse logs everything (cost, latency, quality)
 
-**Simple Pipeline (Option 3 - Basic Documents):**
-```
-Document → Apache Tika → Plain text
-              ↓
-         Manual chunking → Fixed-size chunks
-              ↓
-         LiteLLM (embeddings) → Qdrant
-```
-✅ **Good for:** Simple documents (emails, basic PDFs, text files)
-
-**Chunking Strategies:**
-- **Fixed-size:** Split every N tokens (simple, breaks context)
-- **Semantic:** Split by paragraphs/sections (preserves meaning) ← Unstructured default
-- **Recursive:** Try section → paragraph → sentence → tokens (best quality) ← LangChain
-
-**Embedding Options:**
-| Option | Cost | Quality | Speed | Privacy |
-|--------|------|---------|-------|---------|
-| OpenAI (via LiteLLM) | $$$ | ⭐⭐⭐⭐⭐ | Fast | Cloud |
-| Anthropic (via LiteLLM) | $$$ | ⭐⭐⭐⭐⭐ | Fast | Cloud |
-| Ollama (local) | Free | ⭐⭐⭐⭐ | Slow (CPU) / Fast (GPU) | Self-hosted |
-| Sentence Transformers | Free | ⭐⭐⭐⭐ | Medium | Self-hosted |
+**Example: AI Automation (via n8n)**
+1. Email arrives → n8n extracts content
+2. AI categorizes (billing/tech/sales)
+3. n8n executes action (create ticket, send to Slack, auto-respond)
 
 ---
 
-#### Optional Components (Not Planned Yet)
+#### Document Processing Comparison
 
-**Local LLM Inference:**
-- 📋 **Ollama** - Run open-source LLMs locally (Llama 3, Mistral, etc.)
-  - **Pros:** Free inference, data privacy, good for embeddings/classification
-  - **Cons:** Requires GPU for acceptable speed, lower quality than GPT-4/Claude
-  - **Use cases:** Embeddings (free), simple tasks, cost optimization
-  - **Decision:** Skip for now, add later if GPU available and cost becomes issue
+| Tool | Structure | Tables | OCR | Best For |
+|------|-----------|--------|-----|----------|
+| Unstructured | ✅ | ✅ | ✅ | AI/RAG (recommended) |
+| Apache Tika | ❌ | ❌ | ❌ | Simple text extraction |
+| Docling | ✅ | ✅ | ✅ | Complex PDFs only |
 
-**AI App Builder (Low Priority):**
-- 📋 **Dify** - No-code AI application builder
-  - **Purpose:** Visual builder for AI chatbots, agents, RAG apps
-  - **Features:** Drag-and-drop agent creation, built-in RAG, pre-built templates
-  - **Why skipping:** Redundant with n8n + Inngest + custom development
-  - **When to add:** If non-developers need to build AI features quickly
-- 📋 **Flowise** - Alternative to Dify (lighter, more developer-friendly)
-  - **Purpose:** Visual LangChain workflow builder
-  - **Pro:** Exports to code, lighter than Dify
-  - **Decision:** Choose Dify OR Flowise if needed (not both)
-
----
-
-#### Deployment Plan (Not Started)
-
-**Phase 1 - Core Infrastructure (Essential):**
-1. **Langfuse** - AI observability (CRITICAL - deploy first)
-2. **LiteLLM** - AI gateway (CRITICAL)
-3. **Qdrant** - Vector database (CRITICAL for RAG)
-4. **n8n** - Workflow automation
-5. **Unstructured** - Document processing
-
-**Already Deployed (Reuse):**
-- ✅ Inngest - AI workflow orchestration (dev VM)
-- ✅ RabbitMQ - Message queue for app ↔ AI communication (db VM)
-- ✅ PostgreSQL - Shared by Langfuse, n8n (db VM)
-- ✅ Redis - Shared state/caching (db VM)
-- ✅ MinIO - Document storage (db VM)
-
-**Phase 2 - Optional (Add Later):**
-- Ollama - Local LLM inference (if GPU available)
-- Dify or Flowise - If rapid prototyping needed
-
-**Estimated Resource Requirements:**
-- CPU: +4-6 cores total
-- Memory: +8-12GB RAM
-- Storage: +20-50GB (depends on document volume)
-- Network: Outbound to AI provider APIs (OpenAI/Anthropic)
+**Recommended Pipeline:**
+```
+PDF → Unstructured → Chunks + Tables
+       ↓
+    LiteLLM (embeddings) → Qdrant
+       ↓
+    Search → LiteLLM (AI answer)
+```
 
 ---
 
 #### Integration with Existing Stack
 
-**Databases (db VM - 10.10.10.111):**
-- PostgreSQL: Langfuse, n8n
-- Redis: Shared caching, Inngest state
-- MinIO: Document storage (PDFs, images, generated files)
-- Qdrant: Vector embeddings
+**Already Deployed:**
+- ✅ Inngest (TypeScript AI workflows)
+- ✅ PostgreSQL (Langfuse, n8n will use this)
+- ✅ MinIO (document storage)
+- ✅ Redis (caching)
 
-**Monitoring (observability VM - 10.10.10.112):**
-- Prometheus: LiteLLM metrics (request count, latency, errors)
-- Grafana: AI dashboards (cost, usage, performance)
-- Loki: All AI service logs
-- Alloy: Metrics + log collection from AI services
+**Will Deploy:**
+- 📋 Langfuse, LiteLLM, Qdrant, n8n, Unstructured
 
-**Development (dev VM - 10.10.10.114):**
-- Inngest: AI workflow orchestration (already deployed)
-- LiteLLM: AI gateway (planned)
-- Langfuse: AI observability (planned)
-- n8n: Workflow automation (planned)
-- Unstructured: Document processing (planned)
-
-**Reverse Proxy (edge VM - 10.10.10.110):**
-- Traefik routes for all AI services (private by default)
-- SSL termination via Cloudflare
-
-**Proposed Traefik Routes (all private):**
-- `langfuse.onurx.com` → Langfuse UI
-- `litellm.onurx.com` → LiteLLM proxy (API endpoint)
-- `qdrant.onurx.com` → Qdrant API + dashboard
-- `n8n.onurx.com` → n8n workflow editor
-- `unstructured.onurx.com` → Unstructured API
+**Traefik Routes (all private):**
+- langfuse.onurx.com
+- litellm.onurx.com
+- qdrant.onurx.com
+- n8n.onurx.com
 
 ---
 
-#### Questions to Resolve
+#### Open Questions
 
-**Before deployment, need to decide:**
-
-1. **LLM Providers:**
-   - Which APIs to use? (OpenAI, Anthropic, both?)
-   - API keys already in 1Password?
-   - Cost budget per month?
-
-2. **GPU Availability:**
-   - Do we have GPU for Ollama (local embeddings)?
-   - Or rely on cloud APIs only?
-
-3. **Document Types:**
-   - What file types most important? (PDF, Word, Excel, images, scanned docs?)
-   - Average document size and volume?
-
-4. **Use Case Priority:**
-   - Start with chatbot, document Q&A, or automation first?
-   - Which AI features in apps are highest priority?
-
-5. **Cost Optimization:**
-   - Use expensive models (GPT-4, Claude Sonnet) or cheaper (GPT-3.5, Haiku)?
-   - LiteLLM routing rules (try cheap model first, escalate if needed)?
+Before deploying, need to decide:
+1. Which LLM providers? (OpenAI, Anthropic, both?)
+2. GPU available for Ollama? (or cloud APIs only)
+3. Document types? (PDF, Word, Excel, scanned docs?)
+4. Cost budget per month?
 
 ---
 
-#### Reference Architecture Diagram
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                     USER WEB APPLICATION                        │
-│                    (.NET / TypeScript / etc.)                   │
-└───────────┬─────────────────────────────────────┬───────────────┘
-            │                                     │
-            │ Direct API calls                    │ Background tasks
-            ↓                                     ↓
-    ┌───────────────┐                   ┌─────────────────┐
-    │   LiteLLM     │                   │   RabbitMQ      │
-    │  AI Gateway   │                   │  Message Queue  │
-    └───────┬───────┘                   └────────┬────────┘
-            │                                    │
-            ├─→ OpenAI                           ↓
-            ├─→ Anthropic               ┌─────────────────┐
-            ├─→ Ollama (local)          │ Inngest Worker  │
-            │                           │  (TypeScript)   │
-            ↓                           └────────┬────────┘
-    ┌───────────────┐                           │
-    │   Langfuse    │←──────────────────────────┤
-    │ Observability │                           │
-    └───────────────┘                           ↓
-                                        ┌────────────────┐
-    ┌───────────────┐                  │  Unstructured  │
-    │     n8n       │                  │   Doc Extract  │
-    │  Automation   │                  └────────┬───────┘
-    └───────┬───────┘                           │
-            │                                   ↓
-            ├────────────────────────→  ┌───────────────┐
-            │                           │    Qdrant     │
-            │                           │  Vector DB    │
-            │                           └───────────────┘
-            ↓
-    ┌───────────────┐
-    │ Email/Slack/  │
-    │ DB/API calls  │
-    └───────────────┘
-```
-
----
-
-**Status:** This section will be updated as we refine requirements, test tools, and begin deployment.
+**Status:** Will be updated as we refine and deploy.
 
 ---
 
