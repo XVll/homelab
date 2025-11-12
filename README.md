@@ -1017,12 +1017,16 @@ AI infrastructure for building AI-powered applications with focus on:
    - Why: Visual workflows for homelab automation + prototyping
    - vs Inngest: n8n for no-code workflows, Inngest for production TypeScript code
 
-**Document Processing (Evaluate Options):**
+**Document Processing:**
 
-Need to decide between:
-- **Unstructured.io** - Best for AI/RAG (extracts tables, preserves structure, intelligent chunking)
-- **Apache Tika** - Simplest option (just text extraction, no structure)
-- **Docling** - Best for complex PDFs (but no REST API, Python-only)
+5. **Docling** - IBM Research document processing toolkit (43K+ GitHub stars)
+   - Location: dev VM (10.10.10.114)
+   - Why: State-of-the-art document parsing for Gen AI workflows
+   - Formats: PDF, DOCX, XLSX, PPTX, HTML, Markdown, images, audio (ASR)
+   - Features: Advanced PDF layout, table extraction, OCR, VLM support (Granite-Docling-258M)
+   - Deployment: Docker container + FastAPI wrapper for REST API
+   - Integrations: LangChain, LlamaIndex, CrewAI, Haystack
+   - Output: Markdown, HTML, JSON (AI-optimized)
 
 **Optional (Add Later):**
 - **Ollama** - Local LLM inference (needs GPU)
@@ -1046,7 +1050,7 @@ Need to decide between:
 ```
 
 **Example: Document Q&A**
-1. Upload PDF → Extract text → Generate embeddings → Store in Qdrant
+1. Upload PDF → Docling extracts (Markdown + tables) → Generate embeddings → Store in Qdrant
 2. User asks question → Search Qdrant → Send relevant chunks to AI → Return answer
 3. Langfuse logs everything (cost, latency, quality)
 
@@ -1057,22 +1061,25 @@ Need to decide between:
 
 ---
 
-#### Document Processing Comparison
+#### Document Processing Pipeline
 
-| Tool | Structure | Tables | OCR | Best For |
-|------|-----------|--------|-----|----------|
-| Unstructured | ✅ | ✅ | ✅ | AI/RAG (recommended) |
-| Apache Tika | ❌ | ❌ | ❌ | Simple text extraction |
-| Docling | ✅ | ✅ | ✅ | Complex PDFs only |
+**Using Docling (IBM Research - 43K stars):**
+```
+Document (PDF/Word/Excel/etc.) → Docling → Markdown/JSON + Tables
+                                    ↓
+                         LiteLLM (embeddings) → Qdrant
+                                    ↓
+                              Search → LiteLLM (AI answer)
+```
 
-**Recommended Pipeline:**
-```
-PDF → Unstructured → Chunks + Tables
-       ↓
-    LiteLLM (embeddings) → Qdrant
-       ↓
-    Search → LiteLLM (AI answer)
-```
+**Why Docling:**
+- ✅ State-of-the-art PDF parsing quality (IBM Research)
+- ✅ Supports all formats: PDF, DOCX, XLSX, PPTX, HTML, Markdown, images
+- ✅ Advanced features: Table extraction, OCR, layout analysis, formula detection
+- ✅ AI-optimized output (Markdown for LLMs)
+- ✅ Massive community (43K+ stars)
+- ✅ LangChain/LlamaIndex integrations
+- ✅ MIT licensed, Docker deployment
 
 ---
 
@@ -1085,13 +1092,14 @@ PDF → Unstructured → Chunks + Tables
 - ✅ Redis (caching)
 
 **Will Deploy:**
-- 📋 Langfuse, LiteLLM, Qdrant, n8n, Unstructured
+- 📋 Langfuse, LiteLLM, Qdrant, n8n, Docling
 
 **Traefik Routes (all private):**
 - langfuse.onurx.com
 - litellm.onurx.com
 - qdrant.onurx.com
 - n8n.onurx.com
+- docling.onurx.com
 
 ---
 
