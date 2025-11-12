@@ -385,6 +385,8 @@ services:
       # ClickHouse (for v3 - external ClickHouse on db VM)
       - CLICKHOUSE_URL=http://${CLICKHOUSE_USER}:${CLICKHOUSE_PASSWORD}@10.10.10.111:8123/langfuse
       - CLICKHOUSE_MIGRATION_URL=clickhouse://${CLICKHOUSE_USER}:${CLICKHOUSE_PASSWORD}@10.10.10.111:9004/langfuse
+      - CLICKHOUSE_USER=${CLICKHOUSE_USER}
+      - CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD}
 
       # NextAuth configuration
       - NEXTAUTH_URL=https://langfuse.onurx.com
