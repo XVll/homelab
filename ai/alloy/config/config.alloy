@@ -1,0 +1,216 @@
+// ============================================================================
+// GRAFANA ALLOY CONFIGURATION (v1.11+) - AI VM
+// Modern unified telemetry collector for metrics and logs
+// ============================================================================
+
+// ============================================================================
+// METRICS: System Metrics (replaces Node Exporter)
+// ============================================================================
+
+prometheus.exporter.unix "system" {
+  // Collects CPU, memory, disk, network metrics
+  // Enable all collectors for comprehensive system monitoring
+  enable_collectors = [
+    "cpu",
+    "cpufreq",
+    "diskstats",
+    "filesystem",
+    "loadavg",
+    "meminfo",
+    "netdev",
+    "netstat",
+    "stat",
+    "time",
+    "uname",
+    "vmstat",
+  ]
+}
+
+// Scrape system metrics from unix exporter
+prometheus.scrape "system_metrics" {
+  targets    = prometheus.exporter.unix.system.targets
+  forward_to = [prometheus.relabel.normalize_node.receiver]
+  scrape_interval = "10s"
+  job_name = "integrations/unix"
+
+  clustering {
+    enabled = false
+  }
+}
+
+prometheus.relabel "normalize_node" {
+  forward_to = [prometheus.remote_write.prometheus.receiver]
+
+  rule {
+    source_labels = ["instance"]
+    target_label  = "system_name"
+  }
+
+  rule {
+    source_labels = ["instance"]
+    regex         = "(.*)"
+    replacement   = "vm"
+    target_label  = "system_type"
+  }
+}
+
+// ============================================================================
+// METRICS: Docker Container Metrics (replaces cAdvisor)
+// ============================================================================
+
+prometheus.exporter.cadvisor "docker" {
+  docker_host = "unix:///var/run/docker.sock"
+  storage_duration = "5m"
+  docker_only = false
+  store_container_labels = true
+
+  // Enable all metric types including network
+  enabled_metrics = [
+    "cpu",
+    "memory",
+    "network",
+    "disk",
+    "diskIO",
+  ]
+
+  // Collect container-level metrics
+  // Includes CPU, memory, network, disk I/O per container
+}
+
+// Scrape Docker container metrics from cAdvisor exporter
+prometheus.scrape "docker_metrics" {
+  targets    = prometheus.exporter.cadvisor.docker.targets
+  forward_to = [prometheus.remote_write.prometheus.receiver]
+  scrape_interval = "10s"
+
+  clustering {
+    enabled = false
+  }
+}
+
+// ============================================================================
+// METRICS: Prometheus Remote Write
+// ============================================================================
+
+prometheus.remote_write "prometheus" {
+  endpoint {
+    url = "http://10.10.10.112:9090/api/v1/write"
+
+    headers = {
+      "X-Scope-OrgID" = "homelab",
+    }
+  }
+
+  // Standardized external labels
+  external_labels = {
+    cluster     = "homelab",
+    environment = "production",
+    instance    = "ai",
+    tier        = "ai",
+  }
+}
+
+// ============================================================================
+// LOGS: Docker Container Discovery
+// ============================================================================
+
+discovery.docker "containers" {
+  host = "unix:///var/run/docker.sock"
+}
+
+// ============================================================================
+// LOGS: Docker Container Logs Collection
+// ============================================================================
+
+loki.source.docker "containers" {
+  host       = "unix:///var/run/docker.sock"
+  targets    = discovery.docker.containers.targets
+  forward_to = [loki.process.add_labels.receiver]
+
+  // Relabeling to extract useful labels
+  relabel_rules = discovery.relabel.docker_labels.rules
+}
+
+// Relabeling rules for Docker containers
+discovery.relabel "docker_labels" {
+  targets = discovery.docker.containers.targets
+
+  // Extract container name
+  rule {
+    source_labels = ["__meta_docker_container_name"]
+    regex         = "/(.*)"
+    target_label  = "container"
+  }
+
+  // Extract container ID (short)
+  rule {
+    source_labels = ["__meta_docker_container_id"]
+    regex         = "(.{12}).*"
+    target_label  = "container_id"
+  }
+
+  // Extract image name
+  rule {
+    source_labels = ["__meta_docker_container_image"]
+    target_label  = "image"
+  }
+
+  // Extract compose project
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_compose_project"]
+    target_label  = "compose_project"
+  }
+
+  // Extract compose service
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_compose_service"]
+    target_label  = "compose_service"
+  }
+}
+
+// ============================================================================
+// LOGS: Processing and Labeling
+// ============================================================================
+
+loki.process "add_labels" {
+  forward_to = [loki.write.loki.receiver]
+
+  // Parse Docker logs
+  stage.docker {}
+
+  // Standardized static labels
+  stage.static_labels {
+    values = {
+      instance    = "ai",
+      cluster     = "homelab",
+      environment = "production",
+      tier        = "ai",
+    }
+  }
+
+  // Extract log level (error, warn, info, debug)
+  stage.regex {
+    expression = "(?i)level=(?P<level>\\w+)"
+  }
+
+  stage.labels {
+    values = {
+      level = "",
+    }
+  }
+}
+
+// ============================================================================
+// LOGS: Loki Write Endpoint (CENTRAL LOKI on observability VM)
+// ============================================================================
+
+loki.write "loki" {
+  endpoint {
+    url = "http://10.10.10.112:3100/loki/api/v1/push"
+  }
+
+  // External labels added to all logs
+  external_labels = {
+    cluster = "homelab",
+  }
+}

@@ -1,0 +1,361 @@
+# ============================================================================
+# AI VM (10.10.10.115) - AI Application Stack
+# ============================================================================
+# LiteLLM: AI Gateway for unified API access
+# Docling: Document parsing service
+# n8n: Workflow automation
+# Mem0: AI memory layer (uses Qdrant on db VM)
+# Open WebUI: Chat interface for testing (uses LiteLLM + Qdrant)
+# ============================================================================
+# Langfuse: On observability VM (10.10.10.112)
+# Qdrant: On db VM (10.10.10.111)
+# ============================================================================
+
+services:
+  # ============================================================================
+  # PORTAINER AGENT - Container Management
+  # ============================================================================
+  # Connects to Portainer on observability VM (10.10.10.112:9443)
+
+  portainer-agent:
+    image: portainer/agent:latest
+    container_name: portainer-agent
+    restart: always
+    ports:
+      - "9001:9001"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/volumes:/var/lib/docker/volumes
+      - /:/host
+    networks:
+      - ai_net
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ============================================================================
+  # ALLOY - Metrics & Logs Collector (sends to observability VM)
+  # ============================================================================
+
+  alloy:
+    image: grafana/alloy:v1.11.2
+    container_name: alloy
+    restart: unless-stopped
+    privileged: true  # Required for system metrics collection
+    command:
+      - run
+      - /etc/alloy/config.alloy
+      - --server.http.listen-addr=0.0.0.0:12345
+      - --storage.path=/var/lib/alloy/data
+    ports:
+      - "10.10.10.115:12345:12345"  # Alloy UI
+    volumes:
+      - ./alloy/config/config.alloy:/etc/alloy/config.alloy:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro  # Docker metrics + logs
+      - /:/host/root:ro  # System metrics (CPU, disk, etc.)
+      - /sys:/host/sys:ro  # System metrics
+      - /proc:/host/proc:ro  # System metrics
+      - /var/lib/docker:/var/lib/docker:ro  # Docker container info for cAdvisor
+      - /dev/disk:/dev/disk:ro  # Disk info for cAdvisor
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro  # cgroups for container metrics
+      - ./alloy/data:/var/lib/alloy/data  # Alloy state
+    networks:
+      - ai_net
+    environment:
+      - HOSTNAME=ai
+    healthcheck:
+      test: ["CMD-SHELL", "alloy tools pprof health http://localhost:12345 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ============================================================================
+  # NETDATA - Real-Time System & Container Monitoring
+  # ============================================================================
+  # Real-time performance monitoring with 1-second granularity
+  # Web UI: http://10.10.10.115:19999
+  # Documentation: https://learn.netdata.cloud
+
+  netdata:
+    image: netdata/netdata:latest
+    container_name: netdata
+    hostname: ai
+    restart: unless-stopped
+    pid: host
+    cap_add:
+      - SYS_PTRACE
+      - SYS_ADMIN
+    security_opt:
+      - apparmor:unconfined
+    ports:
+      - "10.10.10.115:19999:19999"
+    volumes:
+      - ./netdata/config:/etc/netdata
+      - ./netdata/lib:/var/lib/netdata
+      - ./netdata/cache:/var/cache/netdata
+      - /:/host/root:ro,rslave
+      - /etc/passwd:/host/etc/passwd:ro
+      - /etc/group:/host/etc/group:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /etc/os-release:/host/etc/os-release:ro
+      - /var/log:/host/var/log:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - ai_net
+    environment:
+      - NETDATA_CLAIM_TOKEN=${NETDATA_CLAIM_TOKEN}
+      - NETDATA_CLAIM_ROOMS=${NETDATA_CLAIM_ROOMS}
+      - NETDATA_CLAIM_URL=https://app.netdata.cloud
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ============================================================================
+  # LITELLM - AI Gateway & Proxy
+  # ============================================================================
+  # Unified API for OpenAI, Anthropic, and other LLM providers
+  # Provides load balancing, fallback, caching, and cost tracking
+  # Access: https://litellm.onurx.com
+  # Docs: https://docs.litellm.ai/
+
+  litellm:
+    image: ghcr.io/berriai/litellm:main-latest
+    container_name: litellm
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    environment:
+      # Database (uses PostgreSQL on db VM for config persistence)
+      - DATABASE_URL=postgresql://${LITELLM_DB_USER}:${LITELLM_DB_PASSWORD}@10.10.10.111:5432/litellm
+
+      # Master key for admin access
+      - LITELLM_MASTER_KEY=${LITELLM_MASTER_KEY}
+
+      # Redis for caching (optional but recommended)
+      - REDIS_HOST=10.10.10.111
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+
+      # UI settings
+      - UI_USERNAME=${LITELLM_UI_USERNAME}
+      - UI_PASSWORD=${LITELLM_UI_PASSWORD}
+
+      # Observability - Langfuse integration (on observability VM)
+      - LANGFUSE_PUBLIC_KEY=${LANGFUSE_PUBLIC_KEY}
+      - LANGFUSE_SECRET_KEY=${LANGFUSE_SECRET_KEY}
+      - LANGFUSE_HOST=http://10.10.10.112:3001
+
+    volumes:
+      - ./litellm/config/config.yaml:/app/config.yaml
+      - ./litellm/data:/app/data
+    networks:
+      - ai_net
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:4000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ============================================================================
+  # DOCLING - Document Processing Service
+  # ============================================================================
+  # IBM Research document parser for PDFs, Word, Excel, etc.
+  # Access: http://10.10.10.115:5000 (internal only)
+  # Docs: https://github.com/DS4SD/docling
+
+  docling:
+    image: ds4sd/docling:latest
+    container_name: docling
+    restart: unless-stopped
+    ports:
+      - "5000:8000"  # FastAPI server
+    volumes:
+      - ./docling/temp:/tmp/docling  # Temporary processing files
+    networks:
+      - ai_net
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ============================================================================
+  # N8N - Workflow Automation
+  # ============================================================================
+  # Visual workflow automation with AI integrations
+  # Uses external PostgreSQL on db VM (10.10.10.111)
+  # Access: https://n8n.onurx.com
+  # Docs: https://docs.n8n.io/
+
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      # Database (external PostgreSQL)
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=10.10.10.111
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=n8n
+      - DB_POSTGRESDB_USER=${N8N_DB_USER}
+      - DB_POSTGRESDB_PASSWORD=${N8N_DB_PASSWORD}
+
+      # Basic auth
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=${N8N_BASIC_AUTH_USER}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD}
+
+      # URL configuration
+      - WEBHOOK_URL=https://n8n.onurx.com
+      - N8N_HOST=n8n.onurx.com
+      - N8N_PROTOCOL=https
+      - N8N_PORT=5678
+
+      # Execution settings
+      - EXECUTIONS_MODE=queue
+      - QUEUE_BULL_REDIS_HOST=10.10.10.111
+      - QUEUE_BULL_REDIS_PORT=6379
+      - QUEUE_BULL_REDIS_PASSWORD=${REDIS_PASSWORD}
+      - QUEUE_BULL_REDIS_DB=2
+
+      # Security
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+
+    volumes:
+      - ./n8n/data:/home/node/.n8n
+    networks:
+      - ai_net
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:5678/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ============================================================================
+  # MEM0 - AI Memory Layer
+  # ============================================================================
+  # Persistent memory for AI agents across conversations
+  # Uses Qdrant on db VM (10.10.10.111) for vector storage
+  # Access: http://10.10.10.115:8000 (internal API)
+  # Docs: https://docs.mem0.ai/
+
+  mem0:
+    image: mem0ai/mem0:latest
+    container_name: mem0
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      # Vector database (Qdrant on db VM)
+      - QDRANT_URL=http://10.10.10.111:6333
+      - QDRANT_API_KEY=${QDRANT_API_KEY}
+
+      # LLM provider (via LiteLLM)
+      - OPENAI_API_BASE=http://litellm:4000
+      - OPENAI_API_KEY=${LITELLM_MASTER_KEY}
+
+    networks:
+      - ai_net
+    depends_on:
+      - litellm
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ============================================================================
+  # OPEN WEBUI - Chat Interface for Testing
+  # ============================================================================
+  # Self-hosted ChatGPT-like interface for testing AI pipelines
+  # Access: https://chat.onurx.com
+  # Docs: https://docs.openwebui.com/
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    restart: unless-stopped
+    ports:
+      - "3000:8080"
+    environment:
+      # OpenAI API compatibility (via LiteLLM)
+      - OPENAI_API_BASE_URL=http://litellm:4000/v1
+      - OPENAI_API_KEY=${LITELLM_MASTER_KEY}
+
+      # RAG settings (using Qdrant on db VM)
+      - ENABLE_RAG_WEB_SEARCH=true
+      - RAG_EMBEDDING_ENGINE=openai
+      - RAG_EMBEDDING_MODEL=text-embedding-3-small
+
+      # Vector database (Qdrant on db VM)
+      - VECTOR_DB=qdrant
+      - QDRANT_URL=http://10.10.10.111:6333
+      - QDRANT_API_KEY=${QDRANT_API_KEY}
+
+      # Web UI settings
+      - WEBUI_AUTH=true
+      - WEBUI_SECRET_KEY=${OPEN_WEBUI_SECRET_KEY}
+
+    volumes:
+      - ./open-webui/data:/app/backend/data
+    networks:
+      - ai_net
+    depends_on:
+      - litellm
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+# ============================================================================
+# NETWORKS
+# ============================================================================
+networks:
+  ai_net:
+    driver: bridge
+    name: ai_net

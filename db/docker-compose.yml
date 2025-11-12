@@ -387,6 +387,46 @@ services:
         max-size: "10m"
         max-file: "3"
 
+  # ============================================================================
+  # 9. QDRANT - Vector Database for AI Embeddings
+  # ============================================================================
+  # High-performance vector database for semantic search and RAG
+  # Access: http://10.10.10.111:6333 (HTTP API), 10.10.10.111:6334 (gRPC)
+  # Use cases: Embeddings storage, semantic search, RAG pipelines
+  # Used by: Mem0 (AI memory), Open WebUI (RAG), AI applications
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: qdrant
+    restart: unless-stopped
+    ports:
+      - "10.10.10.111:6333:6333"  # HTTP API
+      - "10.10.10.111:6334:6334"  # gRPC API
+    environment:
+      # API Key for security
+      - QDRANT__SERVICE__API_KEY=${QDRANT_API_KEY}
+
+      # Storage settings
+      - QDRANT__STORAGE__STORAGE_PATH=/qdrant/storage
+      - QDRANT__STORAGE__SNAPSHOTS_PATH=/qdrant/snapshots
+
+    volumes:
+      - ./qdrant/storage:/qdrant/storage
+      - ./qdrant/snapshots:/qdrant/snapshots
+    networks:
+      - data_net
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:6333/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
 networks:
   data_net:
     driver: bridge
