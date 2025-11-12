@@ -210,9 +210,9 @@ services:
     container_name: hoppscotch
     restart: unless-stopped
     ports:
-      - "10.10.10.114:3000:3000"   # Frontend
-      - "10.10.10.114:3100:3100"   # Admin
-      - "10.10.10.114:3170:3170"   # Backend
+      - "3000:3000"   # Frontend
+      - "3100:3100"   # Admin
+      - "3170:3170"   # Backend
     environment:
       # Database
       - DATABASE_URL=postgresql://${HOPPSCOTCH_DB_USER}:${HOPPSCOTCH_DB_PASSWORD}@10.10.10.111:5432/hoppscotch?connect_timeout=300
