@@ -968,9 +968,10 @@ ha              ✅   ✅      ✅    ✅       ✅       ✅
 - ⏳ Pending: Create first admin user via web UI
 
 **Access URLs:**
-- Tempo UI: https://tempo.onurx.com (private)
 - Hoppscotch: https://api.onurx.com (private)
 - Hoppscotch Admin: https://api.onurx.com/admin (private)
+
+**Note:** Tempo has no web UI - access traces through Grafana → Explore → Tempo datasource
 
 ### Critical Action Items
 
@@ -1095,7 +1096,6 @@ ha              ✅   ✅      ✅    ✅       ✅       ✅
 - Gitea: https://git.onurx.com
 - Coolify: https://deploy.onurx.com
 - Hoppscotch: https://api.onurx.com
-- Tempo: https://tempo.onurx.com
 
 **Applications:**
 - Home Assistant: https://ha.onurx.com
