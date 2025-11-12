@@ -940,7 +940,7 @@ ha              ✅   ✅      ✅    ✅       ✅       ✅
   - Container metrics (cAdvisor) from all 6 VMs
   - All Docker container logs centralized through Loki
 
-**2025-11-12 - Development Stack Configuration:** 🔧 Configured (Pending Deployment)
+**2025-11-12 - Development Stack Deployment:** ✅ Complete
 
 **Tempo v2.9.0 (Distributed Tracing):**
 - ✅ Added to observability/docker-compose.yml
@@ -950,8 +950,8 @@ ha              ✅   ✅      ✅    ✅       ✅       ✅
 - ✅ Metrics generator → Prometheus remote_write
 - ✅ Added Traefik route: tempo.onurx.com (private)
 - ✅ Environment variables configured in .env
-- ⏳ Pending: Create MinIO bucket `tempo-traces`
-- ⏳ Pending: Deploy service on observability VM
+- ✅ Created MinIO bucket `tempo-traces`
+- ✅ Deployed and running on observability VM (10.10.10.112)
 - ⏳ Pending: Add Tempo datasource to Grafana
 - ⏳ Pending: Configure Alloy to send traces
 
@@ -961,79 +961,21 @@ ha              ✅   ✅      ✅    ✅       ✅       ✅
 - ✅ Enabled subpath-based access (/, /admin, /backend)
 - ✅ Added Traefik route: api.onurx.com (private)
 - ✅ Environment variables configured in .env
-- ⏳ Pending: Create 1Password entries (hoppscotch-db, hoppscotch)
-- ⏳ Pending: Create PostgreSQL database `hoppscotch`
-- ⏳ Pending: Deploy service on dev VM
-- ⏳ Pending: Run Prisma migrations
-- ⏳ Pending: Create first admin user
+- ✅ Created 1Password entries (hoppscotch-db, hoppscotch)
+- ✅ Created PostgreSQL database `hoppscotch`
+- ✅ Deployed and running on dev VM (10.10.10.114)
+- ✅ Ran Prisma migrations (16 migrations applied)
+- ⏳ Pending: Create first admin user via web UI
 
-**Manual Deployment Steps Required:**
-
-1. **Create 1Password Entries:**
-   ```
-   Vault: "Server"
-
-   Item: "hoppscotch-db"
-   - username: hoppscotch
-   - password: <generate-secure-password>
-
-   Item: "hoppscotch"
-   - encryption_key: <32-char-hex> (generate: openssl rand -hex 16)
-
-   Item: "minio" (verify exists)
-   - username: <access-key>
-   - password: <secret-key>
-   ```
-
-2. **Create MinIO Bucket:**
-   ```bash
-   # SSH to any VM with MinIO client
-   mc alias set minio http://10.10.10.111:9000 <access-key> <secret-key>
-   mc mb minio/tempo-traces
-   ```
-
-3. **Create PostgreSQL Database:**
-   ```bash
-   # SSH to db VM
-   ssh fx@10.10.10.111
-   docker exec -it postgres psql -U postgres
-
-   CREATE USER hoppscotch WITH PASSWORD '<password>';
-   CREATE DATABASE hoppscotch OWNER hoppscotch;
-   GRANT ALL PRIVILEGES ON DATABASE hoppscotch TO hoppscotch;
-   \q
-   ```
-
-4. **Deploy Tempo:**
-   ```bash
-   ssh fx@10.10.10.112
-   cd /opt/homelab/observability
-   git pull
-   op run --env-file=.env -- docker compose up -d tempo
-   docker compose logs -f tempo
-   ```
-
-5. **Deploy Hoppscotch:**
-   ```bash
-   ssh fx@10.10.10.114
-   cd /opt/homelab/dev
-   git pull
-   op run --env-file=.env -- docker compose up -d hoppscotch
-   docker compose logs -f hoppscotch
-
-   # Run migrations (first time only)
-   docker exec -it hoppscotch pnpm dlx prisma migrate deploy
-   ```
-
-6. **Verify Access:**
-   - Tempo UI: https://tempo.onurx.com
-   - Hoppscotch: https://api.onurx.com
-   - Hoppscotch Admin: https://api.onurx.com/admin
+**Access URLs:**
+- Tempo UI: https://tempo.onurx.com (private)
+- Hoppscotch: https://api.onurx.com (private)
+- Hoppscotch Admin: https://api.onurx.com/admin (private)
 
 ### Critical Action Items
 
 **🔴 HIGH PRIORITY:**
-1. **Deploy Tempo + Hoppscotch** - Configurations ready, manual deployment required
+1. **Hoppscotch First Admin User** - Create via web UI at https://api.onurx.com/admin
 2. **Grafana Dashboards** - Add Synology to Systems Overview (metrics ready, needs manual UI work)
 3. **Authentication** - Authentik deployed but no applications configured
 4. **Resource Limits** - No CPU/memory limits on containers
@@ -1065,24 +1007,24 @@ ha              ✅   ✅      ✅    ✅       ✅       ✅
 - ✅ **Loki** - Log aggregation (90 day retention)
 - ✅ **Alloy** - Metrics and logs collection (deployed on all VMs)
 - ✅ **Netdata** - Real-time infrastructure metrics (deployed on all VMs)
-- 🔧 **Tempo v2.9.0** - Distributed tracing (configured, pending deployment)
+- ✅ **Tempo v2.9.0** - Distributed tracing (deployed)
   - Location: observability VM (10.10.10.112)
   - Storage: MinIO S3-compatible (db VM)
   - Retention: 90 days
   - OTLP receivers: gRPC (4317), HTTP (4318)
   - Traefik: https://tempo.onurx.com (private)
-  - Status: Docker config ready, needs MinIO bucket + deployment
+  - Status: Running and healthy
 
 **Application Development:**
 - ✅ **Gitea** - Git hosting, Actions, Container Registry
 - ✅ **GitHub Runner** - Self-hosted CI/CD
 - ✅ **Coolify** - Application deployment platform
-- 🔧 **Hoppscotch 2025.10.0** - API development and testing (configured, pending deployment)
+- ✅ **Hoppscotch 2025.10.0** - API development and testing (deployed)
   - Location: dev VM (10.10.10.114)
   - Storage: PostgreSQL on db VM (10.10.10.111)
   - Features: API testing, team collaboration, collections, mock servers
   - Traefik: https://api.onurx.com (private)
-  - Status: Docker config ready, needs PostgreSQL database + deployment
+  - Status: Running, migrations applied, ready for first admin user
 
 **Code Quality & Security:**
 - 📋 **SonarQube** - Code quality, security scanning, tech debt tracking (planned)
@@ -1120,8 +1062,8 @@ ha              ✅   ✅      ✅    ✅       ✅       ✅
   - Decision: Use Redis Streams for now, evaluate need later
 
 **Deployment Priority:**
-1. **Phase 1 (Next):** Tempo, Hoppscotch
-2. **Phase 2:** SonarQube, Trivy (integrate with CI/CD)
+1. **Phase 1:** ✅ Tempo, Hoppscotch (DEPLOYED)
+2. **Phase 2 (Next):** SonarQube, Trivy (integrate with CI/CD)
 3. **Phase 3:** Sentry (requires ClickHouse + Kafka setup)
 4. **Phase 4:** k6, Playwright (as needed for projects)
 
@@ -1152,6 +1094,8 @@ ha              ✅   ✅      ✅    ✅       ✅       ✅
 **Development:**
 - Gitea: https://git.onurx.com
 - Coolify: https://deploy.onurx.com
+- Hoppscotch: https://api.onurx.com
+- Tempo: https://tempo.onurx.com
 
 **Applications:**
 - Home Assistant: https://ha.onurx.com
