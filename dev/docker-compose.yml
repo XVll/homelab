@@ -207,7 +207,7 @@ services:
   # Default credentials: admin/admin (change on first login)
 
   sonarqube:
-    image: sonarqube:10.8.1-community
+    image: sonarqube:community
     container_name: sonarqube
     restart: unless-stopped
     ports:
