@@ -979,12 +979,11 @@ ha              ✅   ✅      ✅    ✅       ✅       ✅
 ### Critical Action Items
 
 **🔴 HIGH PRIORITY:**
-1. **Hoppscotch First Admin User** - Create via web UI at https://api.onurx.com/admin
+1. **Authentication** - Authentik deployed but no applications configured (includes Hoppscotch SSO)
 2. **Grafana Dashboards** - Add Synology to Systems Overview (metrics ready, needs manual UI work)
-3. **Authentication** - Authentik deployed but no applications configured
-4. **Resource Limits** - No CPU/memory limits on containers
-5. **Health Checks** - Several services missing health checks
-6. **VM 100 Backup Fix** - Xpenology backup timeout (needs QEMU guest agent disabled)
+3. **Resource Limits** - No CPU/memory limits on containers
+4. **Health Checks** - Several services missing health checks
+5. **VM 100 Backup Fix** - Xpenology backup timeout (needs QEMU guest agent disabled)
 
 **🟡 MEDIUM PRIORITY:**
 1. **SSL Migration** - Route more services via Traefik (AdGuard, Portainer)

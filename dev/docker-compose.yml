@@ -199,6 +199,47 @@ services:
   # This will set up Dokploy with its own Traefik instance
 
   # ==========================================================================
+  # SONARQUBE - Code Quality & Security Analysis
+  # ==========================================================================
+  # Static code analysis, security scanning, tech debt tracking
+  # Uses external PostgreSQL on db VM (10.10.10.111)
+  # Access: https://sonar.onurx.com
+  # Default credentials: admin/admin (change on first login)
+
+  sonarqube:
+    image: sonarqube:10.8.1-community
+    container_name: sonarqube
+    restart: unless-stopped
+    ports:
+      - "9000:9000"
+    environment:
+      # Database
+      - SONAR_JDBC_URL=jdbc:postgresql://10.10.10.111:5432/sonarqube
+      - SONAR_JDBC_USERNAME=${SONARQUBE_DB_USER}
+      - SONAR_JDBC_PASSWORD=${SONARQUBE_DB_PASSWORD}
+
+      # Web settings
+      - SONAR_WEB_CONTEXT=/
+      - SONAR_WEB_PORT=9000
+    volumes:
+      - ./sonarqube/data:/opt/sonarqube/data
+      - ./sonarqube/extensions:/opt/sonarqube/extensions
+      - ./sonarqube/logs:/opt/sonarqube/logs
+    networks:
+      - dev_net
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider -q http://localhost:9000/api/system/status || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ==========================================================================
   # HOPPSCOTCH - API Development & Testing Platform
   # ==========================================================================
   # All-in-one container with frontend, backend, and admin

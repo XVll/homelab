@@ -156,6 +156,17 @@ http:
       tls:
         certResolver: cloudflare
 
+    # SonarQube (Code Quality & Security)
+    sonarqube:
+      rule: "Host(`sonar.onurx.com`)"
+      entryPoints:
+        - websecure
+      service: sonarqube
+      middlewares:
+        - private-default
+      tls:
+        certResolver: cloudflare
+
     # Coolify (Deployment Platform) - Public (has own auth)
     coolify:
       rule: "Host(`deploy.onurx.com`)"
