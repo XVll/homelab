@@ -193,6 +193,19 @@ docker compose ps
 - Connection: `mqtt://10.10.10.111:1883`
 - Anonymous connections enabled by default
 
+**ClickHouse:**
+- HTTP Port: 8123
+- Native Port: 9004
+- Connection HTTP: `http://10.10.10.111:8123`
+- Connection Native: `tcp://10.10.10.111:9004`
+- Default user: `default` (no password)
+
+**Kafka + Zookeeper:**
+- Kafka Port: 9092
+- Zookeeper Port: 2181
+- Connection: `kafka://10.10.10.111:9092`
+- Topic auto-creation enabled
+
 #### Reverse Proxy (edge VM - 10.10.10.110)
 
 **Traefik:**
@@ -1060,11 +1073,23 @@ ha              ✅   ✅      ✅    ✅       ✅       ✅
   - Integration: CI/CD pipelines
   - Features: Multi-browser support (Chromium, Firefox, WebKit)
 
+**Analytics & Event Streaming:**
+- ✅ **ClickHouse 24.11** - Columnar analytics database (deployed)
+  - Location: db VM (10.10.10.111)
+  - Ports: 8123 (HTTP), 9004 (Native TCP)
+  - Use cases: Event storage, analytics, data warehouse, log analysis
+  - Used by: Sentry, analytics projects
+- ✅ **Kafka 7.8.0 + Zookeeper** - Event streaming platform (deployed)
+  - Location: db VM (10.10.10.111)
+  - Ports: 9092 (Kafka), 2181 (Zookeeper)
+  - Use cases: Event streaming, microservices communication, data pipelines
+  - Used by: Sentry, event-driven applications
+
 **Message Broker:**
 - ✅ **Mosquitto** - MQTT for IoT communication
 - ✅ **Redis** - Pub/sub, queuing, caching
 - ⏸️ **RabbitMQ/NATS** - Advanced message broker (deferred)
-  - Decision: Use Redis Streams for now, evaluate need later
+  - Decision: Use Redis Streams + Kafka for now, evaluate need later
 
 **Deployment Priority:**
 1. **Phase 1:** ✅ Tempo, Hoppscotch (DEPLOYED)
