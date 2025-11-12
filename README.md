@@ -1058,6 +1058,17 @@ ha              ✅   ✅      ✅    ✅       ✅       ✅
   - Traefik: https://search.onurx.com (private)
   - Status: Running, health check passing
 
+**AI/Workflow Orchestration:**
+- ✅ **Inngest (Self-Hosted)** - AI agent and workflow orchestration platform (deployed)
+  - Location: dev VM (10.10.10.114)
+  - Storage: PostgreSQL (10.10.10.111), Redis (10.10.10.111)
+  - Ports: 8288 (API), 8289 (Connect Gateway)
+  - Features: AI workflows with built-in retries, LLM streaming support, token tracking, multi-agent orchestration
+  - Use cases: AI agents, multi-step LLM workflows, background jobs, event-driven architecture
+  - SDK Support: TypeScript/JavaScript, Python, Go (no .NET support yet)
+  - Traefik: https://inngest.onurx.com (private)
+  - Status: Running, all services healthy (API, executor, runner, connect-gateway)
+
 **Error Tracking:**
 - 📋 **Sentry Cloud (Free Tier)** - Error tracking, crash reporting, performance monitoring (SaaS)
   - Decision: Use Sentry Cloud instead of self-hosted (requires 50+ containers, 32GB RAM)
@@ -1136,6 +1147,7 @@ ha              ✅   ✅      ✅    ✅       ✅       ✅
 - Hoppscotch: https://api.onurx.com
 - SonarQube: https://sonar.onurx.com
 - Meilisearch: https://search.onurx.com
+- Inngest: https://inngest.onurx.com
 
 **Applications:**
 - Home Assistant: https://ha.onurx.com
