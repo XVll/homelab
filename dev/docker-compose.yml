@@ -210,9 +210,9 @@ services:
     container_name: hoppscotch
     restart: unless-stopped
     ports:
-      - "3000:3000"   # Frontend
-      - "3100:3100"   # Admin
-      - "3170:3170"   # Backend
+      - "3000:80"     # Frontend (Caddy serves on port 80 internally)
+      - "3100:80"     # Admin (same Caddy instance)
+      - "3170:8080"   # Backend API
     environment:
       # Database
       - DATABASE_URL=postgresql://${HOPPSCOTCH_DB_USER}:${HOPPSCOTCH_DB_PASSWORD}@10.10.10.111:5432/hoppscotch?connect_timeout=300
