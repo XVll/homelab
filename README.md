@@ -1048,6 +1048,16 @@ ha              ✅   ✅      ✅    ✅       ✅       ✅
   - Integration: CI/CD pipelines (Gitea Actions, GitHub Actions)
   - Scans: Container images, filesystems, Git repositories, Kubernetes manifests
 
+**Search & Discovery:**
+- ✅ **Meilisearch v1.12** - Fast, typo-tolerant search engine (deployed)
+  - Location: dev VM (10.10.10.114)
+  - Storage: Embedded LMDB database (local disk)
+  - Features: Full-text search, typo tolerance, faceted search, filtering, geo search
+  - Use cases: Product search, documentation, autocomplete, content discovery
+  - Authentication: Master key (1Password)
+  - Traefik: https://search.onurx.com (private)
+  - Status: Running, health check passing
+
 **Error Tracking:**
 - 📋 **Sentry Cloud (Free Tier)** - Error tracking, crash reporting, performance monitoring (SaaS)
   - Decision: Use Sentry Cloud instead of self-hosted (requires 50+ containers, 32GB RAM)
@@ -1114,6 +1124,7 @@ ha              ✅   ✅      ✅    ✅       ✅       ✅
 - Coolify: https://deploy.onurx.com
 - Hoppscotch: https://api.onurx.com
 - SonarQube: https://sonar.onurx.com
+- Meilisearch: https://search.onurx.com
 
 **Applications:**
 - Home Assistant: https://ha.onurx.com
