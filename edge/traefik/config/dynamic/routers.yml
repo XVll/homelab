@@ -178,6 +178,17 @@ http:
       tls:
         certResolver: cloudflare
 
+    # Inngest (AI/Workflow Orchestration)
+    inngest:
+      rule: "Host(`inngest.onurx.com`)"
+      entryPoints:
+        - websecure
+      service: inngest
+      middlewares:
+        - private-default
+      tls:
+        certResolver: cloudflare
+
     # Coolify (Deployment Platform) - Public (has own auth)
     coolify:
       rule: "Host(`deploy.onurx.com`)"

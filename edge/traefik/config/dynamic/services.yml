@@ -104,6 +104,11 @@ http:
         servers:
           - url: "http://10.10.10.114:7700"
 
+    inngest:
+      loadBalancer:
+        servers:
+          - url: "http://10.10.10.114:8288"
+
     coolify:
       loadBalancer:
         servers:

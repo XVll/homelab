@@ -274,6 +274,41 @@ services:
         max-file: "3"
 
   # ==========================================================================
+  # INNGEST - AI/Workflow Orchestration Platform
+  # ==========================================================================
+  # Self-hosted workflow engine for AI agents, durable functions, event-driven apps
+  # Uses external PostgreSQL (10.10.10.111) and Redis (10.10.10.111)
+  # Access: https://inngest.onurx.com
+  # Use cases: AI agents, LLM workflows, background jobs, event-driven architecture
+
+  inngest:
+    image: inngest/inngest:latest
+    container_name: inngest
+    restart: unless-stopped
+    command: inngest start
+    ports:
+      - "8288:8288"  # Main API
+      - "8289:8289"  # Connect Gateway
+    environment:
+      - INNGEST_EVENT_KEY=${INNGEST_EVENT_KEY}
+      - INNGEST_SIGNING_KEY=${INNGEST_SIGNING_KEY}
+      - INNGEST_POSTGRES_URI=postgresql://${INNGEST_DB_USER}:${INNGEST_DB_PASSWORD}@10.10.10.111:5432/inngest
+      - INNGEST_REDIS_URI=redis://:${REDIS_PASSWORD}@10.10.10.111:6379/1
+    networks:
+      - dev_net
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8288/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ==========================================================================
   # HOPPSCOTCH - API Development & Testing Platform
   # ==========================================================================
   # All-in-one container with frontend, backend, and admin
