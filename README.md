@@ -1028,9 +1028,25 @@ AI infrastructure for building AI-powered applications with focus on:
    - Integrations: LangChain, LlamaIndex, CrewAI, Haystack
    - Output: Markdown, HTML, JSON (AI-optimized)
 
+**AI Enhancements (Deploy After Core):**
+
+6. **Mem0** - AI memory layer for persistent context (41K+ GitHub stars)
+   - Location: dev VM (10.10.10.114)
+   - Storage: Qdrant (vector store)
+   - Why: Give AI agents persistent memory across conversations
+   - Features: Remember user preferences, past interactions, context
+   - Integrations: Works with LiteLLM, Qdrant
+   - Use cases: Chatbots that remember, personalized AI assistants
+
+7. **Open WebUI** - Self-hosted ChatGPT-like interface (60K+ GitHub stars)
+   - Location: dev VM (10.10.10.114)
+   - Why: Ready-made chat UI for testing and internal use
+   - Features: Multi-user, RAG built-in, model switching
+   - Integration: Works with LiteLLM (proxy all AI providers)
+   - Use cases: Internal AI chat tool, testing RAG pipelines, team collaboration
+
 **Optional (Add Later):**
 - **Ollama** - Local LLM inference (needs GPU)
-- **Dify** - No-code AI app builder (skip for now, redundant with n8n + custom dev)
 
 ---
 
@@ -1092,7 +1108,8 @@ Document (PDF/Word/Excel/etc.) → Docling → Markdown/JSON + Tables
 - ✅ Redis (caching)
 
 **Will Deploy:**
-- 📋 Langfuse, LiteLLM, Qdrant, n8n, Docling
+- 📋 Core: Langfuse, LiteLLM, Qdrant, n8n, Docling
+- 📋 Enhancements: Mem0, Open WebUI
 
 **Traefik Routes (all private):**
 - langfuse.onurx.com
@@ -1100,6 +1117,7 @@ Document (PDF/Word/Excel/etc.) → Docling → Markdown/JSON + Tables
 - qdrant.onurx.com
 - n8n.onurx.com
 - docling.onurx.com
+- chat.onurx.com (Open WebUI)
 
 ---
 
