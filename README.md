@@ -948,12 +948,11 @@ ha              ✅   ✅      ✅    ✅       ✅       ✅
 - ✅ Configured 90-day trace retention
 - ✅ OTLP receivers (gRPC:4317, HTTP:4318)
 - ✅ Metrics generator → Prometheus remote_write
-- ✅ Added Traefik route: tempo.onurx.com (private)
 - ✅ Environment variables configured in .env
 - ✅ Created MinIO bucket `tempo-traces`
 - ✅ Deployed and running on observability VM (10.10.10.112)
-- ⏳ Pending: Add Tempo datasource to Grafana
-- ⏳ Pending: Configure Alloy to send traces
+- ✅ Added Tempo datasource to Grafana with full integration
+- ⏳ Pending: Configure applications to send traces to Tempo
 
 **Hoppscotch 2025.10.0 (API Testing):**
 - ✅ Added to dev/docker-compose.yml (All-in-one image)
@@ -971,7 +970,11 @@ ha              ✅   ✅      ✅    ✅       ✅       ✅
 - Hoppscotch: https://api.onurx.com (private)
 - Hoppscotch Admin: https://api.onurx.com/admin (private)
 
-**Note:** Tempo has no web UI - access traces through Grafana → Explore → Tempo datasource
+**Using Tempo:**
+- Access: Grafana → Explore → Select "Tempo" datasource
+- Query traces by TraceID or search
+- Tempo automatically correlates with Prometheus metrics and Loki logs
+- Send traces: OTLP gRPC endpoint at `http://10.10.10.112:4317`
 
 ### Critical Action Items
 
