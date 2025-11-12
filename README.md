@@ -1030,11 +1030,13 @@ ha              ✅   ✅      ✅    ✅       ✅       ✅
   - Status: Running, migrations applied, ready for first admin user
 
 **Code Quality & Security:**
-- 📋 **SonarQube** - Code quality, security scanning, tech debt tracking (planned)
+- ✅ **SonarQube Community Edition** - Code quality, security scanning, tech debt tracking (deployed)
+  - Location: dev VM (10.10.10.114)
   - Storage: PostgreSQL on db VM (10.10.10.111)
-  - Features: Static analysis, security vulnerabilities, code coverage
+  - Features: Static analysis, security vulnerabilities, code coverage, tech debt
   - Integration: Gitea Actions, GitHub Runner
-  - Deploy location: dev VM (10.10.10.114)
+  - Traefik: https://sonar.onurx.com (private)
+  - Status: Running, default credentials admin/admin (change on first login)
 - 📋 **Trivy** - Container and dependency security scanning (planned)
   - Type: CLI tool (no server required)
   - Integration: CI/CD pipelines (Gitea Actions, GitHub Actions)
@@ -1066,7 +1068,7 @@ ha              ✅   ✅      ✅    ✅       ✅       ✅
 
 **Deployment Priority:**
 1. **Phase 1:** ✅ Tempo, Hoppscotch (DEPLOYED)
-2. **Phase 2 (Next):** SonarQube, Trivy (integrate with CI/CD)
+2. **Phase 2:** ✅ SonarQube (DEPLOYED) | 📋 Trivy (next - integrate with CI/CD)
 3. **Phase 3:** Sentry (requires ClickHouse + Kafka setup)
 4. **Phase 4:** k6, Playwright (as needed for projects)
 
@@ -1098,6 +1100,7 @@ ha              ✅   ✅      ✅    ✅       ✅       ✅
 - Gitea: https://git.onurx.com
 - Coolify: https://deploy.onurx.com
 - Hoppscotch: https://api.onurx.com
+- SonarQube: https://sonar.onurx.com
 
 **Applications:**
 - Home Assistant: https://ha.onurx.com
