@@ -396,16 +396,24 @@ services:
 
       # Security
       - SALT=${LANGFUSE_SALT}
+      - ENCRYPTION_KEY=${LANGFUSE_ENCRYPTION_KEY}
 
       # Telemetry (opt-out if you prefer)
       - TELEMETRY_ENABLED=true
 
+      # Redis - Cache & Queue (from db VM)
+      - REDIS_HOST=10.10.10.111
+      - REDIS_PORT=6379
+      - REDIS_AUTH=${REDIS_PASSWORD}
+
       # S3-compatible storage (MinIO) for event recovery
-      - S3_ENDPOINT=http://10.10.10.111:9000
-      - S3_ACCESS_KEY_ID=${MINIO_ACCESS_KEY}
-      - S3_SECRET_ACCESS_KEY=${MINIO_SECRET_KEY}
-      - S3_BUCKET_NAME=langfuse-events
-      - S3_REGION=us-east-1
+      - LANGFUSE_S3_EVENT_UPLOAD_ENABLED=true
+      - LANGFUSE_S3_EVENT_UPLOAD_BUCKET=langfuse-events
+      - LANGFUSE_S3_EVENT_UPLOAD_REGION=us-east-1
+      - LANGFUSE_S3_EVENT_UPLOAD_ENDPOINT=http://10.10.10.111:9000
+      - LANGFUSE_S3_EVENT_UPLOAD_ACCESS_KEY_ID=${MINIO_ACCESS_KEY}
+      - LANGFUSE_S3_EVENT_UPLOAD_SECRET_ACCESS_KEY=${MINIO_SECRET_KEY}
+      - LANGFUSE_S3_EVENT_UPLOAD_FORCE_PATH_STYLE=true
 
     networks:
       - obs_net
