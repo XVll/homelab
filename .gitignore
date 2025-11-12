@@ -15,6 +15,10 @@ credentials/
 */data/
 */backups/
 
+# Exception: Keep AdGuard config (not secrets, just DNS rewrites and settings)
+!edge/adguard/data/conf/
+!edge/adguard/data/conf/AdGuardHome.yaml
+
 # Logs
 *.log
 logs/

@@ -1,14 +1,23 @@
-bind_host: 0.0.0.0
-bind_port: 80
+http:
+  pprof:
+    port: 6060
+    enabled: false
+  address: 0.0.0.0:3000
+  session_ttl: 720h
 users: []
-rlimit_nofile: 0
-web_session_ttl: 720
+auth_attempts: 5
+block_auth_min: 15
+http_proxy: ""
+language: ""
+theme: auto
 dns:
   bind_hosts:
     - 0.0.0.0
   port: 53
   anonymize_client_ip: false
   ratelimit: 20
+  ratelimit_subnet_len_ipv4: 24
+  ratelimit_subnet_len_ipv6: 56
   ratelimit_whitelist: []
   refuse_any: true
   upstream_dns:
@@ -23,8 +32,7 @@ dns:
     - 2620:fe::10
     - 2620:fe::fe:10
   fallback_dns: []
-  all_servers: false
-  fastest_addr: false
+  upstream_mode: load_balance
   fastest_timeout: 1s
   allowed_clients: []
   disallowed_clients: []
@@ -35,6 +43,7 @@ dns:
   trusted_proxies:
     - 127.0.0.0/8
     - ::1/128
+  cache_enabled: true
   cache_size: 4194304
   cache_ttl_min: 0
   cache_ttl_max: 0
@@ -59,36 +68,10 @@ dns:
   dns64_prefixes: []
   serve_http3: false
   use_http3_upstreams: false
-
-  # DNS Rewrites - Internal domain resolution
-  rewrites:
-    - domain: auth.onurx.com
-      answer: 10.10.10.110
-    - domain: portainer.onurx.com
-      answer: 10.10.10.110
-    - domain: grafana.onurx.com
-      answer: 10.10.10.110
-    - domain: sonarr.onurx.com
-      answer: 10.10.10.110
-    - domain: radarr.onurx.com
-      answer: 10.10.10.110
-    - domain: prowlarr.onurx.com
-      answer: 10.10.10.110
-    - domain: jellyfin.onurx.com
-      answer: 10.10.10.110
-    - domain: qbittorrent.onurx.com
-      answer: 10.10.10.110
-    - domain: n8n.onurx.com
-      answer: 10.10.10.110
-    - domain: paperless.onurx.com
-      answer: 10.10.10.110
-    - domain: coolify.onurx.com
-      answer: 10.10.10.110
-    - domain: minio.onurx.com
-      answer: 10.10.10.110
-    - domain: s3.onurx.com
-      answer: 10.10.10.110
-
+  serve_plain_dns: true
+  hostsfile_enabled: true
+  pending_requests:
+    enabled: true
 tls:
   enabled: false
   server_name: ""
@@ -104,19 +87,18 @@ tls:
   certificate_path: ""
   private_key_path: ""
   strict_sni_check: false
-
 querylog:
+  dir_path: ""
   ignored: []
   interval: 2160h
   size_memory: 1000
   enabled: true
   file_enabled: true
-
 statistics:
+  dir_path: ""
   ignored: []
   interval: 24h
   enabled: true
-
 filters:
   - enabled: true
     url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_1.txt
@@ -126,11 +108,8 @@ filters:
     url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_2.txt
     name: AdAway Default Blocklist
     id: 2
-
 whitelist_filters: []
-
 user_rules: []
-
 dhcp:
   enabled: false
   interface_name: ""
@@ -148,7 +127,6 @@ dhcp:
     lease_duration: 86400
     ra_slaac_only: false
     ra_allow_slaac: false
-
 filtering:
   blocking_ipv4: ""
   blocking_ipv6: ""
@@ -161,6 +139,7 @@ filtering:
     enabled: false
     bing: true
     duckduckgo: true
+    ecosia: true
     google: true
     pixabay: true
     yandex: true
@@ -168,7 +147,11 @@ filtering:
   blocking_mode: default
   parental_block_host: family-block.dns.adguard.com
   safebrowsing_block_host: standard-block.dns.adguard.com
-  rewrites: []
+  rewrites:
+    - domain: '*.onurx.com'
+      answer: 10.10.10.110
+  safe_fs_patterns:
+    - /opt/adguardhome/work/data/userfilters/*
   safebrowsing_cache_size: 1048576
   safesearch_cache_size: 1048576
   parental_cache_size: 1048576
@@ -179,7 +162,6 @@ filtering:
   parental_enabled: false
   safebrowsing_enabled: false
   protection_enabled: true
-
 clients:
   runtime_sources:
     whois: true
@@ -188,8 +170,8 @@ clients:
     dhcp: true
     hosts: true
   persistent: []
-
 log:
+  enabled: true
   file: ""
   max_backups: 0
   max_size: 100
@@ -197,10 +179,8 @@ log:
   compress: false
   local_time: false
   verbose: false
-
 os:
   group: ""
   user: ""
   rlimit_nofile: 0
-
-schema_version: 28
+schema_version: 30
