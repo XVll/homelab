@@ -175,28 +175,38 @@ services:
         max-file: "3"
 
   # ============================================================================
-  # DOCLING - Document Processing Service
+  # DOCLING SERVE - Document Processing Service
   # ============================================================================
-  # IBM Research document parser for PDFs, Word, Excel, etc.
-  # Access: http://10.10.10.115:5000 (internal only)
-  # Docs: https://github.com/DS4SD/docling
+  # Official Docling API server for document conversion
+  # Converts: PDF, Word, Excel, PowerPoint, HTML, images
+  # Access: http://10.10.10.115:5000 (internal) or https://docling.onurx.com
+  # Docs: https://github.com/docling-project/docling-serve
+  # API Docs: http://10.10.10.115:5000/docs
+  # Web UI: http://10.10.10.115:5000/ui
 
   docling:
-    image: ds4sd/docling:latest
+    image: ghcr.io/docling-project/docling-serve:latest
     container_name: docling
     restart: unless-stopped
     ports:
-      - "5000:8000"  # FastAPI server
+      - "5000:5000"  # API server
+    environment:
+      # Server configuration
+      - HOST=0.0.0.0
+      - PORT=5000
+      # Optional: Increase timeout for large documents
+      - TIMEOUT=300
     volumes:
-      - ./docling/temp:/tmp/docling  # Temporary processing files
+      - ./docling/cache:/app/.cache  # Model cache
+      - ./docling/data:/app/data     # Processed files
     networks:
       - ai_net
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8000/health"]
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:5000/health"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 30s
+      start_period: 60s  # Longer startup time for model loading
     logging:
       driver: "json-file"
       options:

@@ -211,6 +211,11 @@ http:
         servers:
           - url: "http://10.10.10.115:3000"
 
+    docling:
+      loadBalancer:
+        servers:
+          - url: "http://10.10.10.115:5000"
+
     # Observability VM (10.10.10.112)
     langfuse:
       loadBalancer:

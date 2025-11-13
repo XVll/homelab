@@ -443,3 +443,14 @@ http:
         - private-default
       tls:
         certResolver: cloudflare
+
+    # Docling - Document Processing API (private)
+    docling:
+      rule: "Host(`docling.onurx.com`)"
+      entryPoints:
+        - websecure
+      service: docling
+      middlewares:
+        - private-default
+      tls:
+        certResolver: cloudflare
