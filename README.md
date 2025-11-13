@@ -116,11 +116,11 @@ qm start <new-vm-id>
 # Set hostname
 sudo hostnamectl set-hostname <vm-name>
 
-# Set 1Password token in ~/.bashrc
-echo 'export OP_SERVICE_ACCOUNT_TOKEN="ops_xxx"' >> ~/.bashrc
-source ~/.bashrc
+# Set 1Password token in /etc/environment (for all sessions including SSH)
+echo 'OP_SERVICE_ACCOUNT_TOKEN="ops_xxx"' | sudo tee -a /etc/environment
 
-# Test 1Password connection
+# Test 1Password connection (new SSH session required for /etc/environment to load)
+# Exit and re-login, or run: sudo -i bash -c 'source /etc/environment && su - fx'
 op vault list
 
 # Clone repository

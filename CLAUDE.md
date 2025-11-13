@@ -277,9 +277,10 @@ Key points:
 1. Clone from template (full clone)
 2. Set static IP in Proxmox
 3. Boot VM and configure hostname
-4. Set `OP_SERVICE_ACCOUNT_TOKEN` in `~/.bashrc`
-5. Clone repository: `git clone https://git.onurx.com/fx/homelab.git /opt/homelab`
-6. Navigate to VM directory and deploy services
+4. Set `OP_SERVICE_ACCOUNT_TOKEN` in `/etc/environment` (NOT .bashrc - /etc/environment works for SSH sessions)
+5. Re-login to load environment variable
+6. Clone repository: `git clone https://git.onurx.com/fx/homelab.git /opt/homelab`
+7. Navigate to VM directory and deploy services
 
 ## Security Notes
 

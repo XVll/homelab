@@ -185,6 +185,11 @@ services:
   # Web UI: http://10.10.10.115:5000/ui
 
   docling:
+    # NOTE: Currently using CPU-only image for compatibility
+    # When GPU is available, switch to GPU-accelerated variant:
+    #   - CUDA 12.6: ghcr.io/docling-project/docling-serve-cu126:latest
+    #   - CUDA 12.8: ghcr.io/docling-project/docling-serve-cu128:latest
+    # GPU version requires nvidia-docker runtime and NVIDIA GPU with CUDA support
     image: ghcr.io/docling-project/docling-serve:latest
     container_name: docling
     restart: unless-stopped
