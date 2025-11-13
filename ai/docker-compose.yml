@@ -327,7 +327,7 @@ services:
 
       # Vector database (Qdrant on db VM)
       - VECTOR_DB=qdrant
-      - QDRANT_URL=http://10.10.10.111:6333
+      - QDRANT_URI=http://10.10.10.111:6333
       - QDRANT_API_KEY=${QDRANT_API_KEY}
 
       # Web UI settings
