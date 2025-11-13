@@ -60,20 +60,21 @@ Homelab infrastructure repository managing Docker-based services across multiple
 | VM | IP | Directory | Services |
 |----|-----|-----------|----------|
 | edge | 10.10.10.110 | `/opt/homelab/` | Traefik, AdGuard, Authentik, NetBird |
-| db | 10.10.10.111 | `/opt/homelab/` | MongoDB, PostgreSQL, Redis, MinIO, Mosquitto |
-| observability | 10.10.10.112 | `/opt/homelab/` | Portainer, Prometheus, Grafana, Loki, Alloy, Homarr |
-| media | 10.10.10.113 | `/opt/homelab/` | Plex, Sonarr, Radarr, Prowlarr, SABnzbd, qBittorrent, Bazarr, Overseerr |
-| dev | 10.10.10.114 | `/opt/homelab/` | Gitea, Docker Registry, GitHub Runner |
+| db | 10.10.10.111 | `/opt/homelab/` | PostgreSQL, MongoDB, Redis, MinIO, Qdrant, ClickHouse, RabbitMQ, Kafka, Mosquitto |
+| observability | 10.10.10.112 | `/opt/homelab/` | Portainer, Grafana, Loki, Tempo, Alloy, Glance, Langfuse |
+| media | 10.10.10.113 | `/opt/homelab/` | Plex, Sonarr, Radarr, Prowlarr, SABnzbd, qBittorrent, Bazarr, Overseerr, Tautulli, Notifiarr |
+| dev | 10.10.10.114 | `/opt/homelab/` | Gitea (Git + Registry + CI), Hoppscotch, SonarQube, Meilisearch, Inngest |
+| ai | 10.10.10.115 | `/opt/homelab/` | LiteLLM, Docling, n8n, Mem0, Open WebUI |
 | deploy | 10.10.10.101 | `/opt/homelab/` | Coolify |
 | ha | 10.10.10.116 | N/A | Home Assistant (Home Assistant OS) |
 
 ### Deployment Strategy
 
 Services are deployed progressively in dependency order:
-1. **Phase 1**: MongoDB, PostgreSQL, Redis, MinIO, Mosquitto → Portainer
-2. **Phase 2**: Traefik → AdGuard → Authentik → NetBird
-3. **Phase 3**: Prometheus → Grafana → Loki → Alloy → Homarr
-4. **Phase 4**: Applications (media, dev, deploy stacks)
+1. **Phase 1**: Database infrastructure (PostgreSQL, MongoDB, Redis, MinIO, Qdrant, ClickHouse, RabbitMQ, Kafka, Mosquitto) → Portainer
+2. **Phase 2**: Edge services (Traefik → AdGuard → Authentik → NetBird)
+3. **Phase 3**: Observability (Grafana, Loki, Tempo, Alloy, Glance, Langfuse)
+4. **Phase 4**: Applications (AI, media, dev, deploy stacks)
 
 ## Common Commands
 
@@ -147,7 +148,7 @@ The `op run --env-file=.env` command fetches secrets at runtime. Never commit ac
 ### Git Workflow
 
 Changes to configuration files follow this pattern:
-1. Edit files on local machine: `~/Repositories/infrastructure-1/`
+1. Edit files on local machine: `~/repositories/homelab/`
 2. Commit changes: `git add . && git commit -m "message" && git push`
 3. Pull on VMs: `ssh fx@10.10.10.xxx 'cd /opt/homelab && git pull'`
 4. Restart affected services: `op run --env-file=.env -- docker compose up -d <service>`
@@ -199,14 +200,14 @@ When enabling new services:
 - `db/postgres/config/postgresql.conf` - PostgreSQL tuning
 - `db/postgres/config/pg_hba.conf` - PostgreSQL access control
 
-### Monitoring Configurations
+### Observability Configurations
 
-- `observability/prometheus/config/prometheus.yml` - Scrape configs
-- `observability/prometheus/config/rules/alerts.yml` - Alerting rules
 - `observability/grafana/provisioning/` - Datasources, dashboards
 - `observability/loki/config/config.yml` - Log aggregation
-- `observability/alloy/config/config.alloy` - Metrics/logs collection
-- `observability/homarr/config/` - Homarr dashboard configuration
+- `observability/tempo/config/config.yml` - Trace aggregation
+- `observability/alloy/config/config.alloy` - Metrics/logs/traces collection
+- `observability/glance/config.yml` - Dashboard configuration
+- `observability/langfuse/` - AI observability (uses ClickHouse on db VM)
 
 ### Edge Configurations
 
@@ -253,7 +254,7 @@ nc -zv 10.10.10.111 6379     # Redis
 
 ### Making Changes to Configuration
 
-1. Edit files on local machine: `~/Repositories/infrastructure-1/`
+1. Edit files on local machine: `~/repositories/homelab/`
 2. Commit and push: `git add . && git commit -m "message" && git push`
 3. Pull on affected VMs: `ssh fx@10.10.10.xxx 'cd /opt/homelab && git pull'`
 4. Restart affected services
@@ -277,7 +278,7 @@ Key points:
 1. Clone from template (full clone)
 2. Set static IP in Proxmox
 3. Boot VM and configure hostname
-4. Set `OP_SERVICE_ACCOUNT_TOKEN` in `/etc/environment` (NOT .bashrc - /etc/environment works for SSH sessions)
+4. Set `OP_SERVICE_ACCOUNT_TOKEN` in `~/.bashrc`
 5. Re-login to load environment variable
 6. Clone repository: `git clone https://git.onurx.com/fx/homelab.git /opt/homelab`
 7. Navigate to VM directory and deploy services
@@ -309,7 +310,11 @@ Use these existing services from db host (10.10.10.111):
 - **MongoDB** - For any app needing NoSQL/document database
 - **Redis** - For caching, sessions, queues
 - **MinIO** - For object storage (S3-compatible)
-- **Mosquitto MQTT** - For message broker / IoT communication
+- **Qdrant** - For vector storage (AI/embeddings)
+- **ClickHouse** - For analytics/time-series data
+- **RabbitMQ** - For message queuing
+- **Kafka** - For event streaming
+- **Mosquitto** - For MQTT / IoT communication
 
 ### Always Choose Private or Public in Traefik
 
