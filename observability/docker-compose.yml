@@ -417,12 +417,8 @@ services:
 
     networks:
       - obs_net
-    healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/api/public/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 60s
+    # No health check - langfuse image doesn't include wget/curl
+    # Service health monitored via port availability
     logging:
       driver: "json-file"
       options:
