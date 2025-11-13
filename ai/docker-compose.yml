@@ -194,11 +194,11 @@ services:
     container_name: docling
     restart: unless-stopped
     ports:
-      - "5000:5000"  # API server
+      - "5000:5001"  # API server (internal port 5001)
     environment:
       # Server configuration
       - HOST=0.0.0.0
-      - PORT=5000
+      - PORT=5001
       # Optional: Increase timeout for large documents
       - TIMEOUT=300
     volumes:
