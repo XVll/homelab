@@ -28,6 +28,33 @@ model_list:
       model: anthropic/claude-3-5-haiku-20241022
       api_key: os.environ/ANTHROPIC_API_KEY
 
+  # ========================================================================
+  # LOCAL OLLAMA MODELS (CPU-Optimized)
+  # ========================================================================
+  # These models run locally on Ollama without GPU
+  # Perfect for testing workflows before GPU purchase
+  # Note: First use will download the model (may take a few minutes)
+
+  - model_name: llama3.2:1b
+    litellm_params:
+      model: ollama/llama3.2:1b
+      api_base: http://ollama:11434
+
+  - model_name: llama3.2:3b
+    litellm_params:
+      model: ollama/llama3.2:3b
+      api_base: http://ollama:11434
+
+  - model_name: phi3:mini
+    litellm_params:
+      model: ollama/phi3:mini
+      api_base: http://ollama:11434
+
+  - model_name: qwen2.5:3b
+    litellm_params:
+      model: ollama/qwen2.5:3b
+      api_base: http://ollama:11434
+
 # Router settings
 router_settings:
   routing_strategy: usage-based-routing  # or latency-based-routing, simple-shuffle

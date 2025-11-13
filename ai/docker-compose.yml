@@ -123,6 +123,42 @@ services:
         max-file: "3"
 
   # ============================================================================
+  # OLLAMA - Local LLM Runtime (CPU-Optimized)
+  # ============================================================================
+  # Self-hosted LLM runtime optimized for CPU inference
+  # Works without GPU - perfect for testing workflows before GPU purchase
+  # Access: http://10.10.10.115:11434 (API)
+  # Docs: https://ollama.com/
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    environment:
+      # CPU-only configuration (no GPU required)
+      - OLLAMA_HOST=0.0.0.0:11434
+      # Increase context size if needed (default: 2048)
+      - OLLAMA_NUM_PARALLEL=1
+      - OLLAMA_MAX_LOADED_MODELS=1
+    volumes:
+      - ./ollama/data:/root/.ollama  # Model storage
+    networks:
+      - ai_net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ============================================================================
   # LITELLM - AI Gateway & Proxy
   # ============================================================================
   # Unified API for OpenAI, Anthropic, and other LLM providers
