@@ -395,3 +395,51 @@ http:
       service: king-backend
       tls:
         certResolver: cloudflare
+
+    # ============================================================================
+    # AI SERVICES
+    # ============================================================================
+
+    # LiteLLM - AI Gateway (private)
+    litellm:
+      rule: "Host(`litellm.onurx.com`)"
+      entryPoints:
+        - websecure
+      service: litellm
+      middlewares:
+        - private-default
+      tls:
+        certResolver: cloudflare
+
+    # n8n - Workflow Automation (private)
+    n8n:
+      rule: "Host(`n8n.onurx.com`)"
+      entryPoints:
+        - websecure
+      service: n8n
+      middlewares:
+        - private-default
+      tls:
+        certResolver: cloudflare
+
+    # Open WebUI - Chat Interface (private)
+    chat:
+      rule: "Host(`chat.onurx.com`)"
+      entryPoints:
+        - websecure
+      service: open-webui
+      middlewares:
+        - private-default
+      tls:
+        certResolver: cloudflare
+
+    # Langfuse - AI Observability (private)
+    langfuse:
+      rule: "Host(`langfuse.onurx.com`)"
+      entryPoints:
+        - websecure
+      service: langfuse
+      middlewares:
+        - private-default
+      tls:
+        certResolver: cloudflare

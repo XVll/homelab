@@ -195,6 +195,28 @@ http:
         servers:
           - url: "http://10.10.10.113:8181"
 
+    # AI VM (10.10.10.115)
+    litellm:
+      loadBalancer:
+        servers:
+          - url: "http://10.10.10.115:4000"
+
+    n8n:
+      loadBalancer:
+        servers:
+          - url: "http://10.10.10.115:5678"
+
+    open-webui:
+      loadBalancer:
+        servers:
+          - url: "http://10.10.10.115:3000"
+
+    # Observability VM (10.10.10.112)
+    langfuse:
+      loadBalancer:
+        servers:
+          - url: "http://10.10.10.112:3001"
+
   # Transports - Connection Settings for Backend Servers
   serversTransports:
     # Skip TLS verification for self-signed certs (like Portainer)
