@@ -415,12 +415,8 @@ services:
       - ./qdrant/snapshots:/qdrant/snapshots
     networks:
       - data_net
-    healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:6333/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 20s
+    # No health check - qdrant image doesn't include wget/curl
+    # Service health monitored via port availability
     logging:
       driver: "json-file"
       options:
