@@ -249,12 +249,34 @@ http:
       tls:
         certResolver: cloudflare
 
+    # Jellyfin (Media Server - Open Source)
+    jellyfin:
+      rule: "Host(`jellyfin.onurx.com`)"
+      entryPoints:
+        - websecure
+      service: jellyfin
+      middlewares:
+        - private-default
+      tls:
+        certResolver: cloudflare
+
     # Overseerr (Request/Discovery UI)
     overseerr:
       rule: "Host(`overseerr.onurx.com`)"
       entryPoints:
         - websecure
       service: overseerr
+      middlewares:
+        - private-default
+      tls:
+        certResolver: cloudflare
+
+    # Seerr (Modern Request/Discovery UI - Overseerr Fork)
+    seerr:
+      rule: "Host(`seerr.onurx.com`)"
+      entryPoints:
+        - websecure
+      service: seerr
       middlewares:
         - private-default
       tls:

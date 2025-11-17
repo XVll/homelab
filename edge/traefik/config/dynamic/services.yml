@@ -150,10 +150,20 @@ http:
         servers:
           - url: "http://10.10.10.113:32400"
 
+    jellyfin:
+      loadBalancer:
+        servers:
+          - url: "http://10.10.10.113:8096"
+
     overseerr:
       loadBalancer:
         servers:
           - url: "http://10.10.10.113:5055"
+
+    seerr:
+      loadBalancer:
+        servers:
+          - url: "http://10.10.10.113:5056"
 
     sonarr:
       loadBalancer:

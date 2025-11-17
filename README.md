@@ -11,7 +11,7 @@ Production Docker-based infrastructure on Proxmox VMs. All VMs are stateless wit
 | edge | 10.10.10.110 | Traefik, AdGuard, Authentik, NetBird | ✅ |
 | db | 10.10.10.111 | PostgreSQL, MongoDB, Redis, MinIO, Qdrant, ClickHouse, RabbitMQ, Kafka, Mosquitto | ✅ |
 | observability | 10.10.10.112 | Portainer, Grafana, Loki, Tempo, Alloy, Glance, Langfuse, HyperDX | ✅ |
-| media | 10.10.10.113 | Plex, *arr Stack, Overseerr | ✅ |
+| media | 10.10.10.113 | Plex, Jellyfin, *arr Stack, Overseerr, Seerr | ✅ |
 | dev | 10.10.10.114 | Gitea (Git + Registry + CI), Hoppscotch, SonarQube, Meilisearch, Inngest | ✅ |
 | ai | 10.10.10.115 | LiteLLM, Docling, n8n, Open WebUI | ✅ |
 | deploy | 10.10.10.101 | Coolify | ✅ |
@@ -312,7 +312,9 @@ All services accessible via `https://<service>.onurx.com` (private network only)
 
 **Media:**
 - Plex: https://plex.onurx.com
+- Jellyfin: https://jellyfin.onurx.com
 - Overseerr: https://overseerr.onurx.com
+- Seerr: https://seerr.onurx.com
 - Sonarr: https://sonarr.onurx.com
 - Radarr: https://radarr.onurx.com
 - Prowlarr: https://prowlarr.onurx.com
@@ -567,7 +569,7 @@ docker restart <container>
 - Hoppscotch, SonarQube, Meilisearch, Inngest
 
 **Media Stack:**
-- Plex, Sonarr, Radarr, Prowlarr, Overseerr
+- Plex, Jellyfin, Sonarr, Radarr, Prowlarr, Overseerr, Seerr
 - SABnzbd, qBittorrent, Bazarr, Tautulli
 
 **Deployment:**

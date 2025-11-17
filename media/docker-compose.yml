@@ -1,7 +1,7 @@
 # ============================================================================
 # MEDIA VM (10.10.10.113) - Complete Media Stack
 # ============================================================================
-# Plex + Overseerr + Arr Stack + SABnzbd + qBittorrent (via VPN) + Bazarr + Notifiarr
+# Plex + Jellyfin + Overseerr + Seerr + Arr Stack + SABnzbd + qBittorrent (via VPN) + Bazarr + Notifiarr
 #
 # VOLUME MAPPING STRATEGY:
 # - ALL services mount /mnt/nas/media → /media (single source of truth)
@@ -15,13 +15,13 @@
 #         └── torrents/       (Torrent downloads)
 #
 # DEPLOYMENT ORDER:
-# 1. Plex (media server)
+# 1. Plex + Jellyfin (media servers)
 # 2. SABnzbd (Usenet downloader - PRIMARY)
 # 3. Prowlarr (indexer manager)
 # 4. Sonarr + Radarr (TV/movie automation)
 # 5. Gluetun + qBittorrent (VPN + torrent fallback)
 # 6. Bazarr (subtitles)
-# 7. Overseerr (request UI)
+# 7. Overseerr + Seerr (request UIs)
 # 8. Notifiarr (TRaSH sync)
 # ============================================================================
 
@@ -167,6 +167,46 @@ services:
       - media_net
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:32400/identity"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ============================================================================
+  # JELLYFIN - Open Source Media Server
+  # ============================================================================
+  # Access: http://10.10.10.113:8096
+  # Libraries: /media/library/movies, /media/library/tv
+  # Alternative to Plex with no account required
+
+  jellyfin:
+    image: lscr.io/linuxserver/jellyfin:latest
+    container_name: jellyfin
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=UTC
+    ports:
+      - "10.10.10.113:8096:8096"      # Web UI
+      - "10.10.10.113:8920:8920"      # HTTPS (optional)
+      - "10.10.10.113:7359:7359/udp"  # Auto-discovery
+      - "10.10.10.113:1901:1900/udp"  # DLNA
+    volumes:
+      - ./jellyfin/config:/config
+      - /mnt/nas/media:/media:ro
+    # Uncomment when GPU is added for hardware transcoding:
+    # devices:
+    #   - /dev/dri:/dev/dri
+    networks:
+      - media_net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8096/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -429,6 +469,39 @@ services:
       - "10.10.10.113:5055:5055"
     volumes:
       - ./overseerr/config:/app/config
+    networks:
+      - media_net
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:5055/api/v1/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ============================================================================
+  # SEERR - Modern Request & Discovery UI (Overseerr Fork)
+  # ============================================================================
+  # Access: http://10.10.10.113:5056
+  # Enhanced fork of Overseerr with Jellyfin, Plex, and Emby support
+  # Better UI/UX and additional features
+
+  seerr:
+    image: ghcr.io/seerr-team/seerr:latest
+    container_name: seerr
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=UTC
+    ports:
+      - "10.10.10.113:5056:5055"
+    volumes:
+      - ./seerr/config:/app/config
     networks:
       - media_net
     healthcheck:
