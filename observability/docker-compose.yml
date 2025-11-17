@@ -475,8 +475,8 @@ services:
       - HYPERDX_OPAMP_PORT=${HYPERDX_OPAMP_PORT}
       - HYPERDX_BASE_PATH=
 
-      # External MongoDB (db VM)
-      - MONGO_URI=mongodb://${MONGODB_ROOT_USER}:${MONGODB_ROOT_PASSWORD}@10.10.10.111:27017/hyperdx
+      # External MongoDB (db VM) - using hyperdx user
+      - MONGO_URI=mongodb://${HYPERDX_MONGO_USER}:${HYPERDX_MONGO_PASSWORD}@10.10.10.111:27017/hyperdx
 
       # Server URL
       - SERVER_URL=http://127.0.0.1:8000
