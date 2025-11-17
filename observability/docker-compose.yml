@@ -447,6 +447,8 @@ services:
       - "10.10.10.112:8889:8888"    # metrics extension (remapped to avoid conflicts)
     environment:
       - CLICKHOUSE_ENDPOINT=tcp://10.10.10.111:9000?dial_timeout=10s
+      - CLICKHOUSE_USER=${CLICKHOUSE_USER}
+      - CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD}
       - HYPERDX_OTEL_EXPORTER_CLICKHOUSE_DATABASE=${HYPERDX_CLICKHOUSE_DB}
       - HYPERDX_LOG_LEVEL=${HYPERDX_LOG_LEVEL}
       - OPAMP_SERVER_URL=http://hyperdx-app:${HYPERDX_OPAMP_PORT}
