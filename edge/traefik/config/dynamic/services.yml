@@ -222,11 +222,6 @@ http:
         servers:
           - url: "http://10.10.10.112:3001"
 
-    hyperdx:
-      loadBalancer:
-        servers:
-          - url: "http://10.10.10.112:8081"
-
   # Transports - Connection Settings for Backend Servers
   serversTransports:
     # Skip TLS verification for self-signed certs (like Portainer)

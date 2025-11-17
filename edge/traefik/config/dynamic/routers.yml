@@ -454,14 +454,3 @@ http:
         - private-default
       tls:
         certResolver: cloudflare
-
-    # HyperDX - Full-Stack Observability (private)
-    hyperdx:
-      rule: "Host(`hyperdx.onurx.com`)"
-      entryPoints:
-        - websecure
-      service: hyperdx
-      middlewares:
-        - private-default
-      tls:
-        certResolver: cloudflare
