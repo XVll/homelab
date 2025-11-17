@@ -463,7 +463,7 @@ services:
     container_name: hyperdx-app
     restart: unless-stopped
     ports:
-      - "10.10.10.112:8000:8000"    # API port
+      - "10.10.10.112:8002:8000"    # API port (remapped to avoid Portainer conflict)
       - "10.10.10.112:8081:8080"    # Web UI port (remapped from 8080 to avoid Glance conflict)
     environment:
       # App URLs
