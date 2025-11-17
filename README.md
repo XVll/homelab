@@ -10,7 +10,7 @@ Production Docker-based infrastructure on Proxmox VMs. All VMs are stateless wit
 |----|-----|-------|--------|
 | edge | 10.10.10.110 | Traefik, AdGuard, Authentik, NetBird | ✅ |
 | db | 10.10.10.111 | PostgreSQL, MongoDB, Redis, MinIO, Qdrant, ClickHouse, RabbitMQ, Kafka, Mosquitto | ✅ |
-| observability | 10.10.10.112 | Portainer, Grafana, Loki, Tempo, Alloy, Glance, Langfuse | ✅ |
+| observability | 10.10.10.112 | Portainer, Grafana, Loki, Tempo, Alloy, Glance, Langfuse, HyperDX | ✅ |
 | media | 10.10.10.113 | Plex, *arr Stack, Overseerr | ✅ |
 | dev | 10.10.10.114 | Gitea (Git + Registry + CI), Hoppscotch, SonarQube, Meilisearch, Inngest | ✅ |
 | ai | 10.10.10.115 | LiteLLM, Docling, n8n, Open WebUI | ✅ |
