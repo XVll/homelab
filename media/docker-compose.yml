@@ -491,7 +491,7 @@ services:
   # Better UI/UX and additional features
 
   seerr:
-    image: ghcr.io/seerr-team/seerr:latest
+    image: fallenbagel/jellyseerr:latest
     container_name: seerr
     restart: unless-stopped
     environment:
