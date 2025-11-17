@@ -438,14 +438,23 @@ services:
     image: docker.hyperdx.io/hyperdx/hyperdx-otel-collector:2
     container_name: hyperdx-otel-collector
     restart: unless-stopped
-    network_mode: host
+    ports:
+      - "10.10.10.112:13133:13133"  # health_check extension
+      - "10.10.10.112:24225:24225"  # fluentd receiver
+      - "10.10.10.112:14317:4317"   # OTLP gRPC receiver
+      - "10.10.10.112:14318:4318"   # OTLP HTTP receiver
+      - "10.10.10.112:8889:8888"    # metrics extension
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
-      - CLICKHOUSE_ENDPOINT=tcp://10.10.10.111:9000?dial_timeout=30s
+      - CLICKHOUSE_ENDPOINT=tcp://host.docker.internal:9000?dial_timeout=30s
       - CLICKHOUSE_USER=${CLICKHOUSE_USER}
       - CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD}
       - HYPERDX_OTEL_EXPORTER_CLICKHOUSE_DATABASE=${HYPERDX_CLICKHOUSE_DB}
       - HYPERDX_LOG_LEVEL=${HYPERDX_LOG_LEVEL}
-      - OPAMP_SERVER_URL=http://10.10.10.112:8081
+      - OPAMP_SERVER_URL=http://hyperdx-app:${HYPERDX_OPAMP_PORT}
+    networks:
+      - obs_net
     logging:
       driver: "json-file"
       options:
