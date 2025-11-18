@@ -390,8 +390,8 @@ services:
       - TELEMETRY_ENABLED=true
       - LANGFUSE_ENABLE_EXPERIMENTAL_FEATURES=true
 
-      # ClickHouse (external on db VM)
-      - CLICKHOUSE_MIGRATION_URL=clickhouse://${CLICKHOUSE_USER}:${CLICKHOUSE_PASSWORD}@10.10.10.111:9000
+      # ClickHouse (external on db VM) - port 9004 for native protocol, 8123 for HTTP
+      - CLICKHOUSE_MIGRATION_URL=clickhouse://${CLICKHOUSE_USER}:${CLICKHOUSE_PASSWORD}@10.10.10.111:9004
       - CLICKHOUSE_URL=http://${CLICKHOUSE_USER}:${CLICKHOUSE_PASSWORD}@10.10.10.111:8123
       - CLICKHOUSE_USER=${CLICKHOUSE_USER}
       - CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD}
@@ -437,9 +437,9 @@ services:
       # Database (external PostgreSQL)
       - DATABASE_URL=postgresql://${LANGFUSE_DB_USER}:${LANGFUSE_DB_PASSWORD}@10.10.10.111:5432/langfuse
 
-      # ClickHouse (for v3 - external ClickHouse on db VM)
+      # ClickHouse (for v3 - external ClickHouse on db VM) - port 9004 for native protocol, 8123 for HTTP
       - CLICKHOUSE_URL=http://${CLICKHOUSE_USER}:${CLICKHOUSE_PASSWORD}@10.10.10.111:8123
-      - CLICKHOUSE_MIGRATION_URL=clickhouse://${CLICKHOUSE_USER}:${CLICKHOUSE_PASSWORD}@10.10.10.111:9000
+      - CLICKHOUSE_MIGRATION_URL=clickhouse://${CLICKHOUSE_USER}:${CLICKHOUSE_PASSWORD}@10.10.10.111:9004
       - CLICKHOUSE_USER=${CLICKHOUSE_USER}
       - CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD}
       - CLICKHOUSE_CLUSTER_ENABLED=false
