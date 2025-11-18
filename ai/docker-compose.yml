@@ -193,7 +193,7 @@ services:
       # Observability - Langfuse integration (on observability VM)
       - LANGFUSE_PUBLIC_KEY=${LANGFUSE_PUBLIC_KEY}
       - LANGFUSE_SECRET_KEY=${LANGFUSE_SECRET_KEY}
-      - LANGFUSE_HOST=http://10.10.10.112:3001
+      - LANGFUSE_HOST=https://langfuse.onurx.com
 
     volumes:
       - ./litellm/config/config.yaml:/app/config.yaml

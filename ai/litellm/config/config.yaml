@@ -37,8 +37,3 @@ litellm_settings:
   # Log LLM API calls to Langfuse
   success_callback: ["langfuse"]
   failure_callback: ["langfuse"]
-
-  # Callbacks configuration for Langfuse
-  langfuse_public_key: os.environ/LANGFUSE_PUBLIC_KEY
-  langfuse_secret_key: os.environ/LANGFUSE_SECRET_KEY
-  langfuse_host: os.environ/LANGFUSE_HOST
