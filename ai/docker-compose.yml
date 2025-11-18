@@ -190,10 +190,10 @@ services:
       - UI_USERNAME=${LITELLM_UI_USERNAME}
       - UI_PASSWORD=${LITELLM_UI_PASSWORD}
 
-      # Observability - Langfuse integration (on observability VM)
+      # Observability - Langfuse OTEL integration (on observability VM)
       - LANGFUSE_PUBLIC_KEY=${LANGFUSE_PUBLIC_KEY}
       - LANGFUSE_SECRET_KEY=${LANGFUSE_SECRET_KEY}
-      - LANGFUSE_HOST=https://langfuse.onurx.com
+      - LANGFUSE_OTEL_HOST=https://langfuse.onurx.com
 
     volumes:
       - ./litellm/config/config.yaml:/app/config.yaml

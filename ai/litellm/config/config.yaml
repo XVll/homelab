@@ -35,5 +35,4 @@ general_settings:
 # Logging
 litellm_settings:
   # Log LLM API calls to Langfuse
-  success_callback: ["langfuse"]
-  failure_callback: ["langfuse"]
+  callbacks: ["langfuse_otel"]
