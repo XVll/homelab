@@ -368,26 +368,80 @@ services:
   # LANGFUSE - AI Observability Platform
   # ============================================================================
   # Track AI calls, costs, latency, and prompt performance
-  # Uses external PostgreSQL on db VM (10.10.10.111)
+  # Uses external PostgreSQL and ClickHouse on db VM (10.10.10.111)
   # Access: https://langfuse.onurx.com
   # Docs: https://langfuse.com/
 
-  langfuse:
-    image: langfuse/langfuse:latest
+  langfuse-worker:
+    image: langfuse/langfuse-worker:3
+    container_name: langfuse-worker
+    restart: unless-stopped
+    ports:
+      - "10.10.10.112:3030:3030"
+    environment:
+      # Database (external PostgreSQL)
+      - DATABASE_URL=postgresql://${LANGFUSE_DB_USER}:${LANGFUSE_DB_PASSWORD}@10.10.10.111:5432/langfuse
+
+      # Security
+      - SALT=${LANGFUSE_SALT}
+      - ENCRYPTION_KEY=${LANGFUSE_ENCRYPTION_KEY}
+
+      # Telemetry
+      - TELEMETRY_ENABLED=true
+      - LANGFUSE_ENABLE_EXPERIMENTAL_FEATURES=true
+
+      # ClickHouse (external on db VM)
+      - CLICKHOUSE_MIGRATION_URL=clickhouse://${CLICKHOUSE_USER}:${CLICKHOUSE_PASSWORD}@10.10.10.111:9000
+      - CLICKHOUSE_URL=http://${CLICKHOUSE_USER}:${CLICKHOUSE_PASSWORD}@10.10.10.111:8123
+      - CLICKHOUSE_USER=${CLICKHOUSE_USER}
+      - CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD}
+      - CLICKHOUSE_CLUSTER_ENABLED=false
+
+      # Redis - Queue processing (from db VM)
+      - REDIS_HOST=10.10.10.111
+      - REDIS_PORT=6379
+      - REDIS_AUTH=${REDIS_PASSWORD}
+      - REDIS_TLS_ENABLED=false
+
+      # S3-compatible storage (MinIO) for event upload
+      - LANGFUSE_USE_AZURE_BLOB=false
+      - LANGFUSE_S3_EVENT_UPLOAD_BUCKET=langfuse-events
+      - LANGFUSE_S3_EVENT_UPLOAD_REGION=us-east-1
+      - LANGFUSE_S3_EVENT_UPLOAD_ACCESS_KEY_ID=${MINIO_ACCESS_KEY}
+      - LANGFUSE_S3_EVENT_UPLOAD_SECRET_ACCESS_KEY=${MINIO_SECRET_KEY}
+      - LANGFUSE_S3_EVENT_UPLOAD_ENDPOINT=http://10.10.10.111:9000
+      - LANGFUSE_S3_EVENT_UPLOAD_FORCE_PATH_STYLE=true
+      - LANGFUSE_S3_EVENT_UPLOAD_PREFIX=events/
+
+      # Optional: Tune ingestion performance
+      # - LANGFUSE_INGESTION_QUEUE_DELAY_MS=100
+      # - LANGFUSE_INGESTION_CLICKHOUSE_WRITE_INTERVAL_MS=1000
+
+    networks:
+      - obs_net
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  langfuse-web:
+    image: langfuse/langfuse:3
     container_name: langfuse
     restart: unless-stopped
     ports:
       - "10.10.10.112:3001:3000"
+    depends_on:
+      - langfuse-worker
     environment:
       # Database (external PostgreSQL)
       - DATABASE_URL=postgresql://${LANGFUSE_DB_USER}:${LANGFUSE_DB_PASSWORD}@10.10.10.111:5432/langfuse
 
       # ClickHouse (for v3 - external ClickHouse on db VM)
-      - CLICKHOUSE_URL=http://${CLICKHOUSE_USER}:${CLICKHOUSE_PASSWORD}@10.10.10.111:8123/langfuse
-      - CLICKHOUSE_MIGRATION_URL=clickhouse://${CLICKHOUSE_USER}:${CLICKHOUSE_PASSWORD}@10.10.10.111:9004
+      - CLICKHOUSE_URL=http://${CLICKHOUSE_USER}:${CLICKHOUSE_PASSWORD}@10.10.10.111:8123
+      - CLICKHOUSE_MIGRATION_URL=clickhouse://${CLICKHOUSE_USER}:${CLICKHOUSE_PASSWORD}@10.10.10.111:9000
       - CLICKHOUSE_USER=${CLICKHOUSE_USER}
       - CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD}
-      - CLICKHOUSE_DB=langfuse
       - CLICKHOUSE_CLUSTER_ENABLED=false
 
       # NextAuth configuration
@@ -398,15 +452,18 @@ services:
       - SALT=${LANGFUSE_SALT}
       - ENCRYPTION_KEY=${LANGFUSE_ENCRYPTION_KEY}
 
-      # Telemetry (opt-out if you prefer)
+      # Telemetry
       - TELEMETRY_ENABLED=true
+      - LANGFUSE_ENABLE_EXPERIMENTAL_FEATURES=true
 
       # Redis - Cache & Queue (from db VM)
       - REDIS_HOST=10.10.10.111
       - REDIS_PORT=6379
       - REDIS_AUTH=${REDIS_PASSWORD}
+      - REDIS_TLS_ENABLED=false
 
       # S3-compatible storage (MinIO) for event recovery
+      - LANGFUSE_USE_AZURE_BLOB=false
       - LANGFUSE_S3_EVENT_UPLOAD_ENABLED=true
       - LANGFUSE_S3_EVENT_UPLOAD_BUCKET=langfuse-events
       - LANGFUSE_S3_EVENT_UPLOAD_REGION=us-east-1
@@ -414,6 +471,7 @@ services:
       - LANGFUSE_S3_EVENT_UPLOAD_ACCESS_KEY_ID=${MINIO_ACCESS_KEY}
       - LANGFUSE_S3_EVENT_UPLOAD_SECRET_ACCESS_KEY=${MINIO_SECRET_KEY}
       - LANGFUSE_S3_EVENT_UPLOAD_FORCE_PATH_STYLE=true
+      - LANGFUSE_S3_EVENT_UPLOAD_PREFIX=events/
 
     networks:
       - obs_net
