@@ -235,6 +235,7 @@ services:
       - PORT=5001
       # Optional: Increase timeout for large documents
       - TIMEOUT=300
+      - DOCLING_SERVE_ENABLE_UI=1
     volumes:
       - ./docling/cache:/app/.cache  # Model cache
       - ./docling/data:/app/data     # Processed files
