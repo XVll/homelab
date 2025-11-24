@@ -476,18 +476,3 @@ http:
         - private-default
       tls:
         certResolver: cloudflare
-
-    # ============================================================================
-    # DEVELOPMENT SERVICES
-    # ============================================================================
-
-    # FX Next.js Dev Server (Development)
-    fx-dev:
-      rule: "Host(`fx-dev.onurx.com`)"
-      entryPoints:
-        - websecure
-      service: fx-dev
-      middlewares:
-        - private-default
-      tls:
-        certResolver: cloudflare
