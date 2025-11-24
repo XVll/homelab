@@ -232,6 +232,14 @@ http:
         servers:
           - url: "http://10.10.10.112:3001"
 
+    # Development Services
+    # FX Next.js Dev Server (runs on developer machine)
+    # NOTE: Update IP to your current dev machine's IP
+    fx-dev:
+      loadBalancer:
+        servers:
+          - url: "http://10.10.10.233:3002"
+
   # Transports - Connection Settings for Backend Servers
   serversTransports:
     # Skip TLS verification for self-signed certs (like Portainer)
