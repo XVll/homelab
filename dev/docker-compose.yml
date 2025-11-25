@@ -309,6 +309,50 @@ services:
         max-file: "3"
 
   # ==========================================================================
+  # INFISICAL - Secrets Management Platform
+  # ==========================================================================
+  # Open-source secrets management for developers and infrastructure
+  # Uses external PostgreSQL and Redis on db VM (10.10.10.111)
+  # Access: https://secrets.onurx.com
+  # Documentation: https://infisical.com/docs
+
+  infisical:
+    image: infisical/infisical:latest
+    container_name: infisical
+    restart: unless-stopped
+    ports:
+      - "8082:8080"
+    environment:
+      # Database (PostgreSQL on db host)
+      - DB_CONNECTION_URI=postgresql://${INFISICAL_DB_USER}:${INFISICAL_DB_PASSWORD}@10.10.10.111:5432/infisical
+
+      # Redis (on db host)
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@10.10.10.111:6379/2
+
+      # Site configuration
+      - SITE_URL=https://secrets.onurx.com
+
+      # Encryption keys (required for secrets encryption)
+      - ENCRYPTION_KEY=${INFISICAL_ENCRYPTION_KEY}
+      - AUTH_SECRET=${INFISICAL_AUTH_SECRET}
+
+      # Telemetry (opt-out)
+      - TELEMETRY_ENABLED=false
+    networks:
+      - dev_net
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8080/api/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ==========================================================================
   # HOPPSCOTCH - API Development & Testing Platform
   # ==========================================================================
   # All-in-one container with frontend, backend, and admin
