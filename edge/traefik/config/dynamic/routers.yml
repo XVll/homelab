@@ -487,3 +487,14 @@ http:
         - private-default
       tls:
         certResolver: cloudflare
+
+    # Redis Insight - Redis GUI (private)
+    redis-insight:
+      rule: "Host(`redis.onurx.com`)"
+      entryPoints:
+        - websecure
+      service: redis-insight
+      middlewares:
+        - private-default
+      tls:
+        certResolver: cloudflare
